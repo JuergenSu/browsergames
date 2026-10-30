@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7fb">
+  <title>Zip – Ein Pfad, alle Felder</title>
+  <style>
+    :root{color-scheme:light;--ink:#202b46;--muted:#778198;--line:#dce2ec;--violet:#6858eb;--violet-dark:#4f3dcf;--lavender:#edeaff;--bg:#f6f7fb;--white:#fff;--shadow:0 18px 60px rgba(40,54,100,.09)}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100svh;background:radial-gradient(ellipse at top left,#ece9ff 0,transparent 35%),radial-gradient(ellipse at bottom right,#e8f8fa 0,transparent 35%),var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}
+    button,select{font:inherit}
+    button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+    button:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #8a80fb;outline-offset:3px}
+    .shell{max-width:1070px;margin:auto;padding:32px 24px 40px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:26px}
+    .identity{display:flex;align-items:center;gap:14px}
+    .logo{width:52px;height:52px;display:grid;place-items:center;background:var(--violet);color:white;border-radius:15px;font-size:18px;font-weight:950;letter-spacing:-1.2px;box-shadow:0 10px 25px rgba(104,88,235,.28)}
+    .headline{font-size:25px;font-weight:850;letter-spacing:-1.1px;line-height:1.05}
+    .subtitle{color:var(--muted);font-size:12px;margin-top:5px}
+    .top-pill{display:inline-flex;align-items:center;gap:7px;background:white;border:1px solid #e6eaf2;border-radius:50px;padding:10px 14px;color:#68748c;font-size:12px;font-weight:700}
+    .dot{width:7px;height:7px;background:#36c7a7;border-radius:50%}
+    .layout{display:grid;grid-template-columns:minmax(0,625px) minmax(245px,1fr);gap:26px;align-items:start}
+    .game-card,.aside-card{background:rgba(255,255,255,.96);border:1px solid #e9edf5;border-radius:25px;box-shadow:var(--shadow)}
+    .game-card{padding:25px 28px 27px}
+    .bar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:20px}
+    .eyebrow{font-weight:750;letter-spacing:.13em;text-transform:uppercase;font-size:10px;color:#8e96a9;margin-bottom:5px}
+    h1,h2,p{margin-top:0}
+    h1{font-size:24px;letter-spacing:-.7px;margin-bottom:0}
+    .level-select{appearance:none;background:#f7f7fc url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23687990" stroke-width="2.5"%3E%3Cpath d="m6 9 6 6 6-6"/%3E%3C/svg%3E') no-repeat right 13px center;border:1px solid #e3e5f0;border-radius:11px;padding:10px 35px 10px 12px;font-size:12px;font-weight:750;color:#4a556c;max-width:148px}
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px}
+    .metric{background:#f7f8fc;padding:11px 13px;border-radius:13px;min-width:0}
+    .metric .label{font-size:10px;font-weight:700;color:#8991a2;letter-spacing:.04em;text-transform:uppercase}
+    .metric .value{font-size:19px;letter-spacing:-.6px;font-weight:850;margin-top:3px;font-variant-numeric:tabular-nums}
+    .metric .suffix{color:#9aa3b5;font-size:12px;font-weight:600}
+    .progress-track{height:5px;background:#eef0f6;border-radius:20px;overflow:hidden;margin:0 0 19px}
+    .progress{width:0;height:100%;background:linear-gradient(90deg,#6a55ef,#3fc3c5);border-radius:20px;transition:width .18s ease}
+    .board-wrap{position:relative;max-width:535px;margin:0 auto 17px;aspect-ratio:1}
+    .board{display:grid;position:absolute;inset:0;grid-template-columns:repeat(var(--size),1fr);grid-template-rows:repeat(var(--size),1fr);overflow:hidden;border:3px solid #28334c;border-radius:14px;background:white;touch-action:none;user-select:none;-webkit-user-select:none;cursor:crosshair}
+    .cell{position:relative;display:flex;align-items:center;justify-content:center;background:#fff;border-right:1px solid #e4e9f0;border-bottom:1px solid #e4e9f0;transition:background .09s ease}
+    .cell.visited{background:#f2efff}
+    .cell.next-glow{background:#defff6}
+    .cell.wall-r{border-right:4px solid #33405a}
+    .cell.wall-b{border-bottom:4px solid #33405a}
+    .badge-number{position:relative;z-index:3;display:grid;place-items:center;width:57%;height:57%;max-width:44px;max-height:44px;aspect-ratio:1;border-radius:50%;background:#e7e1ff;color:#5846ce;font-size:clamp(12px,2.5vw,21px);font-weight:850;box-shadow:0 2px 5px rgba(37,24,123,.08)}
+    .visited .badge-number{background:var(--violet);color:white}
+    .badge-number.start,.badge-number.end{background:#e4f8f1;color:#217b67}
+    .visited .badge-number.start,.visited .badge-number.end{background:#1bbd9a;color:white}
+    .path-overlay{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;overflow:visible}
+    .route{fill:none;stroke:#a79aff;stroke-linecap:round;stroke-linejoin:round;opacity:.94;transition:stroke .25s}
+    .route.completed{stroke:#20b99d}
+    .last-dot{fill:#6858eb;stroke:white;stroke-width:3}
+    .board-message{min-height:26px;text-align:center;color:#68738c;font-size:12px;font-weight:650;margin:4px 0 15px}
+    .board-message.error{color:#d14f62}
+    .board-message.success{color:#14997b}
+    .actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    .btn{display:flex;align-items:center;justify-content:center;gap:7px;border-radius:12px;padding:12px 8px;border:1px solid #e4e7f0;background:#fff;color:#47536a;font-size:12px;font-weight:800;transition:background .15s,transform .15s}
+    .btn:hover{background:#f4f1ff;transform:translateY(-1px)}
+    .btn:disabled{opacity:.42;cursor:not-allowed;transform:none}
+    .btn.primary{border-color:var(--violet);background:var(--violet);color:white}
+    .btn.primary:hover{background:var(--violet-dark)}
+    .btn.secondary{border-color:#dbd5ff;color:var(--violet)}
+    .aside-card{padding:24px 24px 22px}
+    .aside h2{font-size:17px;letter-spacing:-.4px;margin-bottom:18px}
+    .rule{display:flex;gap:12px;margin-bottom:19px;align-items:flex-start}
+    .rule-icon{display:grid;place-items:center;flex:none;width:31px;height:31px;border-radius:10px;background:#f0edff;color:#6b5ce5;font-weight:900;font-size:13px}
+    .rule strong{display:block;font-size:12px;margin:2px 0 4px}
+    .rule p{font-size:12px;color:#7c8698;line-height:1.55;margin:0}
+    .tip{padding:15px;border-radius:13px;background:linear-gradient(120deg,#f0f1ff,#edfaf8);margin:8px 0 19px}
+    .tip strong{font-size:12px;display:block;margin-bottom:5px}
+    .tip p{font-size:11px;line-height:1.6;color:#69778d;margin:0}
+    .side-button{width:100%;padding:13px;border-radius:12px;background:#eef0fe;border:1px solid #e2dffd;color:#6657d9;font-size:12px;font-weight:850}
+    .side-button:hover{background:#e6e3fd}
+    .footnote{text-align:center;color:#a2a9b8;font-size:10px;margin-top:18px}
+    .win-layer{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;background:rgba(255,255,255,.94);z-index:5;border-radius:14px;backdrop-filter:blur(4px);text-align:center;padding:20px}
+    .win-layer[hidden]{display:none}
+    .win-icon{display:grid;place-items:center;width:66px;height:66px;border-radius:50%;background:#dcfaef;color:#19a981;font-size:32px}
+    .win-layer h2{font-size:26px;margin:0;letter-spacing:-1px}
+    .win-layer p{font-size:13px;color:#7d879c;margin:0;line-height:1.5}
+    .win-layer .btn{padding:13px 24px}
+    @media(max-width:800px){.layout{grid-template-columns:1fr;max-width:670px;margin:auto}.aside{display:grid;grid-template-columns:1fr}.shell{max-width:700px;padding:20px 15px 30px}.top{margin-bottom:18px}.game-card{padding:20px 18px 23px}.aside-card{padding:20px 22px}.board-wrap{width:100%}.top-pill{display:none}}
+    @media(max-width:380px){.shell{padding:13px 9px}.game-card{padding:15px 12px 18px}.headline{font-size:21px}.bar{gap:5px}.level-select{padding-left:8px;max-width:130px}.metric{padding:9px}.metric .value{font-size:17px}.badge-number{font-size:13px}.btn{font-size:11px;padding:11px 5px}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="top">
+      <div class="identity"><div class="logo" aria-hidden="true">ZIP</div><div><div class="headline">Ein Pfad. Alle Felder.</div><div class="subtitle">Ein kleines Logikspiel für zwischendurch</div></div></div>
+      <div class="top-pill"><span class="dot"></span> Offline spielbar</div>
+    </header>
+    <main class="layout">
+      <section class="game-card" aria-label="Zip-Spielfeld">
+        <div class="bar"><div><div class="eyebrow" id="puzzle-label">Rätsel 01</div><h1>Verbinde die Zahlen</h1></div><label><span class="eyebrow" style="display:block">Schwierigkeit</span><select class="level-select" id="difficulty" aria-label="Schwierigkeitsgrad"><option value="easy">Leicht · 6 × 6</option><option value="medium">Mittel · 7 × 7</option><option value="hard">Schwer · 8 × 8</option></select></label></div>
+        <div class="metrics">
+          <div class="metric"><div class="label">Zeit</div><div class="value" id="timer">00:00</div></div>
+          <div class="metric"><div class="label">Besucht</div><div class="value"><span id="visited">0</span><span class="suffix" id="total"> / 36</span></div></div>
+          <div class="metric"><div class="label">Nächste Zahl</div><div class="value" id="next-number">1</div></div>
+        </div>
+        <div class="progress-track" aria-hidden="true"><div id="progress" class="progress"></div></div>
+        <div class="board-wrap">
+          <div class="board" id="board" role="grid" tabindex="0" aria-label="Rätselgitter. Mit Zahl 1 beginnen, dann ziehen oder Pfeiltasten verwenden."></div>
+          <div class="win-layer" id="win" hidden><div class="win-icon">✓</div><h2>Geschafft!</h2><p id="win-summary">Alle Felder verbunden.</p><button class="btn primary" id="play-again">Nächstes Rätsel →</button></div>
+        </div>
+        <div id="message" class="board-message" role="status" aria-live="polite">Starte bei der 1 – ziehe oder tippe auf benachbarte Felder.</div>
+        <div class="actions"><button class="btn" id="undo" disabled>↶ Rückgängig</button><button class="btn" id="reset">⟳ Neustart</button><button class="btn secondary" id="hint">✦ Hinweis</button></div>
+      </section>
+      <aside class="aside"><div class="aside-card"><h2>So funktioniert’s</h2>
+        <div class="rule"><div class="rule-icon">1→2</div><div><strong>Zahlen in Reihenfolge</strong><p>Beginne bei 1 und verbinde 2, 3, 4 … bis zur letzten Zahl.</p></div></div>
+        <div class="rule"><div class="rule-icon">↗</div><div><strong>Nur gerade Schritte</strong><p>Gehe nach oben, unten, links oder rechts. Diagonalen sind tabu.</p></div></div>
+        <div class="rule"><div class="rule-icon">▦</div><div><strong>Jedes Feld genau einmal</strong><p>Fülle das gesamte Gitter. Der Weg darf sich nicht kreuzen.</p></div></div>
+        <div class="rule"><div class="rule-icon">┃</div><div><strong>Wände umgehen</strong><p>Dicke Linien zwischen Feldern dürfen nicht überquert werden.</p></div></div>
+        <div class="tip"><strong>💡 Kleiner Tipp</strong><p>Plane zuerst die Ecken. Wenn du zurück willst, ziehe auf ein bereits benutztes Feld oder nutze „Rückgängig“. Mit den Pfeiltasten kannst du ebenfalls spielen.</p></div>
+        <button class="side-button" id="new">+ Neues Rätsel erzeugen</button>
+      </div><div class="footnote">Eigenständige Interpretation der Zip-Regeln · Keine Verbindung zu LinkedIn</div></aside>
+    </main>
+  </div>
+  <script>
+    (() => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      const board = $('board');
+      const config = {easy:{size:6,clues:11,walls:8},medium:{size:7,clues:11,walls:15},hard:{size:8,clues:12,walls:24}};
+      let difficulty = 'easy', edition = 1, puzzle, path = [], startedAt = null, elapsedBefore = 0, ticker = null, dragging = false, dragPointer = null, finished = false, hintsUsed = 0, cells = [], lastNotice = '';
+
+      function randGen(seed) {return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
+      function hash(text){let h=2166136261;for(const c of text){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+      function neighbors(pos,n){const r=Math.floor(pos/n),c=pos%n,a=[];if(r>0)a.push(pos-n);if(r<n-1)a.push(pos+n);if(c>0)a.push(pos-1);if(c<n-1)a.push(pos+1);return a;}
+      function edge(a,b){return Math.min(a,b)+':'+Math.max(a,b);}
+      function shuffle(a,rand){for(let i=a.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+      function generate(level,serial){
+        const {size:n,clues,walls} = config[level], count=n*n;
+        const date = new Date();
+        const day = [date.getFullYear(),date.getMonth()+1,date.getDate()].join('-');
+        const random = randGen(hash('zip-original:'+day+':'+level+':'+serial));
+        let solution=[];
+        for(let r=0;r<n;r++){for(let k=0;k<n;k++)solution.push(r*n+(r%2?n-1-k:k));}
+        // Backbite transformations preserve a Hamiltonian path while changing its shape.
+        for(let attempt=0;attempt<count*115;attempt++){
+          const reversed=random()<.5;
+          if(reversed)solution.reverse();
+          const tail=solution[count-1],options=neighbors(tail,n).filter(x=>x!==solution[count-2]);
+          if(options.length){const hit=options[Math.floor(random()*options.length)],j=solution.indexOf(hit);solution=solution.slice(0,j+1).concat(solution.slice(j+1).reverse());}
+          if(reversed)solution.reverse();
+        }
+        // Number cells are selected along the known solution, including both ends.
+        const picks=[0];
+        for(let i=1;i<clues-1;i++){
+          const anchor=i*(count-1)/(clues-1);
+          const spread=(count-1)/(clues-1)*.33;
+          const ideal=Math.round(anchor+(random()*2-1)*spread);
+          const minimum=picks[picks.length-1]+1;
+          const maximum=count-(clues-i);
+          picks.push(Math.max(minimum,Math.min(maximum,ideal)));
+        }
+        picks.push(count-1);
+        const numbers=new Map();picks.forEach((step,i)=>numbers.set(solution[step],i+1));
+        const routeEdges=new Set();for(let i=1;i<solution.length;i++)routeEdges.add(edge(solution[i-1],solution[i]));
+        const candidateWalls=[];
+        for(let i=0;i<count;i++)for(const neighbor of neighbors(i,n))if(neighbor>i&&!routeEdges.has(edge(i,neighbor)))candidateWalls.push(edge(i,neighbor));
+        shuffle(candidateWalls,random);
+        return {size:n,solution,numbers,walls:new Set(candidateWalls.slice(0,walls)),maxNumber:clues};
+      }
+
+      function getElapsed(){return elapsedBefore+(startedAt === null?0:Date.now()-startedAt);}
+      function formatTime(ms){const seconds=Math.floor(ms/1000);return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');}
+      function updateTimer(){$('timer').textContent=formatTime(getElapsed());}
+      function startClock(){if(startedAt===null&&!finished){startedAt=Date.now();if(ticker===null)ticker=setInterval(updateTimer,300);}}
+      function stopClock(){if(startedAt!==null){elapsedBefore+=Date.now()-startedAt;startedAt=null;}if(ticker!==null){clearInterval(ticker);ticker=null;}updateTimer();}
+      function notice(text,type=''){lastNotice=text;$('message').textContent=text;$('message').className='board-message'+(type?' '+type:'');}
+      function setPuzzle(){
+        stopClock();startedAt=null;elapsedBefore=0;finished=false;hintsUsed=0;path=[];dragging=false;dragPointer=null;
+        puzzle=generate(difficulty,edition);cells=[];
+        board.style.setProperty('--size',puzzle.size);board.replaceChildren();
+        $('win').hidden=true;
+        $('puzzle-label').textContent='Rätsel '+String(edition).padStart(2,'0');
+        $('total').textContent=' / '+puzzle.size*puzzle.size;
+        $('difficulty').value=difficulty;
+        const fragment=document.createDocumentFragment();
+        for(let i=0;i<puzzle.size*puzzle.size;i++){
+          const cell=document.createElement('div');cell.className='cell';cell.dataset.index=i;cell.setAttribute('role','gridcell');
+          const row=Math.floor(i/puzzle.size),col=i%puzzle.size;
+          if(col<puzzle.size-1&&puzzle.walls.has(edge(i,i+1)))cell.classList.add('wall-r');
+          if(row<puzzle.size-1&&puzzle.walls.has(edge(i,i+puzzle.size)))cell.classList.add('wall-b');
+          const num=puzzle.numbers.get(i);
+          if(num){const badge=document.createElement('span');badge.className='badge-number'+(num===1?' start':'')+(num===puzzle.maxNumber?' end':'');badge.textContent=num;cell.appendChild(badge);}
+          cell.setAttribute('aria-label',`Zeile ${row+1}, Spalte ${col+1}`+(num?`, Zahl ${num}`:''));
+          cells.push(cell);fragment.appendChild(cell);
+        }
+        const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox',`0 0 ${puzzle.size*100} ${puzzle.size*100}`);svg.setAttribute('class','path-overlay');svg.setAttribute('aria-hidden','true');
+        const line=document.createElementNS('http://www.w3.org/2000/svg','path');line.setAttribute('class','route');line.setAttribute('stroke-width','23');svg.appendChild(line);
+        const cap=document.createElementNS('http://www.w3.org/2000/svg','circle');cap.setAttribute('class','last-dot');cap.setAttribute('r','8');svg.appendChild(cap);
+        fragment.appendChild(svg);board.appendChild(fragment);
+        updateDrawing();updateTimer();notice('Starte bei der 1 – ziehe oder tippe auf benachbarte Felder.');
+      }
+
+      function updateDrawing(){
+        const onPath=new Set(path);
+        for(let i=0;i<cells.length;i++)cells[i].classList.toggle('visited',onPath.has(i));
+        const n=puzzle.size;
+        const coords=path.map(index=>{const x=(index%n+.5)*100,y=(Math.floor(index/n)+.5)*100;return [x,y];});
+        const svg=board.querySelector('svg'),line=svg.firstElementChild,cap=svg.lastElementChild;
+        line.setAttribute('d',coords.map(([x,y],i)=>(i?'L':'M')+x+' '+y).join(' '));
+        line.classList.toggle('completed',finished);
+        const last=coords[coords.length-1];cap.style.display=last&&!finished?'':'none';if(last){cap.setAttribute('cx',last[0]);cap.setAttribute('cy',last[1]);}
+        $('visited').textContent=path.length;
+        $('progress').style.width=path.length/(n*n)*100+'%';
+        const next=path.reduce((value,i)=>{const found=puzzle.numbers.get(i);return found?found+1:value;},1);
+        $('next-number').textContent=finished?'✓':next>puzzle.maxNumber?'–':next;
+        $('undo').disabled=path.length===0||finished;
+      }
+
+      function finish(){
+        finished=true;stopClock();
+        $('win-summary').textContent=`${puzzle.size*puzzle.size} Felder in ${formatTime(getElapsed())} verbunden`+(hintsUsed?` · ${hintsUsed} Hinweis${hintsUsed===1?'':'e'}`:' · ohne Hinweise')+'.';
+        $('win').hidden=false;notice('Rätsel gelöst! Stark gemacht.','success');
+      }
+
+      function step(index){
+        if(finished||index<0||index>=puzzle.size*puzzle.size)return false;
+        if(path.length===0){if(puzzle.numbers.get(index)!==1){notice('Beginne bitte beim Feld mit der 1.','error');return false;}path=[index];startClock();updateDrawing();notice('Gut! Ziehe jetzt in Richtung der 2.');return true;}
+        const oldIndex=path.indexOf(index);
+        if(oldIndex!==-1){if(oldIndex<path.length-1){path=path.slice(0,oldIndex+1);updateDrawing();notice('Weg bis zu diesem Feld zurückgenommen.');}return true;}
+        const current=path[path.length-1];
+        if(!neighbors(current,puzzle.size).includes(index))return false;
+        if(puzzle.walls.has(edge(current,index))){notice('Eine Wand blockiert diesen Schritt.','error');return false;}
+        const num=puzzle.numbers.get(index);
+        const visitedNumbers=path.map(p=>puzzle.numbers.get(p)).filter(Boolean);
+        const nextNumber=visitedNumbers.length?visitedNumbers[visitedNumbers.length-1]+1:1;
+        if(num&&num!==nextNumber){notice(`Zuerst musst du Zahl ${nextNumber} erreichen.`,'error');return false;}
+        if(num===puzzle.maxNumber&&path.length!==puzzle.size*puzzle.size-1){notice('Die höchste Zahl muss das letzte Feld sein.','error');return false;}
+        path.push(index);
+        if(path.length===puzzle.size*puzzle.size){finish();updateDrawing();return true;}
+        updateDrawing();notice(`${path.length} von ${puzzle.size*puzzle.size} Feldern besucht.`);return true;
+      }
+
+      function undo(){if(finished||!path.length)return;path.pop();updateDrawing();notice('Letzter Schritt rückgängig gemacht.');}
+      function reset(){setPuzzle();}
+      function newPuzzle(){edition++;setPuzzle();}
+      function hint(){
+        if(finished)return;
+        const reference=puzzle.solution;
+        let matched=0;
+        while(matched<path.length&&path[matched]===reference[matched])matched++;
+        // Like the original Hint control, prune an incorrect prefix, then reveal a step.
+        path=reference.slice(0,Math.min(reference.length,matched+1));
+        if(path.length===0)path=[reference[0]];
+        hintsUsed++;
+        startClock();
+        if(path.length===reference.length){finish();updateDrawing();return;}
+        updateDrawing();notice('Hinweis: Ein korrekter Wegabschnitt ist jetzt markiert.');
+        const next=reference[path.length];
+        cells[next].classList.add('next-glow');setTimeout(()=>cells[next]?.classList.remove('next-glow'),900);
+      }
+
+      function cellFromEvent(event){
+        const b=board.getBoundingClientRect(),x=(event.clientX-b.left)/b.width,y=(event.clientY-b.top)/b.height;
+        if(x<0||x>=1||y<0||y>=1)return -1;
+        return Math.floor(y*puzzle.size)*puzzle.size+Math.floor(x*puzzle.size);
+      }
+      board.addEventListener('pointerdown',event=>{
+        if(event.button!==0||finished)return;
+        const i=cellFromEvent(event);if(i<0)return;
+        event.preventDefault();dragging=true;dragPointer=event.pointerId;
+        try{board.setPointerCapture(event.pointerId);}catch{}
+        step(i);
+        board.focus({preventScroll:true});
+      });
+      board.addEventListener('pointermove',event=>{
+        if(!dragging||event.pointerId!==dragPointer)return;
+        const index=cellFromEvent(event);if(index<0)return;
+        // Recover skipped cells when a fast pointer runs along one row or column.
+        if(path.length){const prev=path[path.length-1],r1=Math.floor(prev/puzzle.size),r2=Math.floor(index/puzzle.size),c1=prev%puzzle.size,c2=index%puzzle.size;
+          if(r1===r2&&Math.abs(c2-c1)>1){for(let c=c1+Math.sign(c2-c1);c!==c2+Math.sign(c2-c1);c+=Math.sign(c2-c1))if(!step(r1*puzzle.size+c))break;return;}
+          if(c1===c2&&Math.abs(r2-r1)>1){for(let r=r1+Math.sign(r2-r1);r!==r2+Math.sign(r2-r1);r+=Math.sign(r2-r1))if(!step(r*puzzle.size+c1))break;return;}
+        }
+        step(index);
+      });
+      function endDrag(event){if(event.pointerId===dragPointer){dragging=false;dragPointer=null;try{board.releasePointerCapture(event.pointerId);}catch{}}}
+      board.addEventListener('pointerup',endDrag);board.addEventListener('pointercancel',endDrag);
+      board.addEventListener('keydown',event=>{
+        if(event.key==='Backspace'||event.key==='z'||event.key==='Z'){event.preventDefault();undo();return;}
+        if(event.key==='Enter'||event.key===' '){event.preventDefault();if(!path.length)step(puzzle.solution[0]);return;}
+        const moves={ArrowUp:-puzzle.size,ArrowDown:puzzle.size,ArrowLeft:-1,ArrowRight:1};
+        if(Object.hasOwn(moves,event.key)){event.preventDefault();if(!path.length){step(puzzle.solution[0]);return;}const current=path[path.length-1],next=current+moves[event.key];if(neighbors(current,puzzle.size).includes(next))step(next);}
+      });
+      $('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('hint').addEventListener('click',hint);$('new').addEventListener('click',newPuzzle);$('play-again').addEventListener('click',newPuzzle);
+      $('difficulty').addEventListener('change',event=>{difficulty=event.target.value;edition=1;setPuzzle();});
+      setPuzzle();
+      // Pure helpers are exposed for optional automated checks without affecting gameplay.
+      window.zipTest={generate,neighbors,edge,config};
+    })();
+  </script>
+</body>
+</html>

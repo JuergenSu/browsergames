@@ -1,0 +1,207 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#f3f8fa"><title>Bridges – Inseln verbinden</title>
+<style>
+:root{color-scheme:light;--ink:#27354a;--muted:#8c9aab;--accent:#248ea6;--shadow:0 20px 55px #1b54701a}*{box-sizing:border-box}body{margin:0;min-height:100svh;background:radial-gradient(ellipse at top left,#d9f3f2,transparent 35%),radial-gradient(ellipse at bottom right,#fff1d9,transparent 37%),#f3f8fa;color:var(--ink);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,select{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #88cfdc;outline-offset:3px}
+.shell{max-width:1070px;margin:auto;padding:25px 18px 36px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:23px}.brand{display:flex;gap:13px;align-items:center}.logo{display:grid;place-items:center;width:55px;height:55px;background:#155e78;color:#e6cf9b;border-radius:17px;font-size:29px;box-shadow:0 11px 24px #0f688038}.brand strong{font-size:25px;letter-spacing:-1px;line-height:1}.brand small{display:block;color:#8b9eaa;font-size:12px;margin-top:6px}.back{text-decoration:none;background:#fff;border:1px solid #dfeaec;border-radius:35px;padding:10px 15px;font-size:12px;font-weight:850;color:#557b8c}
+.layout{display:grid;grid-template-columns:minmax(0,645px) minmax(245px,1fr);align-items:start;gap:22px}.card{border-radius:24px;background:#ffffffed;border:1px solid #e3ecef;box-shadow:var(--shadow)}.main{padding:24px}.side{padding:24px}.heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.eyebrow{color:#9daeb8;font-size:10px;font-weight:850;letter-spacing:.12em}.heading h1{font-size:22px;letter-spacing:-.6px;margin:3px 0 0}.heading select{max-width:145px;background:#f6fbfb;border:1px solid #d9e8ec;color:#577c8b;border-radius:11px;padding:10px;font-size:12px;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:17px 0}.stat{background:#f2f9fa;padding:10px 13px;border-radius:12px}.stat small{display:block;font-size:10px;font-weight:850;text-transform:uppercase;color:#98adb5;letter-spacing:.06em}.stat b{font-size:21px;font-variant-numeric:tabular-nums}
+.sea{max-width:540px;position:relative;margin:auto;aspect-ratio:1;background:radial-gradient(ellipse at 35% 25%,#1e7194,#164d6c 70%,#13394f);border:9px solid #264a60;border-radius:21px;box-shadow:0 18px 37px #174a6460,inset 0 0 35px #092c44b5;user-select:none;touch-action:manipulation;overflow:hidden}.sea::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 40px,#ffffff05 40px 42px);opacity:.5}svg.bridges{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.island{position:absolute;display:grid;place-items:center;transform:translate(-50%,-50%);width:clamp(28px,6vw,49px);height:clamp(28px,6vw,49px);border-radius:50%;border:3px solid #e4d7bd;background:linear-gradient(145deg,#fffbee,#e3cb9d);color:#614f39;box-shadow:0 3px 0 #947b58,0 6px 11px #071b2d75,inset 0 2px 3px #fff;z-index:3;font-size:clamp(13px,2.5vw,20px);font-weight:950;line-height:1;padding:0}.island:hover{filter:brightness(1.08)}.island.selected{outline:4px solid #76e3e2;outline-offset:2px}.island.done{background:linear-gradient(145deg,#d9fff0,#99dac4);border-color:#bde8d3;color:#287d67}.island.over{background:#ffdbe0;border-color:#f299a1;color:#b54d60}.island:focus-visible{outline:3px solid #ffee9c;outline-offset:3px}.bridge-hit{cursor:pointer;stroke:transparent;stroke-width:46;stroke-linecap:round}.bridge-ghost{stroke:#acd2df;stroke-width:6;stroke-linecap:round;stroke-dasharray:9 12;opacity:.28;pointer-events:none}.bridge-line{stroke:#91e2ec;stroke-width:10;stroke-linecap:round;filter:drop-shadow(0 1px 2px #05243b);pointer-events:none}.bridge-line.fixed{stroke:#f6d990}.bridge-highlight{stroke:#ffe89a;stroke-width:14;stroke-linecap:round;opacity:.65;pointer-events:none}.bridge-group:hover .bridge-ghost{stroke:#fff3ac;opacity:.75}.bridge-group:hover .bridge-line{stroke:#c5faff}
+.board-caption{max-width:540px;display:flex;justify-content:space-between;gap:10px;margin:14px auto;color:#93aab4;font-size:11px;font-weight:750}.status{min-height:38px;display:grid;place-items:center;text-align:center;font-size:12px;font-weight:750;color:#7593a1;margin:11px 0}.status.warn{color:#ba7b3c}.status.good{color:#238979}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.btn{border-radius:11px;background:#fff;color:#557f8e;border:1px solid #d9e8eb;padding:12px 5px;font-size:12px;font-weight:850;min-height:44px}.btn.primary{background:#1e869e;color:#fff;border-color:#1e869e}.btn:disabled{opacity:.45;cursor:not-allowed}.win{display:none;text-align:center;background:#e6f7ea;border:1px solid #cce9d5;border-radius:13px;padding:15px;margin-top:14px}.win.show{display:block}.win strong{font-size:19px;color:#278b75}.win p{font-size:12px;color:#789181;margin:5px 0 10px}.win button{background:#278e7b;color:#fff;border:0;border-radius:10px;padding:11px 20px;font-weight:850}
+.side h2{font-size:19px;margin:0 0 18px;letter-spacing:-.5px}.rule{display:flex;gap:11px;margin-bottom:17px}.num{flex:none;display:grid;place-items:center;width:31px;height:31px;border-radius:10px;background:#e3f2f3;color:#368b98;font-weight:900}.rule strong{font-size:12px}.rule p{margin:3px 0 0;color:#8a9fa8;font-size:12px;line-height:1.6}.note{border-radius:13px;background:#f0f9f9;padding:13px;color:#76929a;font-size:11px;line-height:1.65}.progress{margin-top:22px;color:#71909a;font-size:12px;font-weight:850}.bar{height:7px;border-radius:20px;background:#e5eff2;overflow:hidden;margin-top:10px}.bar span{display:block;background:#46aab9;height:100%;width:0}.random{width:100%;margin-top:19px;border:1px solid #badbdc;background:#eefbfb;color:#258996;border-radius:11px;padding:12px;font-weight:850}.foot{text-align:center;font-size:11px;color:#a6b5bc;margin-top:22px}
+@media(max-width:750px){.shell{max-width:615px;padding:16px 12px 29px}.top{margin-bottom:17px}.layout{grid-template-columns:1fr;gap:14px}.main,.side{padding:18px 14px}.logo{width:45px;height:45px}.brand strong{font-size:21px}.back{font-size:11px;padding:8px 11px}.heading h1{font-size:20px}.sea{border-width:6px;border-radius:16px}.island{border-width:2px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><main class="shell"><header class="top"><div class="brand"><span class="logo">⚓</span><div><strong>Bridges</strong><small>Verbinde die Inseln zu einem Königreich.</small></div></div><a class="back" href="../index.php">← Alle Spiele</a></header>
+<div class="layout"><section class="card main"><div class="heading"><div><div class="eyebrow">HASHIWOKAKERO · LOGIK</div><h1>Inseln verbinden</h1></div><select id="level" aria-label="Level auswählen"></select></div>
+<div class="stats"><div class="stat"><small>Inseln erfüllt</small><b id="complete">0</b></div><div class="stat"><small>Züge</small><b id="moves">0</b></div><div class="stat"><small>Zeit</small><b id="time">00:00</b></div></div>
+<div class="sea" id="sea"><svg id="bridges" class="bridges" viewBox="0 0 1000 1000" role="group" aria-label="Brücken zwischen Inseln"></svg><div id="islands"></div></div>
+<div class="board-caption"><span>Eine Verbindung: 0 → 1 → 2 → 0</span><span id="size">7 × 7</span></div>
+<div class="status" id="status" role="status" aria-live="polite">Tippe eine Verbindung oder zwei benachbarte Inseln an.</div>
+<div class="controls"><button class="btn" id="undo">↶ Rückgängig</button><button class="btn" id="hint">✦ Tipp</button><button class="btn primary" id="reset">↻ Neustart</button></div>
+<div class="win" id="win"><strong>✦ Alle Inseln verbunden!</strong><p id="win-text"></p><button id="next">Nächstes Level →</button></div>
+</section><aside class="card side"><h2>So funktioniert's</h2>
+<div class="rule"><span class="num">1</span><div><strong>Zahlen erfüllen</strong><p>Jede Insel bekommt insgesamt genau so viele Brücken, wie ihre Zahl angibt.</p></div></div>
+<div class="rule"><span class="num">2</span><div><strong>Gerade verbinden</strong><p>Brücken verlaufen nur waagerecht oder senkrecht zur nächsten Insel.</p></div></div>
+<div class="rule"><span class="num">3</span><div><strong>Maximal zwei</strong><p>Zwischen zwei Inseln dürfen eine oder zwei Brücken liegen. Brücken kreuzen sich niemals.</p></div></div>
+<div class="rule"><span class="num">4</span><div><strong>Ein Netzwerk</strong><p>Am Schluss müssen alle Inseln miteinander verbunden sein – keine getrennten Gruppen.</p></div></div>
+<div class="note">Du kannst auf eine Verbindung tippen oder nacheinander zwei benachbarte Inseln auswählen. Goldene Brücken sind gegebenenfalls feste Hinweise und nicht veränderbar. Jedes Rätsel wird auf Eindeutigkeit geprüft.</div>
+<div class="progress">Geschaffte Levels <span id="progress-text">0 / 24</span><div class="bar"><span id="progress-bar"></span></div></div><button class="random" id="random">⚡ Zufälliges Rätsel starten</button></aside></div><div class="foot">Offline spielbar · Fortschritt lokal gespeichert</div></main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id),KEY='bridges-game-v1',SVGNS='http://www.w3.org/2000/svg';
+function rnd(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+function shuffle(a,rng){for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function coords(n){return n===7?[0,2,4,6]:n===8?[0,2,5,7]:[0,2,4,6,8];}
+function makeGraph(nodes){
+ const edges=[];
+ for(let a=0;a<nodes.length;a++){
+   for(const dir of ['h','v']){
+     let best=-1,dist=Infinity;
+     for(let b=0;b<nodes.length;b++)if(a!==b){
+       const A=nodes[a],B=nodes[b],d=dir==='h'?B.c-A.c:B.r-A.r;
+       if(d<=0||d>=dist)continue;
+       if(dir==='h'&&B.r===A.r||dir==='v'&&B.c===A.c){best=b;dist=d;}
+     }
+     if(best>=0)edges.push({a,b:best,dir});
+   }
+ }
+ const islandEdges=Array.from({length:nodes.length},()=>[]),crossings=Array.from({length:edges.length},()=>[]);
+ for(let i=0;i<edges.length;i++){islandEdges[edges[i].a].push(i);islandEdges[edges[i].b].push(i);}
+ for(let i=0;i<edges.length;i++)for(let j=i+1;j<edges.length;j++){
+   const A=edges[i],B=edges[j];if(A.dir===B.dir)continue;
+   const h=A.dir==='h'?A:B,v=A.dir==='v'?A:B,h1=nodes[h.a],h2=nodes[h.b],v1=nodes[v.a],v2=nodes[v.b];
+   if(Math.min(h1.c,h2.c)<v1.c&&v1.c<Math.max(h1.c,h2.c)&&Math.min(v1.r,v2.r)<h1.r&&h1.r<Math.max(v1.r,v2.r)){crossings[i].push(j);crossings[j].push(i);}
+ }
+ return {nodes,edges,islandEdges,crossings};
+}
+function connected(counts,g,allowUnknown=false){
+ if(!g.nodes.length)return false;const seen=new Set([0]),stack=[0];
+ while(stack.length){const i=stack.pop();for(const e of g.islandEdges[i])if(counts[e]>0||allowUnknown&&counts[e]===-1){const ed=g.edges[e],j=ed.a===i?ed.b:ed.a;if(!seen.has(j)){seen.add(j);stack.push(j);}}}
+ return seen.size===g.nodes.length;
+}
+function solver(g,targets,fixed,limit=2,maxNodes=35000){
+ let count=0,first=null,nodes=0,exceeded=false;
+ function propagate(state){
+   let changed=true;function force(e,value){if(state[e]===-1){state[e]=value;changed=true;return true;}return state[e]===value;}
+   while(changed){
+     changed=false;
+     for(let i=0;i<targets.length;i++){
+       const all=g.islandEdges[i],sum=all.reduce((s,e)=>s+Math.max(0,state[e]),0),unknown=all.filter(e=>state[e]<0),need=targets[i]-sum;
+       if(need<0||need>unknown.length*2)return false;
+       if(need===0||need===unknown.length*2||unknown.length===1){const value=unknown.length===1?need:need===0?0:2;for(const e of unknown)if(!force(e,value))return false;}
+     }
+     for(let e=0;e<g.edges.length;e++)if(state[e]>0)for(const other of g.crossings[e])if(!force(other,0))return false;
+   }
+   return connected(state,g,true);
+ }
+ function search(state){
+   if(++nodes>maxNodes){exceeded=true;return;}
+   if(!propagate(state))return;
+   let candidate=-1,score=-1;
+   for(let e=0;e<state.length;e++)if(state[e]<0){
+     const edge=g.edges[e],a=g.islandEdges[edge.a],b=g.islandEdges[edge.b];
+     const weight=a.filter(i=>state[i]>=0).length+b.filter(i=>state[i]>=0).length+g.crossings[e].filter(i=>state[i]>=0).length*.5;
+     if(weight>score){score=weight;candidate=e;}
+   }
+   if(candidate===-1){if(connected(state,g)){count++;if(!first)first=Array.from(state);}return;}
+   for(const value of [1,2,0]){const next=state.slice();next[candidate]=value;search(next);if(count>=limit||exceeded)return;}
+ }
+ search(Int8Array.from(fixed));return {count,first,nodes,exceeded};
+}
+function generateIslandNodes(n,rng){
+ const all=coords(n),positions=[];for(const r of all)for(const c of all)positions.push({r,c});
+ const min=n===7?9:n===8?11:15,max=n===7?12:n===8?14:19,count=min+Math.floor(rng()*(max-min+1));
+ for(const node of shuffle(positions.slice(),rng)){
+   if(positions.length<=count)break;
+   const index=positions.indexOf(node);if(index<0)continue;positions.splice(index,1);
+   const g=makeGraph(positions);
+   if(!connected(Array(g.edges.length).fill(-1),g,true))positions.splice(index,0,node);
+ }
+ return positions.sort((a,b)=>a.r-b.r||a.c-b.c);
+}
+function solutionGraph(g,rng){
+ const E=g.edges.length,order=shuffle(Array.from({length:E},(_,i)=>i),rng),counts=Array(E).fill(0),parent=Array.from({length:g.nodes.length},(_,i)=>i);
+ function root(v){while(parent[v]!==v){parent[v]=parent[parent[v]];v=parent[v];}return v;}
+ for(const e of order){
+   const {a,b}=g.edges[e];if(root(a)===root(b)||g.crossings[e].some(other=>counts[other]>0))continue;
+   counts[e]=1;parent[root(a)]=root(b);
+ }
+ if(!connected(counts,g))return null;
+ const totals=Array(g.nodes.length).fill(0);function inc(e){counts[e]++;totals[g.edges[e].a]++;totals[g.edges[e].b]++;}
+ for(let e=0;e<E;e++)if(counts[e]){totals[g.edges[e].a]++;totals[g.edges[e].b]++;}
+ for(const e of shuffle(order.slice(),rng))if(counts[e]===0&&rng()<.2&&g.crossings[e].every(x=>counts[x]===0)&&totals[g.edges[e].a]<7&&totals[g.edges[e].b]<7)inc(e);
+ for(const e of shuffle(order.slice(),rng))if(counts[e]===1&&rng()<.30&&totals[g.edges[e].a]<8&&totals[g.edges[e].b]<8)inc(e);
+ return {counts,targets:totals};
+}
+function generate(level){
+ const n=level==='random'?[7,8,9][Math.floor(Math.random()*3)]:level<=8?7:level<=16?8:9,rng=level==='random'?Math.random:rnd(hash('bridges-v2-'+level));
+ for(let trial=0;trial<180;trial++){
+   const g=makeGraph(generateIslandNodes(n,rng)),solution=solutionGraph(g,rng);if(!solution)continue;
+   const fixed=Array(g.edges.length).fill(-1),positive=shuffle(Array.from({length:g.edges.length},(_,i)=>i).filter(i=>solution.counts[i]>0),rng);
+   let checked=solver(g,solution.targets,fixed);
+   for(let k=0;k<positive.length&&(checked.count!==1||checked.exceeded);k++){fixed[positive[k]]=solution.counts[positive[k]];checked=solver(g,solution.targets,fixed);}
+   if(checked.count!==1||checked.exceeded)continue;
+   // Remove unnecessary preset bridges while preserving exactly one solution.
+   for(const e of shuffle(positive.filter(i=>fixed[i]>=0),rng)){const value=fixed[e];fixed[e]=-1;const test=solver(g,solution.targets,fixed);if(test.count!==1||test.exceeded)fixed[e]=value;}
+   return {n,g,targets:solution.targets,solution:solution.counts,fixed};
+ }
+ throw Error('Kein eindeutiges Brückenrätsel gefunden. Bitte erneut laden.');
+}
+function loadSave(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch{return {};}}
+let progress=loadSave(),puzzle,counts=[],history=[],level=1,moves=0,selected=-1,finished=false,started=null,spent=0,ticker=null,hint=-1,groups=[],islands=[];
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(progress));}catch{}}
+function elapsed(){return spent+(started===null?0:Date.now()-started);}
+function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function refreshTime(){$('time').textContent=fmt(elapsed());}
+function start(){if(started===null&&!finished){started=Date.now();ticker=setInterval(refreshTime,300);}}
+function stop(){if(started!==null){spent+=Date.now()-started;started=null;}if(ticker){clearInterval(ticker);ticker=null;}refreshTime();}
+function status(s,type=''){$('status').textContent=s;$('status').className='status '+type;}
+function anchor(node){return {x:60+node.c/(puzzle.n-1)*880,y:60+node.r/(puzzle.n-1)*880};}
+function svgLine(parent,x1,y1,x2,y2,className){
+ const line=document.createElementNS(SVGNS,'line');for(const [k,v] of Object.entries({x1,y1,x2,y2}))line.setAttribute(k,String(v));line.setAttribute('class',className);parent.appendChild(line);return line;
+}
+function renderBridges(){
+ const frag=document.createDocumentFragment(),g=puzzle.g;groups=[];
+ for(let i=0;i<g.edges.length;i++){
+   const e=g.edges[i],a=anchor(g.nodes[e.a]),b=anchor(g.nodes[e.b]),group=document.createElementNS(SVGNS,'g');group.setAttribute('class','bridge-group');groups.push(group);
+   const count=counts[i],fixed=puzzle.fixed[i]>=0;
+   if(count===0)svgLine(group,a.x,a.y,b.x,b.y,'bridge-ghost');
+   if(count===1)svgLine(group,a.x,a.y,b.x,b.y,'bridge-line'+(fixed?' fixed':''));
+   if(count===2){
+     const d=7;if(e.dir==='h'){svgLine(group,a.x,a.y-d,b.x,b.y-d,'bridge-line'+(fixed?' fixed':''));svgLine(group,a.x,a.y+d,b.x,b.y+d,'bridge-line'+(fixed?' fixed':''));}
+     else{svgLine(group,a.x-d,a.y,b.x-d,b.y,'bridge-line'+(fixed?' fixed':''));svgLine(group,a.x+d,a.y,b.x+d,b.y,'bridge-line'+(fixed?' fixed':''));}
+   }
+   if(hint===i)svgLine(group,a.x,a.y,b.x,b.y,'bridge-highlight');
+   const hit=svgLine(group,a.x,a.y,b.x,b.y,'bridge-hit');hit.setAttribute('aria-label',`Brücke zwischen Insel ${e.a+1} und ${e.b+1}`);
+   group.addEventListener('click',()=>change(i,1));group.addEventListener('contextmenu',ev=>{ev.preventDefault();change(i,-1);});
+   frag.appendChild(group);
+ }
+ $('bridges').replaceChildren(frag);
+}
+function draw(){
+ const g=puzzle.g;renderBridges();let fulfilled=0;
+ for(let i=0;i<g.nodes.length;i++){
+   const used=g.islandEdges[i].reduce((s,e)=>s+counts[e],0),target=puzzle.targets[i];
+   islands[i].className='island'+(used===target?' done':used>target?' over':'')+(selected===i?' selected':'');
+   islands[i].setAttribute('aria-label',`Insel ${i+1}: ${used} von ${target} Brücken`);
+   if(used===target)fulfilled++;
+ }
+ $('complete').textContent=fulfilled+' / '+g.nodes.length;$('moves').textContent=moves;$('undo').disabled=!history.length||finished;$('hint').disabled=finished;
+}
+function buildBoard(){
+ $('size').textContent=puzzle.n+' × '+puzzle.n;const frag=document.createDocumentFragment();islands=[];
+ for(let i=0;i<puzzle.g.nodes.length;i++){
+   const node=puzzle.g.nodes[i],pos=anchor(node),island=document.createElement('button');island.type='button';island.className='island';island.style.left=pos.x/10+'%';island.style.top=pos.y/10+'%';island.textContent=puzzle.targets[i];
+   island.addEventListener('click',()=>islandTap(i));islands.push(island);frag.appendChild(island);
+ }
+ $('islands').replaceChildren(frag);draw();
+}
+function load(l){
+ stop();spent=0;refreshTime();level=l;try{puzzle=generate(l);}catch(e){status(e.message,'warn');return;}counts=puzzle.fixed.map(v=>v<0?0:v);history=[];moves=0;selected=-1;finished=false;hint=-1;$('level').value=String(l);$('win').classList.remove('show');$('random').textContent=l==='random'?'⚡ Anderes Zufallsrätsel':'⚡ Zufallsrätsel starten';buildBoard();status('Tippe eine Verbindung oder zwei benachbarte Inseln an.');
+}
+function change(index,dir){
+ if(finished)return;if(puzzle.fixed[index]>=0){status('Die goldene Brücke ist eine feste Vorgabe.','warn');return;}
+ const old=counts[index],next=dir===1?(old+1)%3:(old+2)%3,e=puzzle.g.edges[index];
+ if(next>0){
+   if(puzzle.g.crossings[index].some(i=>counts[i]>0)){status('Brücken dürfen sich nicht kreuzen.','warn');return;}
+   for(const island of [e.a,e.b]){const count=puzzle.g.islandEdges[island].reduce((s,i)=>s+counts[i],0);if(count-old+next>puzzle.targets[island]){status('Diese Insel hätte dann zu viele Brücken.','warn');return;}}
+ }
+ start();history.push(counts.slice());counts[index]=next;moves++;selected=-1;hint=-1;draw();
+ if(puzzle.targets.every((target,i)=>puzzle.g.islandEdges[i].reduce((s,e)=>s+counts[e],0)===target)&&connected(counts,puzzle.g))win();else status('Brücken gesetzt. Alle Inseln müssen am Ende verbunden sein.');
+}
+function islandTap(index){
+ if(selected===index){selected=-1;draw();return;}
+ if(selected<0){selected=index;draw();status('Wähle jetzt eine benachbarte Insel.');return;}
+ const edge=puzzle.g.edges.findIndex(e=>e.a===selected&&e.b===index||e.a===index&&e.b===selected);
+ if(edge<0){selected=index;draw();status('Diese beiden Inseln sind keine direkten Nachbarn.','warn');return;}
+ change(edge,1);
+}
+function undo(){if(!history.length||finished)return;counts=history.pop();moves--;selected=-1;hint=-1;if(!moves){stop();spent=0;refreshTime();}draw();status('Letzten Zug rückgängig gemacht.');}
+function reset(){stop();spent=0;refreshTime();counts=puzzle.fixed.map(v=>v<0?0:v);history=[];moves=0;selected=-1;finished=false;hint=-1;$('win').classList.remove('show');draw();status('Rätsel zurückgesetzt.');}
+function giveHint(){if(finished)return;const i=counts.findIndex((v,j)=>puzzle.fixed[j]<0&&v!==puzzle.solution[j]);if(i<0)return;hint=i;draw();status(`Tipp: Die markierte Verbindung braucht ${puzzle.solution[i]} ${puzzle.solution[i]===1?'Brücke':'Brücken'}.`,'warn');}
+function win(){finished=true;stop();if(level!=='random'){progress[level]=true;persist();progressDraw();}draw();$('win-text').textContent=`Alle ${puzzle.g.nodes.length} Inseln verbunden – ${moves} Züge in ${fmt(spent)}!`;$('next').textContent=level==='random'||level===24?'Neues Zufallsrätsel →':'Nächstes Level →';$('win').classList.add('show');status('Alle Inseln sind korrekt verbunden!','good');}
+function progressDraw(){const done=Array.from({length:24},(_,i)=>i+1).filter(i=>progress[i]).length;$('progress-text').textContent=done+' / 24';$('progress-bar').style.width=done/24*100+'%';}
+function init(){
+ for(const [a,b,label] of [[1,8,'7 × 7 · Einstieg'],[9,16,'8 × 8 · Fortgeschritten'],[17,24,'9 × 9 · Experte']]){const g=document.createElement('optgroup');g.label=label;for(let i=a;i<=b;i++){const o=document.createElement('option');o.value=i;o.textContent='Level '+i;g.appendChild(o);}$('level').appendChild(g);}const o=document.createElement('option');o.value='random';o.textContent='⚡ Endlosmodus';$('level').appendChild(o);
+ $('level').addEventListener('change',e=>load(e.target.value==='random'?'random':Number(e.target.value)));$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('hint').addEventListener('click',giveHint);$('random').addEventListener('click',()=>load('random'));$('next').addEventListener('click',()=>load(level==='random'||level===24?'random':level+1));progressDraw();load(1);
+}
+init();
+</script></body></html>

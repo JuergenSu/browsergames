@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f7f5fb">
+  <title>Queens – Das Kronenrätsel</title>
+  <style>
+    :root{color-scheme:light;--ink:#303044;--muted:#83849a;--purple:#7359bd;--purple-dark:#574199;--paper:#f7f5fb;--shadow:0 20px 65px rgba(58,45,91,.09)}
+    *{box-sizing:border-box}body{margin:0;min-height:100svh;background:radial-gradient(ellipse at 0% 3%,#e9dffb 0,transparent 36%),radial-gradient(ellipse at 95% 100%,#ffecde 0,transparent 35%),var(--paper);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+    button,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:3px solid #9b84dd;outline-offset:3px}
+    .shell{max-width:1090px;margin:0 auto;padding:29px 23px 40px}.top{display:flex;align-items:center;justify-content:space-between;gap:13px;margin-bottom:26px}.identity{display:flex;align-items:center;gap:14px}
+    .logo{width:54px;height:54px;display:grid;place-items:center;border-radius:16px;background:#7359bd;color:#fff;font-size:30px;box-shadow:0 11px 26px #7359bd3e}.brand{font-size:25px;line-height:1;font-weight:900;letter-spacing:-1.4px}.tagline{color:#9890aa;font-size:12px;margin-top:6px}.offline{border-radius:99px;background:#fff;padding:10px 15px;color:#8e7ea9;border:1px solid #e7e1f2;font-size:11px;font-weight:800}
+    .layout{display:grid;grid-template-columns:minmax(0,650px) minmax(255px,1fr);gap:25px;align-items:start}.game,.side-card{border:1px solid #ece7f3;border-radius:25px;background:rgba(255,255,255,.97);box-shadow:var(--shadow)}.game{padding:25px 29px 25px}.side-card{padding:25px 23px}
+    .game-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:17px}.eyebrow{font-size:10px;font-weight:850;letter-spacing:.12em;color:#a6a0b6;text-transform:uppercase}.game-heading h1{margin:3px 0 0;font-size:24px;letter-spacing:-.75px;line-height:1.15}
+    .level-select{appearance:none;background:#f8f6fc url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%237f6c9d" stroke-width="2.5"%3E%3Cpath d="m6 9 6 6 6-6"/%3E%3C/svg%3E') no-repeat right 10px center;border:1px solid #e9e3f0;padding:9px 33px 9px 10px;border-radius:11px;color:#68587e;font-size:12px;font-weight:800}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}.stat{background:#f8f7fb;padding:11px 12px;border-radius:12px;min-width:0}.stat small{font-size:10px;font-weight:800;color:#aaa4b6;text-transform:uppercase;letter-spacing:.05em;display:block}.stat b{font-size:20px;font-weight:900;letter-spacing:-.7px;font-variant-numeric:tabular-nums;line-height:1.4}.stat b span{font-size:12px;font-weight:700;color:#aaa4b6;letter-spacing:0}
+    .progress-track{height:6px;background:#f0edf5;border-radius:99px;margin-bottom:18px;overflow:hidden}.progress{height:100%;width:0;background:linear-gradient(90deg,#9274d7,#dfa8ba);transition:width .15s}
+    .board-shell{position:relative;max-width:540px;margin:0 auto;aspect-ratio:1}.board{position:absolute;inset:0;display:grid;grid-template-columns:repeat(var(--size),minmax(0,1fr));grid-template-rows:repeat(var(--size),minmax(0,1fr));overflow:hidden;border:3px solid #3f3a59;border-radius:13px;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+    .cell{min-width:0;min-height:0;display:grid;place-items:center;position:relative;background:var(--region-color);border:1px solid rgba(70,62,81,.13);transition:filter .12s}.cell:hover{filter:brightness(.975)}.cell.region-r{border-right:3px solid #4b425c}.cell.region-b{border-bottom:3px solid #4b425c}.cell.region-l{border-left:3px solid #4b425c}.cell.region-t{border-top:3px solid #4b425c}
+    .cell.conflict::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(203,45,68,.17) 0 5px,transparent 5px 12px);pointer-events:none}.cell.hint{box-shadow:inset 0 0 0 4px #ffbc4b;z-index:2}.cell.keyboard{outline:3px dashed #4e3589;outline-offset:-6px;z-index:2}
+    .mark{z-index:3;position:relative;font-size:clamp(15px,3vw,26px);line-height:1;color:#6b6476;font-weight:850}.cell.auto .mark{color:#827f8c;opacity:.44}.cell.queen .mark{font-size:clamp(20px,3.9vw,35px);filter:drop-shadow(0 2px 1px #ffffffb0)}.cell.conflict .mark{filter:drop-shadow(0 0 2px #ca3349)}
+    .notice{min-height:34px;margin:12px 0 10px;text-align:center;font-size:12px;font-weight:700;color:#918b9d}.notice.error{color:#c25163}.notice.success{color:#268677}.buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.btn{border:1px solid #e6e0f1;border-radius:12px;background:#fff;padding:12px 6px;display:flex;align-items:center;justify-content:center;gap:6px;color:#6c5b8b;font-size:12px;font-weight:850}.btn:hover{background:#f4effe}.btn:disabled{opacity:.42;cursor:not-allowed}.btn.primary{background:var(--purple);color:white;border-color:var(--purple)}.btn.primary:hover{background:var(--purple-dark)}
+    .side-card h2{font-size:18px;margin:0 0 17px;letter-spacing:-.4px}.rule{display:flex;align-items:flex-start;gap:11px;margin-bottom:18px}.rule-icon{flex:none;width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:#f1edfa;color:#7b64ad;font-size:14px;font-weight:900}.rule strong{font-size:12px;display:block;margin:1px 0 4px}.rule p{margin:0;font-size:12px;line-height:1.6;color:#918a9d}
+    .tip{background:#f5f0ff;padding:14px;border-radius:13px;margin:5px 0 17px;font-size:11px;color:#817495;line-height:1.6}.tip strong{font-size:12px;display:block;color:#665487;margin-bottom:3px}.settings{display:flex;flex-direction:column;gap:12px;padding-bottom:19px}.setting{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;font-weight:750;color:#695d78;cursor:pointer}.setting input{appearance:none;width:33px;height:19px;background:#dad5e4;border-radius:99px;position:relative;flex:none;cursor:pointer;transition:background .15s}.setting input:checked{background:var(--purple)}.setting input::after{content:"";position:absolute;top:3px;left:3px;width:13px;height:13px;border-radius:50%;background:white;transition:transform .15s}.setting input:checked::after{transform:translateX(14px)}
+    .new{width:100%;border:1px solid #d9cef0;color:#7056a7;font-size:12px;font-weight:850;padding:13px;border-radius:12px;background:#f0eafa}.new:hover{background:#e6def6}.foot{font-size:10px;color:#aca4b5;text-align:center;margin-top:16px}
+    .win{position:absolute;inset:0;border-radius:12px;background:#fffffff1;backdrop-filter:blur(5px);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:13px;padding:20px}.win[hidden]{display:none}.win-icon{width:70px;height:70px;border-radius:50%;background:#ede2ff;color:#6545a7;font-size:36px;display:grid;place-items:center}.win h2{font-size:27px;margin:0;letter-spacing:-1px}.win p{margin:0;color:#8d839c;font-size:13px}.win .btn{padding:12px 22px}
+    @media(max-width:850px){.layout{grid-template-columns:1fr;max-width:690px;margin:auto}.shell{max-width:720px;padding:19px 14px 30px}.top{margin-bottom:18px}.game{padding:20px 19px}.side-card{padding:21px}.offline{display:none}}
+    @media(max-width:380px){.shell{padding:11px 8px}.game{padding:16px 10px}.game-heading h1{font-size:19px}.level-select{font-size:11px;max-width:128px}.stat{padding:8px}.stat b{font-size:17px}.buttons .btn{font-size:11px;padding:10px 3px}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="top"><div class="identity"><div class="logo" aria-hidden="true">♛</div><div><div class="brand">Queens</div><div class="tagline">Eine Krone pro Farbe, Zeile und Spalte</div></div></div><div class="offline">● Offline spielbar</div></header>
+    <main class="layout">
+      <section class="game" aria-label="Queens-Spiel">
+        <div class="game-heading"><div><div class="eyebrow" id="edition">Rätsel 01</div><h1>Setze die Kronen</h1></div><label><span class="eyebrow" style="display:block;margin-bottom:4px">Schwierigkeit</span><select id="level" class="level-select" aria-label="Schwierigkeitsgrad"><option value="easy">Leicht · 6 × 6</option><option value="medium">Mittel · 7 × 7</option><option value="hard">Schwer · 8 × 8</option></select></label></div>
+        <div class="stats"><div class="stat"><small>Zeit</small><b id="time">00:00</b></div><div class="stat"><small>Kronen</small><b><span id="crowns" style="font:inherit;color:inherit">0</span><span id="total"> / 6</span></b></div><div class="stat"><small>Kreuze</small><b id="crosses">0</b></div></div>
+        <div class="progress-track"><div id="progress" class="progress"></div></div>
+        <div class="board-shell"><div id="board" class="board" role="grid" tabindex="0" aria-label="Farbiges Queens-Raster. Mit Pfeiltasten navigieren, mit Leertaste markieren."></div><div id="win" class="win" hidden><div class="win-icon">♛</div><h2>Alle Kronen gefunden!</h2><p id="win-detail">Rätsel geschafft.</p><button class="btn primary" id="again">Nächstes Rätsel →</button></div></div>
+        <div id="message" class="notice" role="status" aria-live="polite">Einmal tippen = X · zweimal = Krone · dreimal = leer.</div>
+        <div class="buttons"><button id="undo" class="btn" disabled>↶ Rückgängig</button><button id="reset" class="btn">⟳ Neustart</button><button id="hint" class="btn">✦ Hinweis</button></div>
+      </section>
+      <aside><div class="side-card"><h2>So spielt man Queens</h2>
+        <div class="rule"><div class="rule-icon">↔</div><div><strong>Eine Krone je Zeile</strong><p>In jeder waagerechten Zeile darf genau eine Krone stehen.</p></div></div>
+        <div class="rule"><div class="rule-icon">↕</div><div><strong>Eine Krone je Spalte</strong><p>Jede senkrechte Spalte braucht ebenfalls genau eine Krone.</p></div></div>
+        <div class="rule"><div class="rule-icon">▦</div><div><strong>Eine Krone je Farbregion</strong><p>Jede zusammenhängende farbige Fläche enthält genau eine Krone.</p></div></div>
+        <div class="rule"><div class="rule-icon">✕</div><div><strong>Kronen dürfen sich nicht berühren</strong><p>Auch diagonal benachbarte Felder sind tabu. Weit entfernte Diagonalen sind erlaubt.</p></div></div>
+        <div class="tip"><strong>💡 Bedienung</strong>Tippe ein Feld an: leer → X → 👑 → leer. Mit Rechtsklick oder langem Drücken setzt du direkt eine Krone. X bedeutet: Hier kann keine Krone stehen.</div>
+        <div class="settings"><label class="setting">Regelverstöße hervorheben<input id="autocheck" type="checkbox" checked></label><label class="setting">Ungültige Felder automatisch mit X markieren<input id="autox" type="checkbox"></label></div>
+        <button id="new" class="new">+ Neues Rätsel erzeugen</button>
+      </div><div class="foot">Eigenständige Interpretation der Queens-Regeln · Keine Verbindung zu LinkedIn</div></aside>
+    </main>
+  </div>
+  <script>
+  (()=>{
+    'use strict';
+    const $=id=>document.getElementById(id),board=$('board');
+    const settings={easy:{size:6,limits:[1,1]},medium:{size:7,limits:[1,2,2]},hard:{size:8,limits:[1,2,2,2]}};
+    const palette=['#f8dce7','#e9dffa','#d4e9ec','#f7e5c8','#e3eccf','#f5d9cd','#d5e7da','#f2e1f0','#dde6f7','#f1eccb'];
+    let level='easy',edition=1,puzzle,states=[],history=[],cells=[],startedAt=null,priorMs=0,ticker=null,finished=false,checked=true,autoX=false,hints=0,hintCell=-1,hintTimeout=null,keyboardCell=-1,longPressTimer=null,longPressConsumed=false;
+
+    function randomMaker(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+    function hash(str){let h=2166136261;for(const ch of str){h^=ch.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+    function shuffle(list,rng){for(let i=list.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[list[i],list[j]]=[list[j],list[i]];}return list;}
+    function neighborCells(index,n){const row=Math.floor(index/n),col=index%n,out=[];if(row>0)out.push(index-n);if(row<n-1)out.push(index+n);if(col>0)out.push(index-1);if(col<n-1)out.push(index+1);return out;}
+    function queenPermutation(n,rng){
+      const result=[],used=new Set();
+      function recurse(row){
+        if(row===n)return true;
+        for(const col of shuffle(Array.from({length:n},(_,i)=>i),rng)){
+          if(used.has(col)||(row&&Math.abs(col-result[row-1])<=1))continue;
+          used.add(col);result.push(col);
+          if(recurse(row+1))return true;
+          result.pop();used.delete(col);
+        }
+        return false;
+      }
+      return recurse(0)?result:null;
+    }
+    function buildRegions(n,solution,rng,limits){
+      const regions=Array(n*n).fill(-1),sizes=Array(n).fill(1),ids=shuffle(Array.from({length:n},(_,i)=>i),rng),caps={};
+      limits.forEach((cap,i)=>caps[ids[i]]=cap);
+      solution.forEach((col,row)=>regions[row*n+col]=row);
+      let remaining=n*n-n;
+      while(remaining){
+        const choices=[];
+        for(let id=0;id<n;id++)if(caps[id]===undefined||sizes[id]<caps[id]){
+          const fringe=new Set();
+          for(let p=0;p<regions.length;p++)if(regions[p]===id)for(const neighbor of neighborCells(p,n))if(regions[neighbor]===-1)fringe.add(neighbor);
+          if(fringe.size)choices.push({id,fringe:[...fringe],weight:1/Math.pow(sizes[id],1.5)});
+        }
+        if(!choices.length)return null;
+        let ticket=rng()*choices.reduce((sum,c)=>sum+c.weight,0),selected=choices.at(-1);
+        for(const choice of choices){ticket-=choice.weight;if(ticket<=0){selected=choice;break;}}
+        const cell=selected.fringe[Math.floor(rng()*selected.fringe.length)];
+        regions[cell]=selected.id;sizes[selected.id]++;remaining--;
+      }
+      return regions;
+    }
+    function countSolutions(n,regions,max=2){
+      let count=0,first=null;const columns=[];
+      function search(row,usedCols,usedRegions){
+        if(row===n){count++;if(first===null)first=[...columns];return;}
+        for(let col=0;col<n;col++){
+          const id=regions[row*n+col];
+          if((usedCols&(1<<col))||(usedRegions&(1<<id))||(row&&Math.abs(columns[row-1]-col)<=1))continue;
+          columns[row]=col;search(row+1,usedCols|(1<<col),usedRegions|(1<<id));
+          if(count>=max)return;
+        }
+      }
+      search(0,0,0);return {count,solution:first};
+    }
+    function createPuzzle(difficulty,serial){
+      const {size:n,limits}=settings[difficulty],date=new Date(),day=[date.getFullYear(),date.getMonth()+1,date.getDate()].join('-');
+      const rng=randomMaker(hash('queens-original:'+day+':'+difficulty+':'+serial));
+      for(const rules of [limits,[1,1,1,2],[1,1,1,1]]){
+        for(let tries=0;tries<850;tries++){
+          const solution=queenPermutation(n,rng),regions=buildRegions(n,solution,rng,rules);
+          if(!regions)continue;
+          if(countSolutions(n,regions).count!==1)continue;
+          return {size:n,regions,solution};
+        }
+      }
+      // Guaranteed-unique fallback: all but one queen sit in one-cell regions.
+      const solution=queenPermutation(n,rng),regions=Array(n*n).fill(0);
+      for(let row=1;row<n;row++)regions[row*n+solution[row]]=row;
+      if(countSolutions(n,regions).count===1)return {size:n,regions,solution};
+      throw new Error('Kein eindeutiges Rätsel erzeugt. Bitte neu laden.');
+    }
+
+    function elapsed(){return priorMs+(startedAt===null?0:Date.now()-startedAt);}
+    function timeFormat(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+    function updateTime(){$('time').textContent=timeFormat(elapsed());}
+    function startClock(){if(startedAt===null&&!finished){startedAt=Date.now();if(ticker===null)ticker=setInterval(updateTime,350);}}
+    function stopClock(){if(startedAt!==null){priorMs+=Date.now()-startedAt;startedAt=null;}if(ticker!==null){clearInterval(ticker);ticker=null;}updateTime();}
+    function say(text,type=''){$('message').textContent=text;$('message').className='notice'+(type?' '+type:'');}
+
+    function loadPuzzle(){
+      stopClock();startedAt=null;priorMs=0;finished=false;hints=0;history=[];keyboardCell=-1;hintCell=-1;
+      if(hintTimeout!==null){clearTimeout(hintTimeout);hintTimeout=null;}
+      puzzle=createPuzzle(level,edition);states=Array(puzzle.size*puzzle.size).fill(0);cells=[];
+      board.replaceChildren();board.style.setProperty('--size',puzzle.size);
+      const fragment=document.createDocumentFragment(),n=puzzle.size;
+      for(let i=0;i<n*n;i++){
+        const cell=document.createElement('div'),r=Math.floor(i/n),c=i%n,id=puzzle.regions[i];
+        cell.className='cell';cell.dataset.index=i;cell.style.setProperty('--region-color',palette[id%palette.length]);cell.setAttribute('role','gridcell');
+        cell.setAttribute('aria-label',`Zeile ${r+1}, Spalte ${c+1}, Farbregion ${id+1}`);
+        if(c>0&&id!==puzzle.regions[i-1])cell.classList.add('region-l');
+        if(c<n-1&&id!==puzzle.regions[i+1])cell.classList.add('region-r');
+        if(r>0&&id!==puzzle.regions[i-n])cell.classList.add('region-t');
+        if(r<n-1&&id!==puzzle.regions[i+n])cell.classList.add('region-b');
+        const mark=document.createElement('span');mark.className='mark';mark.setAttribute('aria-hidden','true');cell.appendChild(mark);
+        cell.addEventListener('click',()=>{if(longPressConsumed){longPressConsumed=false;return;}cycle(i);});
+        cell.addEventListener('contextmenu',event=>{event.preventDefault();setCell(i,2);});
+        cell.addEventListener('pointerdown',event=>{
+          longPressConsumed=false;if(event.pointerType!=='touch')return;
+          clearTimeout(longPressTimer);longPressTimer=setTimeout(()=>{longPressConsumed=true;setCell(i,2);},550);
+        });
+        for(const name of ['pointerup','pointercancel','pointerleave'])cell.addEventListener(name,()=>clearTimeout(longPressTimer));
+        fragment.appendChild(cell);cells.push(cell);
+      }
+      board.appendChild(fragment);
+      $('edition').textContent='Rätsel '+String(edition).padStart(2,'0');$('total').textContent=' / '+n;$('level').value=level;
+      $('win').hidden=true;updateTime();render();say('Einmal tippen = X · zweimal = Krone · dreimal = leer.');
+    }
+
+    function queenPositions(){const result=[];for(let i=0;i<states.length;i++)if(states[i]===2)result.push(i);return result;}
+    function conflictingQueens(){
+      const positions=queenPositions(),bad=new Set(),n=puzzle.size;
+      for(let a=0;a<positions.length;a++)for(let b=a+1;b<positions.length;b++){
+        const i=positions[a],j=positions[b],r1=Math.floor(i/n),r2=Math.floor(j/n),c1=i%n,c2=j%n;
+        if(r1===r2||c1===c2||puzzle.regions[i]===puzzle.regions[j]||(Math.abs(r1-r2)===1&&Math.abs(c1-c2)===1)){bad.add(i);bad.add(j);}
+      }
+      return bad;
+    }
+    function blockedByQueens(index,positions){
+      const n=puzzle.size,row=Math.floor(index/n),col=index%n;
+      return positions.some(q=>{
+        const qr=Math.floor(q/n),qc=q%n;
+        return row===qr||col===qc||puzzle.regions[index]===puzzle.regions[q]||(Math.abs(row-qr)<=1&&Math.abs(col-qc)<=1);
+      });
+    }
+    function render(){
+      const crowns=queenPositions(),bad=checked?conflictingQueens():new Set();
+      let crosses=0;
+      for(let i=0;i<states.length;i++){
+        const cell=cells[i],value=states[i],mark=cell.firstElementChild,derived=autoX&&value===0&&blockedByQueens(i,crowns);
+        if(value===1)crosses++;
+        cell.classList.toggle('queen',value===2);cell.classList.toggle('auto',derived);
+        cell.classList.toggle('conflict',bad.has(i));cell.classList.toggle('hint',hintCell===i);cell.classList.toggle('keyboard',keyboardCell===i);
+        mark.textContent=value===2?'👑':(value===1||derived?'×':'');
+        cell.setAttribute('aria-label',`Zeile ${Math.floor(i/puzzle.size)+1}, Spalte ${i%puzzle.size+1}, Region ${puzzle.regions[i]+1}: `+(value===2?'Krone':(value===1?'X':(derived?'automatisch X':'leer'))));
+      }
+      $('crowns').textContent=crowns.length;$('crosses').textContent=crosses;
+      $('progress').style.width=Math.min(100,100*crowns.length/puzzle.size)+'%';$('undo').disabled=history.length===0||finished;
+      return bad;
+    }
+    function checkWin(){
+      const crowns=queenPositions();if(crowns.length!==puzzle.size||conflictingQueens().size)return false;
+      finished=true;stopClock();render();
+      $('win-detail').textContent=`${puzzle.size} Kronen in ${timeFormat(elapsed())}`+(hints?` · ${hints} Hinweis${hints===1?'':'e'}`:' · ohne Hinweise')+'.';
+      $('win').hidden=false;say('Alle Zeilen, Spalten und Regionen sind korrekt besetzt!','success');return true;
+    }
+    function setCell(index,value){
+      if(finished||states[index]===value)return;
+      history.push([...states]);states[index]=value;startClock();
+      const conflicts=render();if(checkWin())return;
+      if(conflicts.size)say('Achtung: Einige Kronen verletzen die Regeln.','error');
+      else say(value===2?'Krone gesetzt.':value===1?'Feld ausgeschlossen.':'Markierung entfernt.');
+    }
+    function cycle(index){setCell(index,(states[index]+1)%3);}
+    function undo(){if(!history.length||finished)return;states=history.pop();render();say('Letzte Änderung rückgängig gemacht.');}
+    function reset(){loadPuzzle();}
+    function hint(){
+      if(finished)return;
+      const misplaced=queenPositions().find(i=>puzzle.solution[Math.floor(i/puzzle.size)]!==i%puzzle.size);
+      const target=misplaced!==undefined?misplaced:puzzle.solution.map((c,row)=>row*puzzle.size+c).find(i=>states[i]!==2);
+      if(target===undefined)return;
+      hints++;hintCell=target;render();
+      say(misplaced!==undefined?'Diese Krone steht falsch. Prüfe ihre Zeile und Region.':'In diesem gelb umrandeten Feld gehört eine Krone.');
+      if(hintTimeout!==null)clearTimeout(hintTimeout);
+      hintTimeout=setTimeout(()=>{hintCell=-1;hintTimeout=null;render();},2600);
+    }
+    function newPuzzle(){edition++;loadPuzzle();}
+    board.addEventListener('keydown',event=>{
+      if(event.key==='Backspace'||event.key==='z'||event.key==='Z'){event.preventDefault();undo();return;}
+      if(event.key===' '||event.key==='Enter'){event.preventDefault();if(keyboardCell<0)keyboardCell=0;cycle(keyboardCell);render();return;}
+      if(event.key==='q'||event.key==='Q'){event.preventDefault();if(keyboardCell<0)keyboardCell=0;setCell(keyboardCell,2);render();return;}
+      if(event.key==='x'||event.key==='X'){event.preventDefault();if(keyboardCell<0)keyboardCell=0;setCell(keyboardCell,1);render();return;}
+      const move={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]}[event.key];if(!move)return;
+      event.preventDefault();if(keyboardCell<0)keyboardCell=0;
+      else{const r=Math.floor(keyboardCell/puzzle.size),c=keyboardCell%puzzle.size;keyboardCell=Math.max(0,Math.min(puzzle.size-1,r+move[0]))*puzzle.size+Math.max(0,Math.min(puzzle.size-1,c+move[1]));}
+      render();
+    });
+    $('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('hint').addEventListener('click',hint);$('new').addEventListener('click',newPuzzle);$('again').addEventListener('click',newPuzzle);
+    $('level').addEventListener('change',event=>{level=event.target.value;edition=1;loadPuzzle();});
+    $('autocheck').addEventListener('change',event=>{checked=event.target.checked;render();});
+    $('autox').addEventListener('change',event=>{autoX=event.target.checked;render();});
+    loadPuzzle();
+    window.queensTest={createPuzzle,countSolutions,buildRegions,queenPermutation,neighborCells,settings};
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#f5f7fb">
+<title>Tango – Sonne & Mond</title>
+<style>
+:root{color-scheme:light;--ink:#26324a;--muted:#8491a5;--accent:#9373d6;--shadow:0 22px 58px #293d6714}
+*{box-sizing:border-box}body{margin:0;min-height:100svh;font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(ellipse at 0 0,#efe5ff,transparent 37%),radial-gradient(ellipse at 100% 100%,#fdf0dc,transparent 42%),#f5f7fb}button,select{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #ac8ef0;outline-offset:3px}.shell{max-width:1040px;margin:auto;padding:25px 18px 38px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}.brand{display:flex;gap:13px;align-items:center}.logo{display:grid;place-items:center;width:55px;height:55px;background:#544378;color:#ffd677;border-radius:17px;font-size:27px;box-shadow:0 12px 25px #7964a440}.brand strong{font-size:25px;letter-spacing:-1px;line-height:1}.brand small{display:block;color:var(--muted);font-size:12px;margin-top:5px}.back{text-decoration:none;color:#696184;background:#fff;border:1px solid #e4dfef;border-radius:30px;padding:10px 15px;font-size:12px;font-weight:750}
+.layout{display:grid;grid-template-columns:minmax(0,620px) minmax(240px,1fr);gap:22px;align-items:start}.card{background:#fffffff2;border:1px solid #e9e7ef;border-radius:24px;box-shadow:var(--shadow)}.main{padding:24px}.side{padding:24px}.heading{display:flex;justify-content:space-between;align-items:center;gap:12px}.eyebrow{color:#9e98ad;font-size:10px;letter-spacing:.12em;font-weight:800;text-transform:uppercase}.heading h1{font-size:22px;margin:3px 0 0;letter-spacing:-.6px}.heading select{max-width:145px;color:#685b80;background:#f8f6fc;border:1px solid #e6e0f0;border-radius:11px;padding:10px;font-size:12px;font-weight:750}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 0}.stat{background:#f8f6fb;border-radius:12px;padding:10px 13px}.stat small{display:block;color:#aaa2b6;font-size:10px;letter-spacing:.05em;font-weight:850;text-transform:uppercase}.stat b{font-size:21px;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;background:#6e617e;padding:6px;border-radius:16px;max-width:515px;margin:auto;user-select:none;touch-action:manipulation;box-shadow:0 15px 32px #55466f29}
+.cell{min-width:0;aspect-ratio:1;position:relative;border:0;border-radius:8px;background:#f8f4f8;display:grid;place-items:center;font-size:clamp(25px,5vw,43px);transition:background .12s,transform .12s}.cell:hover{background:#efe8f7}.cell:active{transform:scale(.94)}.cell.sun{background:#fff0bc;color:#e4a12c}.cell.moon{background:#dfe9ff;color:#526ac0}.cell.fixed{font-weight:900;box-shadow:inset 0 0 0 2px #ffffff9c;cursor:default}.cell.bad{box-shadow:inset 0 0 0 3px #de5e78}.cell.hint{outline:4px solid #57b5a7;outline-offset:-5px}.glyph{line-height:1;filter:drop-shadow(0 2px 1px #ffffffb0)}.mark{position:absolute;z-index:5;display:grid;place-items:center;background:#fff;color:#706080;border:2px solid #706080;width:22px;height:22px;border-radius:7px;font-size:12px;font-weight:950;line-height:1;box-shadow:0 2px 4px #342d453d}.mark.right{top:50%;right:-14px;transform:translateY(-50%)}.mark.down{left:50%;bottom:-14px;transform:translateX(-50%)}.mark.diff{color:#9a659b;border-color:#b19bb8}
+.status{min-height:35px;margin:14px 0 7px;display:grid;place-items:center;text-align:center;font-size:12px;font-weight:750;color:#887f9a}.status.good{color:#298b77}.status.warn{color:#bf7b49}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.btn{padding:12px 5px;min-height:45px;font-size:12px;font-weight:850;color:#6c5885;border-radius:11px;background:#fff;border:1px solid #e5e0ed}.btn:hover{background:#f6f1fd}.btn:disabled{opacity:.45;cursor:not-allowed}.btn.primary{color:#fff;background:#7b61ba;border-color:#7b61ba}
+.win{display:none;text-align:center;background:#eaf8f0;border:1px solid #cbeadd;border-radius:14px;padding:14px;margin-top:13px}.win.show{display:block}.win strong{font-size:18px;color:#288974}.win p{font-size:12px;color:#6c8d81;margin:5px 0 10px}.win button{background:#2b947b;border:0;color:#fff;padding:10px 20px;border-radius:9px;font-weight:850}
+.side h2{font-size:19px;letter-spacing:-.5px;margin:0 0 18px}.rule{display:flex;gap:11px;margin-bottom:16px}.bubble{flex:none;width:33px;height:33px;border-radius:10px;display:grid;place-items:center;background:#f1eafa;color:#8b73b6;font-weight:900}.rule strong{font-size:12px}.rule p{color:#8d859d;font-size:12px;margin:4px 0 0;line-height:1.6}.note{background:#f7f4fb;border-radius:12px;padding:13px;color:#807491;font-size:12px;line-height:1.6}.progress{margin-top:22px;font-size:12px;font-weight:850;color:#716582}.bar{height:7px;background:#eeeaf4;margin-top:9px;border-radius:99px;overflow:hidden}.bar span{display:block;height:100%;width:0;background:#9f83ce;transition:width .2s}.random{width:100%;border:1px solid #d8c8ed;background:#f8f4ff;border-radius:11px;padding:12px;color:#7757a9;font-weight:850;margin-top:20px}.foot{text-align:center;color:#aaa3b4;font-size:11px;margin-top:22px}
+@media(max-width:745px){.shell{max-width:610px;padding:16px 12px 30px}.layout{grid-template-columns:1fr;gap:15px}.main,.side{padding:18px 15px}.top{margin-bottom:17px}.logo{width:45px;height:45px}.brand strong{font-size:21px}.cell{font-size:clamp(22px,6vw,40px)}.mark{width:19px;height:19px;right:-13px!important;font-size:10px}.mark.down{right:auto!important}.back{font-size:11px;padding:9px 11px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><main class="shell">
+<header class="top"><div class="brand"><span class="logo" aria-hidden="true">☼</span><div><strong>Tango</strong><small>Finde die Balance zwischen Sonne und Mond.</small></div></div><a class="back" href="../index.php">← Alle Spiele</a></header>
+<div class="layout"><section class="card main"><div class="heading"><div><div class="eyebrow">6 × 6 · Logikrätsel</div><h1>Sonne oder Mond?</h1></div><select id="level" aria-label="Level auswählen"></select></div>
+<div class="stats"><div class="stat"><small>Belegt</small><b id="filled">0/36</b></div><div class="stat"><small>Züge</small><b id="moves">0</b></div><div class="stat"><small>Zeit</small><b id="time">00:00</b></div></div>
+<div id="board" class="board" role="group" aria-label="Sechs mal sechs Spielfeld"></div>
+<div id="status" class="status" role="status" aria-live="polite">Tippe ein Feld: leer → Sonne → Mond.</div>
+<div class="controls"><button class="btn" id="undo">↶ Rückgängig</button><button class="btn" id="hint">✦ Tipp</button><button class="btn primary" id="reset">↻ Neustart</button></div>
+<div class="win" id="win"><strong>✦ Perfekt ausbalanciert!</strong><p id="win-text"></p><button id="next">Nächstes Level →</button></div>
+</section><aside class="card side"><h2>So funktioniert Tango</h2>
+<div class="rule"><span class="bubble">☼</span><div><strong>Gleichgewicht</strong><p>Jede Zeile und jede Spalte enthält genau 3 Sonnen und 3 Monde.</p></div></div>
+<div class="rule"><span class="bubble">≠</span><div><strong>Nie drei gleiche</strong><p>Waagerecht und senkrecht dürfen niemals 3 gleiche Symbole direkt aufeinanderfolgen.</p></div></div>
+<div class="rule"><span class="bubble">=</span><div><strong>Beziehungen</strong><p><b>=</b> heißt: gleiche Symbole. <b>×</b> heißt: unterschiedliche Symbole.</p></div></div>
+<div class="rule"><span class="bubble">✦</span><div><strong>Alle Felder füllen</strong><p>Die hell umrandeten Vorgaben sind fest. Mit einem Tipp wird ein notwendiges Feld markiert.</p></div></div>
+<div class="note">Alle Rätsel werden mit einem Lösungsprüfer auf <strong>genau eine Lösung</strong> kontrolliert. Ein rechter Mausklick schaltet rückwärts.</div>
+<div class="progress">Geschaffte Levels <span id="progress-text">0 / 24</span><div class="bar"><span id="progress-bar"></span></div></div>
+<button class="random" id="random">⚡ Zufallsrätsel starten</button></aside></div><div class="foot">Offline spielbar · Fortschritt lokal gespeichert</div></main>
+<script>
+'use strict';
+const N=6,S=36,COUNTS={easy:13,normal:9,hard:6},KEY='tango-game-progress-v1';
+const $=id=>document.getElementById(id),validRows=[];
+for(let mask=0;mask<64;mask++){const bits=Array.from({length:N},(_,c)=>(mask>>c)&1);if(bits.reduce((a,b)=>a+b,0)!==3)continue;if(bits.some((v,i)=>i>=2&&v===bits[i-1]&&v===bits[i-2]))continue;validRows.push(bits);}
+const adj=[];for(let r=0;r<N;r++)for(let c=0;c<N;c++){const i=r*N+c;if(c+1<N)adj.push({a:i,b:i+1});if(r+1<N)adj.push({a:i,b:i+N});}
+function rnd(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function hash(str){let v=2166136261;for(const ch of str){v^=ch.charCodeAt(0);v=Math.imul(v,16777619);}return v>>>0;}
+function shuffle(a,rng){for(let i=a.length-1;i>0;i--){let j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function solutions(givens,edges,max=2,randomizer=null){
+ const choices=Array.from({length:N},(_,r)=>validRows.filter(bits=>{
+   for(let c=0;c<N;c++)if(givens[r*N+c]!==-1&&givens[r*N+c]!==bits[c])return false;
+   for(const e of edges)if(Math.floor(e.a/N)===r&&Math.floor(e.b/N)===r&&((bits[e.a%N]===bits[e.b%N])!==e.same))return false;
+   return true;
+ }));
+ if(randomizer)choices.forEach(v=>shuffle(v,randomizer));
+ const stack=[],ones=Array(N).fill(0);let count=0,first=null;
+ function recur(row){
+   if(row===N){if(ones.every(x=>x===3)){count++;if(!first)first=stack.flat();}return count>=max;}
+   for(const bits of choices[row]){
+     let okay=true;
+     for(let c=0;c<N;c++){
+       if(ones[c]+bits[c]>3||ones[c]+bits[c]+N-row-1<3){okay=false;break;}
+       if(row>=2&&bits[c]===stack[row-1][c]&&bits[c]===stack[row-2][c]){okay=false;break;}
+     }
+     if(!okay)continue;
+     if(row){for(const e of edges)if(Math.floor(e.b/N)===row&&Math.floor(e.a/N)===row-1&&((stack[row-1][e.a%N]===bits[e.b%N])!==e.same)){okay=false;break;}}
+     if(!okay)continue;
+     for(let c=0;c<N;c++)ones[c]+=bits[c];
+     stack.push(bits);
+     if(recur(row+1))return true;
+     stack.pop();for(let c=0;c<N;c++)ones[c]-=bits[c];
+   }
+   return false;
+ }
+ recur(0);return {count,solution:first};
+}
+function createPuzzle(level){
+ const rng=level==='random'?Math.random:rnd(hash('tango-v1-'+level));
+ const full=solutions(Array(S).fill(-1),[],1,rng).solution;
+ if(!full)throw Error('Keine Tango-Lösung erzeugt');
+ const diff=level==='random'?1:level<=8?0:level<=16?1:2;
+ const target=[13,9,6][diff],numberEdges=[3,6,9][diff];
+ const edges=shuffle(adj.map(e=>({...e,same:full[e.a]===full[e.b]})),rng).slice(0,numberEdges);
+ const givens=full.slice();
+ for(const i of shuffle(Array.from({length:S},(_,i)=>i),rng)){
+   if(givens.filter(x=>x!==-1).length<=target)break;
+   const old=givens[i];givens[i]=-1;
+   if(solutions(givens,edges).count!==1)givens[i]=old;
+ }
+ return {givens,edges,solution:full};
+}
+function loadSave(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch{return {};}}
+let progress=loadSave(),puzzle=null,values=[],history=[],tiles=[],level=1,moves=0,started=null,spent=0,ticker=null,won=false,hint=-1;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(progress));}catch{}}
+function elapsed(){return spent+(started===null?0:Date.now()-started);}
+function fmt(ms){let sec=Math.floor(ms/1000);return String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');}
+function timeUpdate(){$('time').textContent=fmt(elapsed());}
+function start(){if(started===null&&!won){started=Date.now();ticker=setInterval(timeUpdate,300);}}
+function stop(){if(started!==null){spent+=Date.now()-started;started=null;}if(ticker){clearInterval(ticker);ticker=null;}timeUpdate();}
+function status(msg,type=''){$('status').textContent=msg;$('status').className='status '+type;}
+function invalidCells(v,p){
+ const bad=new Set();
+ for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+   const i=r*N+c;
+   for(const drdc of [[0,1],[1,0]]){const r2=r+drdc[0],c2=c+drdc[1],r3=r2+drdc[0],c3=c2+drdc[1];if(r3<N&&c3<N&&v[i]!==-1&&v[i]===v[r2*N+c2]&&v[i]===v[r3*N+c3]){bad.add(i);bad.add(r2*N+c2);bad.add(r3*N+c3);}}
+ }
+ for(let r=0;r<N;r++){for(const sym of [0,1]){const ids=Array.from({length:N},(_,c)=>r*N+c).filter(i=>v[i]===sym);if(ids.length>3)ids.forEach(i=>bad.add(i));}}
+ for(let c=0;c<N;c++){for(const sym of [0,1]){const ids=Array.from({length:N},(_,r)=>r*N+c).filter(i=>v[i]===sym);if(ids.length>3)ids.forEach(i=>bad.add(i));}}
+ for(const e of p.edges)if(v[e.a]!==-1&&v[e.b]!==-1&&((v[e.a]===v[e.b])!==e.same)){bad.add(e.a);bad.add(e.b);}
+ return bad;
+}
+function draw(){
+ const bad=invalidCells(values,puzzle);
+ for(let i=0;i<S;i++){const t=tiles[i],v=values[i];t.className='cell'+(v===1?' sun':v===0?' moon':'')+(puzzle.givens[i]!==-1?' fixed':'')+(bad.has(i)?' bad':'')+(hint===i?' hint':'');t.firstChild.textContent=v===1?'☀':v===0?'☾':'';t.setAttribute('aria-label',`Zeile ${Math.floor(i/N)+1}, Spalte ${i%N+1}: ${v===1?'Sonne':v===0?'Mond':'leer'}`);}
+ $('filled').textContent=values.filter(v=>v!==-1).length+'/36';$('moves').textContent=moves;$('undo').disabled=!history.length||won;$('hint').disabled=won;
+}
+function boardBuild(){
+ const frag=document.createDocumentFragment();tiles=[];
+ for(let i=0;i<S;i++){
+   const cell=document.createElement('button');cell.type='button';cell.className='cell';const glyph=document.createElement('span');glyph.className='glyph';cell.appendChild(glyph);
+   for(const e of puzzle.edges)if(e.a===i){const mark=document.createElement('span');mark.className='mark '+(e.b===i+1?'right':'down')+(e.same?'':' diff');mark.textContent=e.same?'=':'×';mark.setAttribute('aria-hidden','true');cell.appendChild(mark);}
+   cell.addEventListener('click',()=>change(i,1));cell.addEventListener('contextmenu',e=>{e.preventDefault();change(i,-1);});cell.addEventListener('keydown',e=>{const next={ArrowLeft:i-1,ArrowRight:i+1,ArrowUp:i-N,ArrowDown:i+N}[e.key];if(next===undefined||next<0||next>=S||(e.key==='ArrowLeft'&&i%N===0)||(e.key==='ArrowRight'&&i%N===N-1))return;e.preventDefault();tiles[next].focus();});
+   tiles.push(cell);frag.appendChild(cell);
+ }
+ $('board').replaceChildren(frag);
+}
+function load(l){
+ stop();spent=0;timeUpdate();level=l;puzzle=createPuzzle(l);values=puzzle.givens.slice();history=[];moves=0;won=false;hint=-1;
+ $('level').value=String(l);$('win').classList.remove('show');$('random').textContent=l==='random'?'⚡ Anderes Zufallsrätsel':'⚡ Zufallsrätsel starten';
+ boardBuild();draw();status('Tippe ein Feld: leer → Sonne → Mond.');
+}
+function change(i,dir){if(won||puzzle.givens[i]!==-1)return;start();history.push(values.slice());const old=values[i];values[i]=dir===1?old===-1?1:old===1?0:-1:old===-1?0:old===0?1:-1;moves++;hint=-1;draw();if(values.every(v=>v!==-1)&&values.every((v,j)=>v===puzzle.solution[j]))win();else if(invalidCells(values,puzzle).size)status('Achtung: Mindestens eine Regel ist verletzt.','warn');else status('Weiter so! Jede Zeile und Spalte braucht 3 Sonnen und 3 Monde.');}
+function undo(){if(!history.length||won)return;values=history.pop();moves--;hint=-1;if(!moves){stop();spent=0;timeUpdate();}draw();status('Letzten Zug rückgängig gemacht.');}
+function reset(){stop();spent=0;timeUpdate();values=puzzle.givens.slice();history=[];moves=0;won=false;hint=-1;$('win').classList.remove('show');draw();status('Rätsel zurückgesetzt.');}
+function showHint(){if(won)return;const i=values.findIndex((v,j)=>v!==puzzle.solution[j]&&puzzle.givens[j]===-1);if(i<0)return;hint=i;draw();status(`Tipp: Zeile ${Math.floor(i/N)+1}, Spalte ${i%N+1}: ${puzzle.solution[i]?'Sonne':'Mond'}.`,'warn');}
+function win(){won=true;stop();if(level!=='random'){progress[level]=true;save();progressDraw();}draw();$('win-text').textContent=`Geschafft mit ${moves} Zügen in ${fmt(spent)}!`;$('next').textContent=level==='random'||level===24?'Neues Zufallsrätsel →':'Nächstes Level →';$('win').classList.add('show');status('Alle Regeln erfüllt. Gut gemacht!','good');}
+function progressDraw(){let done=Array.from({length:24},(_,i)=>i+1).filter(n=>progress[n]).length;$('progress-text').textContent=done+' / 24';$('progress-bar').style.width=done/24*100+'%';}
+function init(){
+ for(const [a,b,label] of [[1,8,'Einstieg'],[9,16,'Fortgeschritten'],[17,24,'Experte']]){const grp=document.createElement('optgroup');grp.label=label;for(let n=a;n<=b;n++){const o=document.createElement('option');o.value=n;o.textContent='Level '+n;grp.appendChild(o);}$('level').appendChild(grp);}
+ const o=document.createElement('option');o.value='random';o.textContent='⚡ Endlosmodus';$('level').appendChild(o);
+ $('level').addEventListener('change',e=>load(e.target.value==='random'?'random':Number(e.target.value)));$('undo').addEventListener('click',undo);$('hint').addEventListener('click',showHint);$('reset').addEventListener('click',reset);$('random').addEventListener('click',()=>load('random'));$('next').addEventListener('click',()=>load(level==='random'||level===24?'random':level+1));progressDraw();load(1);
+}
+init();
+</script></body></html>

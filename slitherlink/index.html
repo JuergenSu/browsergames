@@ -1,0 +1,157 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#f4f8fc"><title>Slitherlink – Die geschlossene Schleife</title>
+<style>
+:root{color-scheme:light;--ink:#28354b;--muted:#8796aa;--accent:#208dba;--shadow:0 18px 55px #24445a17}*{box-sizing:border-box}body{margin:0;min-height:100svh;background:radial-gradient(ellipse at 10% 0%,#dff1ff,transparent 35%),radial-gradient(ellipse at 100% 100%,#e6e5fb,transparent 40%),#f4f8fc;color:var(--ink);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #7fcbe9;outline-offset:3px}
+.shell{max-width:1080px;margin:auto;padding:25px 18px 36px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:13px}.logo{width:54px;height:54px;border-radius:16px;background:#205b80;display:grid;place-items:center;color:#a8eafa;font-size:31px;box-shadow:0 12px 25px #205b8039}.brand strong{font-size:25px;line-height:1;letter-spacing:-1px}.brand small{display:block;color:#8a9bac;font-size:12px;margin-top:6px}.back{border:1px solid #dce8f0;background:white;border-radius:40px;padding:10px 15px;color:#517a93;text-decoration:none;font-size:12px;font-weight:850}
+.layout{display:grid;grid-template-columns:minmax(0,655px) minmax(245px,1fr);gap:23px;align-items:start}.card{background:#ffffffed;border:1px solid #e2eaf2;border-radius:24px;box-shadow:var(--shadow)}.main{padding:24px}.side{padding:24px}.heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.eyebrow{font-size:10px;font-weight:850;letter-spacing:.12em;color:#9cabbb}.heading h1{font-size:22px;margin:3px 0 0;letter-spacing:-.6px}.heading select{max-width:155px;background:#f5f9fd;border:1px solid #dce8f0;border-radius:11px;padding:10px;color:#55778e;font-weight:850;font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:17px 0}.stat{border-radius:12px;background:#f1f7fa;padding:9px 13px}.stat small{color:#98a9b5;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.05em;display:block}.stat b{font-size:21px;font-variant-numeric:tabular-nums}
+.board-frame{background:linear-gradient(145deg,#e0ebf3,#c9dbe8);border-radius:17px;padding:clamp(11px,2.5vw,22px);max-width:530px;margin:auto;box-shadow:0 15px 35px #37526d21}.board{--n:5;display:grid;grid-template-columns:var(--tracks);grid-template-rows:var(--tracks);width:100%;aspect-ratio:1;user-select:none;touch-action:manipulation}.dot{display:grid;place-items:center;z-index:3;pointer-events:none}.dot::after{content:'';width:7px;height:7px;border-radius:50%;background:#53748b;box-shadow:0 1px 2px #34566a}.edge{position:relative;border:0;background:transparent;padding:0;z-index:2;display:grid;place-items:center;touch-action:manipulation}.edge::after{content:'';display:block;background:#a5bbc9;border-radius:99px;transition:background .15s,box-shadow .15s}.edge.h::after{width:100%;height:3px}.edge.v::after{height:100%;width:3px}.edge:hover::after{background:#73c9df}.edge.active::after{background:#138ec0;box-shadow:0 0 0 2px #a1e3f1,0 0 12px #52c5ed}.edge.active.h::after{height:6px}.edge.active.v::after{width:6px}.edge.cross::after{background:#d4dee4;opacity:.42}.edge.cross::before{content:'×';position:absolute;color:#a1a8af;font-size:20px;font-weight:700;line-height:1}.edge.hint{background:#ffe5a555;border-radius:8px;outline:3px dashed #f5a941;outline-offset:-2px}.clue{display:grid;place-items:center;color:#4f6b80;font-size:clamp(18px,3vw,25px);font-weight:950;background:#ffffff7a;border-radius:5px}.clue.empty{background:#ffffff36}.clue.good{background:#daf5e8;color:#158e7f}.clue.bad{background:#ffe1e4;color:#c45a6c}
+.legend{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px auto 0;max-width:530px;color:#94a4af;font-size:11px;font-weight:750}.status{min-height:39px;display:grid;place-items:center;text-align:center;color:#7c95a7;font-size:12px;font-weight:750;margin:10px 0}.status.good{color:#268d7c}.status.warn{color:#b68a3d}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.btn{background:white;color:#567d94;border:1px solid #dce7ee;border-radius:11px;padding:12px 5px;font-weight:850;font-size:12px;min-height:44px}.btn.primary{background:#237fab;color:white;border-color:#237fab}.btn:disabled{opacity:.4;cursor:not-allowed}.win{display:none;margin-top:14px;text-align:center;background:#e7f7ed;border:1px solid #c9e9da;border-radius:12px;padding:15px}.win.show{display:block}.win strong{font-size:19px;color:#2c907e}.win p{font-size:12px;color:#789083;margin:5px 0 11px}.win button{background:#278f7f;color:white;border:0;border-radius:9px;padding:10px 20px;font-weight:850}
+.side h2{margin:0 0 18px;font-size:19px;letter-spacing:-.5px}.rule{display:flex;gap:11px;margin-bottom:18px}.number{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#e6f2f8;color:#4c91a7;font-weight:900}.rule strong{font-size:12px}.rule p{margin:3px 0 0;color:#8b9eab;font-size:12px;line-height:1.65}.note{border-radius:12px;background:#f0f7fb;color:#7793a3;padding:13px;font-size:11px;line-height:1.65}.progress{margin-top:22px;color:#718ea2;font-weight:850;font-size:12px}.bar{height:7px;background:#e9f1f6;border-radius:90px;margin-top:9px;overflow:hidden}.bar span{height:100%;display:block;width:0;background:#51aacc}.random{margin-top:19px;width:100%;background:#f0f8fc;border:1px solid #bfdae8;border-radius:11px;padding:12px;color:#3486a5;font-weight:850}.foot{text-align:center;font-size:11px;color:#a2b1be;margin-top:21px}
+@media(max-width:760px){.shell{max-width:620px;padding:16px 12px 30px}.top{margin-bottom:18px}.layout{grid-template-columns:1fr;gap:14px}.main,.side{padding:18px 14px}.logo{width:45px;height:45px}.brand strong{font-size:21px}.back{font-size:11px;padding:9px 11px}.heading h1{font-size:20px}.board-frame{padding:12px}.dot::after{width:5px;height:5px}.clue{font-size:clamp(17px,4vw,23px)}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><main class="shell"><header class="top"><div class="brand"><span class="logo">⌁</span><div><strong>Slitherlink</strong><small>Eine Linie. Eine geschlossene Schleife.</small></div></div><a class="back" href="../index.php">← Alle Spiele</a></header>
+<div class="layout"><section class="card main"><div class="heading"><div><div class="eyebrow">LINIENLOGIK</div><h1>Schließe den Kreis</h1></div><select id="level" aria-label="Level auswählen"></select></div>
+<div class="stats"><div class="stat"><small>Linien</small><b id="lines">0</b></div><div class="stat"><small>Züge</small><b id="moves">0</b></div><div class="stat"><small>Zeit</small><b id="time">00:00</b></div></div>
+<div class="board-frame"><div id="board" class="board" role="group" aria-label="Slitherlink Linienfeld"></div></div><div class="legend"><span>Klick: Linie → × → leer</span><span id="size">5 × 5 Felder</span></div>
+<div class="status" id="status" role="status" aria-live="polite">Verbinde die Punkte zu einer einzigen Schleife.</div>
+<div class="controls"><button class="btn" id="undo">↶ Rückgängig</button><button class="btn" id="hint">✦ Tipp</button><button class="btn primary" id="reset">↻ Neustart</button></div><div class="win" id="win"><strong>✦ Schleife geschlossen!</strong><p id="win-text"></p><button id="next">Nächstes Level →</button></div>
+</section><aside class="card side"><h2>So funktioniert's</h2><div class="rule"><span class="number">1</span><div><strong>Linien ziehen</strong><p>Tippe auf die Verbindungen zwischen den Punkten, um Linien einzuzeichnen.</p></div></div>
+<div class="rule"><span class="number">2</span><div><strong>Zahlen beachten</strong><p>Eine Zahl verrät, wie viele ihrer vier umliegenden Kanten zur Schleife gehören.</p></div></div>
+<div class="rule"><span class="number">3</span><div><strong>Nur eine Schleife</strong><p>Die Linie muss geschlossen sein. Keine Kreuzung, keine Abzweigung und keine zweite Schleife.</p></div></div>
+<div class="rule"><span class="number">4</span><div><strong>× als Ausschluss</strong><p>Ein zweiter Klick markiert eine Kante als ausgeschlossen. Ein dritter Klick leert sie wieder.</p></div></div>
+<div class="note">Alle Rätsel werden von einem unabhängigen Löser geprüft. Es gibt genau eine Schleife, die zu den Zahlen passt.</div>
+<div class="progress">Geschaffte Levels <span id="progress-text">0 / 24</span><div class="bar"><span id="progress-bar"></span></div></div><button class="random" id="random">⚡ Zufälliges Rätsel starten</button></aside></div><div class="foot">Ohne Installation · Lokal gespeicherter Fortschritt</div></main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id),KEY='slitherlink-v1';
+function rnd(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+function shuffle(a,rng){for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function graph(n){
+ const h=n*(n+1),E=2*h,ends=[],cellEdges=[],vertexEdges=Array.from({length:(n+1)*(n+1)},()=>[]),edgeCells=Array.from({length:E},()=>[]);
+ const hId=(r,c)=>r*n+c,vId=(r,c)=>h+r*(n+1)+c,vtx=(r,c)=>r*(n+1)+c;
+ for(let r=0;r<=n;r++)for(let c=0;c<n;c++)ends[hId(r,c)]=[vtx(r,c),vtx(r,c+1)];
+ for(let r=0;r<n;r++)for(let c=0;c<=n;c++)ends[vId(r,c)]=[vtx(r,c),vtx(r+1,c)];
+ for(let i=0;i<E;i++)for(const vertex of ends[i])vertexEdges[vertex].push(i);
+ for(let r=0;r<n;r++)for(let c=0;c<n;c++){
+   const id=r*n+c,edges=[hId(r,c),hId(r+1,c),vId(r,c),vId(r,c+1)];cellEdges[id]=edges;for(const e of edges)edgeCells[e].push(id);
+ }
+ return {n,h,E,ends,vertexEdges,cellEdges,edgeCells,hId,vId};
+}
+function singleLoop(state,g){
+ const active=[];for(let i=0;i<g.E;i++)if(state[i]===1)active.push(i);
+ if(active.length<4)return false;
+ for(const incident of g.vertexEdges){let count=0;for(const e of incident)if(state[e]===1)count++;if(count!==0&&count!==2)return false;}
+ const visited=new Set(),stack=[g.ends[active[0]][0]];
+ while(stack.length){const v=stack.pop();if(visited.has(v))continue;visited.add(v);for(const e of g.vertexEdges[v])if(state[e]===1){const [a,b]=g.ends[e];stack.push(v===a?b:a);}}
+ return active.every(i=>visited.has(g.ends[i][0])&&visited.has(g.ends[i][1]));
+}
+function boundary(selected,g){
+ const result=Array(g.E).fill(0),n=g.n;
+ for(const cell of selected){const r=Math.floor(cell/n),c=cell%n;
+   for(const [neighbor,e] of [[r>0?cell-n:-1,g.hId(r,c)],[r<n-1?cell+n:-1,g.hId(r+1,c)],[c>0?cell-1:-1,g.vId(r,c)],[c<n-1?cell+1:-1,g.vId(r,c+1)]]){
+     if(!selected.has(neighbor))result[e]=1;
+   }
+ }
+ return result;
+}
+function makeLoop(g,rng){
+ const n=g.n,k=4+Math.floor(rng()*(n*n*.4)),cells=new Set([Math.floor(rng()*n*n)]);
+ for(let t=0;t<k;t++){
+   const fringe=new Set();
+   for(const index of cells){const r=Math.floor(index/n),c=index%n;if(r>0&&!cells.has(index-n))fringe.add(index-n);if(r<n-1&&!cells.has(index+n))fringe.add(index+n);if(c>0&&!cells.has(index-1))fringe.add(index-1);if(c<n-1&&!cells.has(index+1))fringe.add(index+1);}
+   let added=false;for(const candidate of shuffle([...fringe],rng)){const next=new Set(cells);next.add(candidate);if(singleLoop(boundary(next,g),g)){cells.add(candidate);added=true;break;}}if(!added)break;
+ }
+ const loop=boundary(cells,g),length=loop.reduce((s,v)=>s+v,0);return length>=10&&singleLoop(loop,g)?loop:null;
+}
+function cluesFor(loop,g){return g.cellEdges.map(edges=>edges.reduce((s,e)=>s+loop[e],0));}
+// CSP: edge states are -1 (unknown), 0 (absent), 1 (line).
+function solveCount(g,clues,limit=2,maxNodes=12000){
+ let found=0,first=null,nodes=0,exceeded=false;
+ function propagate(s){
+   let changed=true;
+   function force(e,v){if(s[e]!==-1)return s[e]===v;if(s[e]===-1){s[e]=v;changed=true;return true;}return false;}
+   while(changed){
+     changed=false;
+     for(let cell=0;cell<clues.length;cell++)if(clues[cell]>=0){
+       const edges=g.cellEdges[cell],ones=edges.filter(e=>s[e]===1).length,unknown=edges.filter(e=>s[e]===-1),need=clues[cell]-ones;
+       if(need<0||need>unknown.length)return false;
+       if(need===0||need===unknown.length)for(const e of unknown)if(!force(e,need===0?0:1))return false;
+     }
+     for(const incident of g.vertexEdges){
+       const ones=incident.filter(e=>s[e]===1).length,unknown=incident.filter(e=>s[e]===-1);
+       if(ones>2||(ones===1&&unknown.length===0))return false;
+       if(ones===2||ones===1&&unknown.length===1||ones===0&&unknown.length===1){
+         const value=ones===1?1:0;for(const e of unknown)if(!force(e,value))return false;
+       }
+     }
+   }
+   return true;
+ }
+ function search(s){
+   if(++nodes>maxNodes){exceeded=true;return;}
+   if(!propagate(s))return;
+   let best=-1,bestScore=-Infinity;
+   for(let e=0;e<g.E;e++)if(s[e]===-1){
+     let score=0;
+     for(const c of g.edgeCells[e])if(clues[c]>=0){score+=4+g.cellEdges[c].filter(i=>s[i]!==-1).length;}
+     for(const vertex of g.ends[e])score+=g.vertexEdges[vertex].filter(i=>s[i]!==-1).length;
+     if(score>bestScore){best=e;bestScore=score;}
+   }
+   if(best===-1){if(singleLoop(s,g)){found++;if(!first)first=Array.from(s);}return;}
+   for(const v of [1,0]){const next=s.slice();next[best]=v;search(next);if(found>=limit||exceeded)return;}
+ }
+ search(new Int8Array(g.E).fill(-1));return {count:found,first,exceeded,nodes};
+}
+function generate(level){
+ const n=level==='random'?4+Math.floor(Math.random()*3):level<=8?4:level<=16?5:6,g=graph(n),rng=level==='random'?Math.random:rnd(hash('slitherlink-v2-'+level));
+ for(let trial=0;trial<120;trial++){
+   const target=makeLoop(g,rng);if(!target)continue;const clues=cluesFor(target,g),full=solveCount(g,clues,2,18000);
+   if(full.exceeded||full.count!==1)continue;
+   const desired=Math.ceil(n*n*(n===4?.64:n===5?.68:.73)),indices=shuffle(Array.from({length:n*n},(_,i)=>i),rng);
+   for(const i of indices){if(clues.filter(x=>x>=0).length<=desired)break;const v=clues[i];clues[i]=-1;const check=solveCount(g,clues,2,9000);if(check.exceeded||check.count!==1)clues[i]=v;}
+   return {g,clues,solution:target};
+ }
+ throw new Error('Kein eindeutiges Slitherlink-Rätsel gefunden. Bitte erneut laden.');
+}
+function loadSave(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch{return {};}}
+let progress=loadSave(),puzzle,states=[],edges=[],clueNodes=[],history=[],level=1,moves=0,finished=false,hint=-1,started=null,spent=0,ticker=null;
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(progress));}catch{}}
+function elapsed(){return spent+(started===null?0:Date.now()-started);}
+function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function refreshTime(){$('time').textContent=fmt(elapsed());}
+function start(){if(started===null&&!finished){started=Date.now();ticker=setInterval(refreshTime,300);}}
+function stop(){if(started!==null){spent+=Date.now()-started;started=null;}if(ticker){clearInterval(ticker);ticker=null;}refreshTime();}
+function status(v,type=''){$('status').textContent=v;$('status').className='status '+type;}
+function draw(){
+ for(let i=0;i<states.length;i++){const v=states[i],t=edges[i];t.className='edge '+(i<puzzle.g.h?'h':'v')+(v===1?' active':v===0?' cross':'')+(hint===i?' hint':'');t.setAttribute('aria-label',`Kante ${i+1}: ${v===1?'Linie':v===0?'ausgeschlossen':'offen'}`);}
+ let okay=0;
+ for(let c=0;c<puzzle.clues.length;c++){const clue=puzzle.clues[c];if(clue===-1)continue;const around=puzzle.g.cellEdges[c],on=around.filter(e=>states[e]===1).length;clueNodes[c].className='clue'+(on===clue?' good':on>clue?' bad':'');if(on===clue)okay++;}
+ $('lines').textContent=states.filter(x=>x===1).length;$('moves').textContent=moves;$('undo').disabled=!history.length||finished;$('hint').disabled=finished;
+}
+function buildBoard(){
+ const g=puzzle.g,n=g.n,frag=document.createDocumentFragment(),track=Array.from({length:2*n+1},(_,i)=>i%2?'minmax(0,1fr)':'10px').join(' ');$('board').style.setProperty('--tracks',track);$('size').textContent=n+' × '+n+' Felder';edges=Array(g.E);clueNodes=Array(n*n);
+ for(let r=0;r<=2*n;r++)for(let c=0;c<=2*n;c++){
+   let item;if(r%2===0&&c%2===0){item=document.createElement('div');item.className='dot';}
+   else if(r%2===1&&c%2===1){const index=Math.floor(r/2)*n+Math.floor(c/2),clue=puzzle.clues[index];item=document.createElement('div');item.className='clue'+(clue===-1?' empty':'');item.textContent=clue===-1?'':clue;clueNodes[index]=item;}
+   else{const index=r%2===0?g.hId(r/2,(c-1)/2):g.vId((r-1)/2,c/2);item=document.createElement('button');item.type='button';item.className='edge '+(r%2===0?'h':'v');item.addEventListener('click',()=>change(index,1));item.addEventListener('contextmenu',e=>{e.preventDefault();change(index,-1);});edges[index]=item;}
+   frag.appendChild(item);
+ }
+ $('board').replaceChildren(frag);
+}
+function load(l){stop();spent=0;refreshTime();level=l;try{puzzle=generate(l);}catch(e){status(e.message,'warn');return;}states=Array(puzzle.g.E).fill(-1);history=[];moves=0;finished=false;hint=-1;$('level').value=String(l);$('win').classList.remove('show');$('random').textContent=l==='random'?'⚡ Anderes Zufallsrätsel':'⚡ Zufälliges Rätsel starten';buildBoard();draw();status('Verbinde die Punkte zu einer einzigen geschlossenen Schleife.');}
+function change(index,dir){
+ if(finished)return;const before=states[index],after=dir===1?before===-1?1:before===1?0:-1:before===-1?0:before===0?1:-1;
+ if(after===before)return;start();history.push(states.slice());states[index]=after;moves++;hint=-1;draw();
+ if(singleLoop(states,puzzle.g)&&puzzle.clues.every((clue,i)=>clue===-1||puzzle.g.cellEdges[i].filter(e=>states[e]===1).length===clue))win();else status('Achte darauf, dass Zahlen und Punktverbindungen stimmen.');
+}
+function undo(){if(!history.length||finished)return;states=history.pop();moves--;hint=-1;if(!moves){stop();spent=0;refreshTime();}draw();status('Letzten Zug rückgängig gemacht.');}
+function reset(){stop();spent=0;refreshTime();states=Array(puzzle.g.E).fill(-1);history=[];moves=0;finished=false;hint=-1;$('win').classList.remove('show');draw();status('Rätsel zurückgesetzt.');}
+function giveHint(){if(finished)return;const i=states.findIndex((v,j)=>(v===1)!==(puzzle.solution[j]===1));if(i<0)return;hint=i;draw();status(`Tipp: Die markierte Kante ${puzzle.solution[i]?'gehört zur Schleife':'gehört nicht zur Schleife'}.`,'warn');}
+function win(){finished=true;stop();if(level!=='random'){progress[level]=true;persist();progressDraw();}draw();$('win-text').textContent=`Geschafft in ${moves} Zügen und ${fmt(spent)}!`;$('next').textContent=level==='random'||level===24?'Neues Zufallsrätsel →':'Nächstes Level →';$('win').classList.add('show');status('Eine einzige perfekte Schleife!','good');}
+function progressDraw(){let done=Array.from({length:24},(_,i)=>i+1).filter(i=>progress[i]).length;$('progress-text').textContent=done+' / 24';$('progress-bar').style.width=done/24*100+'%';}
+function init(){
+ for(const [a,b,label] of [[1,8,'4 × 4 · Einstieg'],[9,16,'5 × 5 · Fortgeschritten'],[17,24,'6 × 6 · Experte']]){const group=document.createElement('optgroup');group.label=label;for(let i=a;i<=b;i++){const opt=document.createElement('option');opt.value=i;opt.textContent='Level '+i;group.appendChild(opt);}$('level').appendChild(group);}const opt=document.createElement('option');opt.value='random';opt.textContent='⚡ Endlosmodus';$('level').appendChild(opt);
+ $('level').addEventListener('change',e=>load(e.target.value==='random'?'random':Number(e.target.value)));$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('hint').addEventListener('click',giveHint);$('random').addEventListener('click',()=>load('random'));$('next').addEventListener('click',()=>load(level==='random'||level===24?'random':level+1));progressDraw();load(1);
+}
+init();
+</script></body></html>

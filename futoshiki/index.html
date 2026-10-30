@@ -1,0 +1,140 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#f7f5fc"><title>Futoshiki – Das Ungleichheitsrätsel</title>
+<style>
+:root{color-scheme:light;--ink:#283047;--muted:#8d91a2;--accent:#7664bc;--shadow:0 20px 55px #45396d16}*{box-sizing:border-box}body{margin:0;min-height:100svh;background:radial-gradient(ellipse at top left,#e6defb,transparent 37%),radial-gradient(ellipse at bottom right,#fff0e0,transparent 34%),#f7f5fc;color:var(--ink);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,select{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #a999e4;outline-offset:3px}
+.shell{max-width:1030px;margin:auto;padding:27px 18px 38px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:23px}.brand{display:flex;gap:12px;align-items:center}.logo{width:54px;height:54px;background:#7466a7;border-radius:16px;display:grid;place-items:center;color:#fff;font-size:27px;box-shadow:0 11px 26px #6b599344}.brand strong{display:block;font-size:25px;letter-spacing:-1px;line-height:1}.brand small{display:block;color:#9c93ac;font-size:12px;margin-top:5px}.back{color:#796c96;border:1px solid #e4e0ef;background:white;border-radius:40px;padding:10px 15px;text-decoration:none;font-size:12px;font-weight:800}
+.layout{display:grid;grid-template-columns:minmax(0,620px) minmax(250px,1fr);gap:23px;align-items:start}.card{background:#ffffffee;border:1px solid #e9e4f1;box-shadow:var(--shadow);border-radius:24px}.main{padding:24px}.side{padding:24px}.heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.eyebrow{font-size:10px;letter-spacing:.12em;font-weight:850;color:#a8a0b4}.heading h1{margin:4px 0 0;font-size:22px;letter-spacing:-.6px}.heading select{max-width:155px;background:#f8f6fc;color:#706184;border:1px solid #e7e2ef;border-radius:11px;padding:10px;font-size:12px;font-weight:850}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:17px 0 15px}.stat{padding:10px 13px;border-radius:12px;background:#f8f6fa}.stat small{display:block;color:#ada6b9;font-size:10px;letter-spacing:.04em;text-transform:uppercase;font-weight:850}.stat b{font-size:21px;font-variant-numeric:tabular-nums}
+.board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(13px,3vw,19px);background:linear-gradient(160deg,#76688c,#534760);border-radius:17px;padding:clamp(15px,2.8vw,21px);max-width:515px;margin:0 auto 15px;box-shadow:0 15px 35px #45396037;user-select:none}.cell{position:relative;aspect-ratio:1;min-width:0;border:0;border-radius:11px;background:#fbf9ff;color:#665d83;display:grid;place-items:center;font-size:clamp(24px,5vw,36px);font-weight:900;transition:transform .12s,background .12s}.cell:hover{background:#f1ebfc}.cell:active{transform:scale(.95)}.cell.selected{box-shadow:0 0 0 3px #f9c67b,inset 0 0 0 2px #fff7e4;background:#fff5d7}.cell.fixed{background:#e1d4f3;color:#4d3c78;cursor:default}.cell.bad{box-shadow:inset 0 0 0 3px #e56d85}.cell.hint{outline:3px solid #55c5b1;outline-offset:-4px}.op{display:grid;place-items:center;position:absolute;z-index:6;width:20px;height:22px;color:#fff9de;background:#625373;border-radius:6px;font-weight:950;font-size:18px;line-height:1;text-shadow:0 1px #3b2d44}.op.right{right:calc(-1 * clamp(13px,3vw,19px) / 2 - 10px);top:50%;transform:translateY(-50%)}.op.down{bottom:calc(-1 * clamp(13px,3vw,19px) / 2 - 11px);left:50%;transform:translateX(-50%)}.notes{position:absolute;inset:4px;display:grid;grid-template-columns:repeat(3,1fr);align-items:center;justify-items:center;color:#b19dac;font-size:clamp(7px,1.9vw,11px);font-weight:850}.notes span{line-height:1}
+.numpad{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;max-width:515px;margin:auto}.digit{min-height:45px;background:#f6f3fa;border:1px solid #e3dceb;color:#6b578f;border-radius:11px;font-size:17px;font-weight:900}.digit:hover{background:#eae1f8}.digit.erase{font-size:16px;color:#a57e7e}.tools{display:flex;justify-content:center;align-items:center;gap:14px;margin:12px 0 0;font-size:12px;color:#8d83a0;font-weight:800}.tools label{display:flex;align-items:center;gap:7px;cursor:pointer}.tools input{accent-color:#7b67b2}
+.status{min-height:37px;display:grid;place-items:center;text-align:center;margin:10px 0 8px;color:#968aa7;font-size:12px;font-weight:750}.status.warn{color:#c27e66}.status.good{color:#388d7b}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.btn{background:white;border:1px solid #e4dded;padding:12px 5px;border-radius:11px;color:#6c5b8f;font-weight:850;font-size:12px;min-height:44px}.btn.primary{background:#7864b4;border-color:#7864b4;color:#fff}.btn:disabled{opacity:.45;cursor:not-allowed}.win{display:none;margin-top:13px;padding:15px;text-align:center;background:#e8f8ed;border:1px solid #cee9dc;border-radius:13px}.win.show{display:block}.win strong{color:#288c73;font-size:19px}.win p{color:#788c7e;font-size:12px;margin:5px 0 10px}.win button{background:#26917d;color:white;border:0;border-radius:9px;padding:10px 18px;font-weight:850}
+.side h2{margin:0 0 18px;font-size:19px;letter-spacing:-.5px}.rule{display:flex;gap:11px;margin-bottom:17px}.number{flex:none;width:31px;height:31px;display:grid;place-items:center;background:#f0ebf9;border-radius:10px;color:#8872ad;font-size:14px;font-weight:900}.rule strong{font-size:12px}.rule p{margin:3px 0 0;font-size:12px;color:#948c9f;line-height:1.6}.example{background:#f7f4fb;border-radius:12px;padding:13px;text-align:center;font-size:18px;font-weight:900;color:#746198;margin:6px 0 18px}.note{background:#f6f3fb;color:#897d9b;padding:13px;border-radius:12px;font-size:11px;line-height:1.65}.progress{margin-top:21px;font-size:12px;color:#82749c;font-weight:850}.bar{margin-top:10px;height:7px;border-radius:50px;background:#ede8f3;overflow:hidden}.bar span{display:block;height:100%;background:#a48bd6;width:0}.random{margin-top:18px;width:100%;border:1px solid #d4c8e7;background:#f8f3fe;color:#7c63a1;font-weight:850;padding:12px;border-radius:12px}.foot{margin-top:22px;text-align:center;color:#aaa3ba;font-size:11px}
+@media(max-width:750px){.shell{max-width:615px;padding:16px 12px 30px}.top{margin-bottom:17px}.layout{grid-template-columns:1fr;gap:15px}.main,.side{padding:18px 14px}.logo{width:45px;height:45px}.brand strong{font-size:21px}.back{padding:8px 10px;font-size:11px}.board{padding:14px}.digit{min-height:41px}.cell{border-radius:8px}.op{font-size:15px;width:18px;height:20px}}@media(max-width:350px){.back{font-size:0}.back:after{content:'← Spiele';font-size:11px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><main class="shell"><header class="top"><div class="brand"><span class="logo">≶</span><div><strong>Futoshiki</strong><small>Knacke die Zahlen-Ungleichungen.</small></div></div><a class="back" href="../index.php">← Alle Spiele</a></header>
+<div class="layout"><section class="card main"><div class="heading"><div><div class="eyebrow">5 × 5 · ZAHLENLOGIK</div><h1>Größer oder kleiner?</h1></div><select id="level" aria-label="Level auswählen"></select></div>
+<div class="stats"><div class="stat"><small>Belegt</small><b id="filled">0/25</b></div><div class="stat"><small>Züge</small><b id="moves">0</b></div><div class="stat"><small>Zeit</small><b id="time">00:00</b></div></div>
+<div id="board" class="board" role="group" aria-label="Fünf mal fünf Zahlenfeld"></div>
+<div class="numpad"><button class="digit" data-value="1">1</button><button class="digit" data-value="2">2</button><button class="digit" data-value="3">3</button><button class="digit" data-value="4">4</button><button class="digit" data-value="5">5</button><button class="digit erase" data-value="0">⌫</button></div>
+<div class="tools"><label><input id="pencil" type="checkbox"> Notizmodus</label><span>← → ↑ ↓ bewegen</span></div>
+<div class="status" id="status" role="status" aria-live="polite">Feld wählen und eine Zahl eingeben.</div>
+<div class="controls"><button class="btn" id="undo">↶ Rückgängig</button><button class="btn" id="hint">✦ Tipp</button><button class="btn primary" id="reset">↻ Neustart</button></div>
+<div class="win" id="win"><strong>✦ Alle Zahlen stimmen!</strong><p id="win-text"></p><button id="next">Nächstes Level →</button></div></section>
+<aside class="card side"><h2>So funktioniert Futoshiki</h2>
+<div class="rule"><span class="number">1</span><div><strong>1 bis 5 verwenden</strong><p>In jeder Zeile und jeder Spalte muss jede Zahl von 1 bis 5 genau einmal vorkommen.</p></div></div>
+<div class="rule"><span class="number">2</span><div><strong>Zeichen beachten</strong><p>Die Zeichen vergleichen direkt benachbarte Zahlen. Die offene Seite zeigt auf die größere Zahl.</p></div></div>
+<div class="example">2 &lt; 5 &nbsp; · &nbsp; 4 &gt; 1</div>
+<div class="rule"><span class="number">3</span><div><strong>Hoch oder runter</strong><p>Bei vertikalen Zeichen bedeutet ∧: oben kleiner. ∨ bedeutet: oben größer.</p></div></div>
+<div class="rule"><span class="number">4</span><div><strong>Notizen nutzen</strong><p>Mit „Notizmodus“ kannst du mögliche Zahlen in einer Zelle vormerken.</p></div></div>
+<div class="note">Alle 24 Levels und die Zufallsrätsel werden auf genau eine gültige Lösung geprüft. Fest vorgegebene Zahlen sind gesperrt.</div>
+<div class="progress">Geschaffte Levels <span id="progress-text">0 / 24</span><div class="bar"><span id="progress-bar"></span></div></div><button class="random" id="random">⚡ Zufallsrätsel starten</button></aside></div><div class="foot">Eigenständiges Offline-Spiel · Fortschritt lokal gespeichert</div></main>
+<script>
+'use strict';
+const N=5,CELLS=25,KEY='futoshiki-game-v1',$=id=>document.getElementById(id);
+const ADJ=[];for(let r=0;r<N;r++)for(let c=0;c<N;c++){const a=r*N+c;if(c<N-1)ADJ.push({a,b:a+1});if(r<N-1)ADJ.push({a,b:a+N});}
+function rnd(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+function shuffle(v,rng){for(let i=v.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[v[i],v[j]]=[v[j],v[i]];}return v;}
+function makeSolution(rng){
+ const rows=shuffle([0,1,2,3,4],rng),cols=shuffle([0,1,2,3,4],rng),symbols=shuffle([1,2,3,4,5],rng);
+ return Array.from({length:CELLS},(_,i)=>symbols[(rows[Math.floor(i/N)]+cols[i%N])%N]);
+}
+function candidates(board,edges,index){
+ const r=Math.floor(index/N),c=index%N,used=new Set();
+ for(let j=0;j<N;j++){if(board[r*N+j])used.add(board[r*N+j]);if(board[j*N+c])used.add(board[j*N+c]);}
+ return [1,2,3,4,5].filter(value=>{
+   if(used.has(value))return false;
+   for(const e of edges){
+     if(e.a!==index&&e.b!==index)continue;
+     const partner=e.a===index?e.b:e.a,other=board[partner];
+     if(other){const a=e.a===index?value:other,b=e.b===index?value:other;if((a<b)!==e.less)return false;}
+     else if((e.a===index&&e.less&&value===5)||(e.a===index&&!e.less&&value===1)||(e.b===index&&e.less&&value===1)||(e.b===index&&!e.less&&value===5))return false;
+   }
+   return true;
+ });
+}
+function countSolutions(givens,edges,limit=2){
+ const board=givens.slice();let count=0,first=null;
+ function recurse(){
+   let best=-1,options=null;
+   for(let i=0;i<CELLS;i++)if(!board[i]){
+     const next=candidates(board,edges,i);
+     if(!next.length)return;
+     if(best<0||next.length<options.length){best=i;options=next;if(next.length===1)break;}
+   }
+   if(best<0){count++;if(!first)first=board.slice();return;}
+   for(const value of options){board[best]=value;recurse();if(count>=limit){board[best]=0;return;}board[best]=0;}
+ }
+ recurse();return {count,first};
+}
+function generate(level){
+ const rng=level==='random'?Math.random:rnd(hash('futoshiki-v2:'+level)),diff=level==='random'?1:level<=8?0:level<=16?1:2;
+ const sol=makeSolution(rng),edgeNum=[4,8,12][diff],target=[11,8,5][diff];
+ const edges=shuffle(ADJ.map(e=>({...e,less:sol[e.a]<sol[e.b]})),rng).slice(0,edgeNum),givens=sol.slice();
+ for(const i of shuffle(Array.from({length:CELLS},(_,i)=>i),rng)){
+   if(givens.filter(Boolean).length<=target)break;
+   givens[i]=0;
+   if(countSolutions(givens,edges).count!==1)givens[i]=sol[i];
+ }
+ return {sol,edges,givens};
+}
+function loadSave(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch{return {};}}
+let progress=loadSave(),puzzle,values=[],notes=[],history=[],tiles=[],selected=-1,level=1,moves=0,hint=-1,finished=false,started=null,spent=0,ticker=null;
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(progress));}catch{}}
+function elapsed(){return spent+(started===null?0:Date.now()-started);}
+function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function timeRefresh(){$('time').textContent=fmt(elapsed());}
+function start(){if(started===null&&!finished){started=Date.now();ticker=setInterval(timeRefresh,300);}}
+function stop(){if(started!==null){spent+=Date.now()-started;started=null;}if(ticker){clearInterval(ticker);ticker=null;}timeRefresh();}
+function status(msg,type=''){$('status').textContent=msg;$('status').className='status '+type;}
+function conflicts(){
+ const bad=new Set();for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+   const i=r*N+c,v=values[i];if(!v)continue;
+   for(let k=0;k<N;k++){const j=r*N+k,l=k*N+c;if(j!==i&&values[j]===v){bad.add(i);bad.add(j);}if(l!==i&&values[l]===v){bad.add(i);bad.add(l);}}
+ }
+ for(const e of puzzle.edges)if(values[e.a]&&values[e.b]&&((values[e.a]<values[e.b])!==e.less)){bad.add(e.a);bad.add(e.b);}
+ return bad;
+}
+function draw(){
+ const bad=conflicts();
+ for(let i=0;i<CELLS;i++){
+   const t=tiles[i],v=values[i];t.className='cell'+(puzzle.givens[i]?' fixed':'')+(selected===i?' selected':'')+(bad.has(i)?' bad':'')+(hint===i?' hint':'');
+   const content=t.querySelector('.value');content.textContent=v||'';
+   let area=t.querySelector('.notes');if(area)area.remove();
+   if(!v&&notes[i]){
+     area=document.createElement('span');area.className='notes';for(let digit=1;digit<=5;digit++){const span=document.createElement('span');span.textContent=notes[i]&(1<<(digit-1))?digit:'';area.appendChild(span);}t.appendChild(area);
+   }
+   t.setAttribute('aria-label',`Zeile ${Math.floor(i/N)+1}, Spalte ${i%N+1}: ${v||'leer'}`);
+ }
+ $('filled').textContent=values.filter(Boolean).length+'/25';$('moves').textContent=moves;$('undo').disabled=!history.length||finished;$('hint').disabled=finished;
+}
+function boardBuild(){
+ const frag=document.createDocumentFragment();tiles=[];
+ for(let i=0;i<CELLS;i++){
+   const t=document.createElement('button');t.type='button';t.className='cell';const v=document.createElement('span');v.className='value';t.appendChild(v);
+   for(const e of puzzle.edges)if(e.a===i){const glyph=document.createElement('span'),h=e.b===i+1;glyph.className='op '+(h?'right':'down');glyph.textContent=h?(e.less?'<':'>'):(e.less?'∧':'∨');glyph.setAttribute('aria-hidden','true');t.appendChild(glyph);}
+   t.addEventListener('click',()=>select(i));t.addEventListener('keydown',e=>{const next={ArrowUp:i-N,ArrowDown:i+N,ArrowLeft:i-1,ArrowRight:i+1}[e.key];if(next===undefined||next<0||next>=CELLS||(e.key==='ArrowLeft'&&i%N===0)||(e.key==='ArrowRight'&&i%N===N-1))return;e.preventDefault();select(next);tiles[next].focus();});
+   tiles.push(t);frag.appendChild(t);
+ }
+ $('board').replaceChildren(frag);
+}
+function select(i){selected=i;draw();}
+function load(l){stop();spent=0;timeRefresh();level=l;puzzle=generate(l);values=puzzle.givens.slice();notes=Array(CELLS).fill(0);history=[];moves=0;hint=-1;finished=false;selected=values.findIndex(v=>!v);$('level').value=String(l);$('win').classList.remove('show');$('random').textContent=l==='random'?'⚡ Anderes Zufallsrätsel':'⚡ Zufallsrätsel starten';boardBuild();draw();status('Feld wählen und Zahl eingeben.');}
+function enter(digit){
+ if(finished||selected<0||puzzle.givens[selected])return;
+ const pencil=$('pencil').checked&&digit>0,oldValue=values[selected],oldNote=notes[selected];let nextVal=oldValue,nextNote=oldNote;
+ if(pencil){if(oldValue)return;nextNote^=1<<(digit-1);}
+ else{nextVal=digit===oldValue?0:digit;if(digit)nextNote=0;}
+ if(nextVal===oldValue&&nextNote===oldNote)return;
+ start();history.push({values:values.slice(),notes:notes.slice()});values[selected]=nextVal;notes[selected]=nextNote;hint=-1;moves++;draw();
+ if(values.every((v,i)=>v===puzzle.sol[i]))win();else if(conflicts().size)status('Achtung: Eine Zahl oder ein Ungleichheitszeichen widerspricht den Regeln.','warn');else status('Gut! Prüfe die Zeilen, Spalten und Ungleichheiten.');
+}
+function undo(){if(!history.length||finished)return;const previous=history.pop();values=previous.values;notes=previous.notes;moves--;hint=-1;if(!moves){stop();spent=0;timeRefresh();}draw();status('Letzten Zug rückgängig gemacht.');}
+function reset(){stop();spent=0;timeRefresh();values=puzzle.givens.slice();notes=Array(CELLS).fill(0);history=[];moves=0;hint=-1;finished=false;$('win').classList.remove('show');draw();status('Rätsel zurückgesetzt.');}
+function giveHint(){if(finished)return;let i=selected;if(i<0||puzzle.givens[i]||values[i]===puzzle.sol[i])i=values.findIndex((v,j)=>!puzzle.givens[j]&&v!==puzzle.sol[j]);if(i<0)return;selected=i;hint=i;draw();status(`Tipp: Hier gehört die Zahl ${puzzle.sol[i]} hin.`,'warn');}
+function win(){finished=true;stop();if(level!=='random'){progress[level]=true;persist();progressDraw();}draw();$('win-text').textContent=`Geschafft in ${moves} Zügen und ${fmt(spent)}!`;$('next').textContent=level==='random'||level===24?'Neues Zufallsrätsel →':'Nächstes Level →';$('win').classList.add('show');status('Alle Zahlen und Vergleiche stimmen!','good');}
+function progressDraw(){const done=Array.from({length:24},(_,i)=>i+1).filter(i=>progress[i]).length;$('progress-text').textContent=done+' / 24';$('progress-bar').style.width=done/24*100+'%';}
+function init(){
+ for(const [a,b,label] of [[1,8,'Einstieg'],[9,16,'Fortgeschritten'],[17,24,'Experte']]){const g=document.createElement('optgroup');g.label=label;for(let i=a;i<=b;i++){const o=document.createElement('option');o.value=i;o.textContent='Level '+i;g.appendChild(o);}$('level').appendChild(g);}const o=document.createElement('option');o.value='random';o.textContent='⚡ Endlosmodus';$('level').appendChild(o);
+ $('level').addEventListener('change',e=>load(e.target.value==='random'?'random':Number(e.target.value)));document.querySelectorAll('[data-value]').forEach(b=>b.addEventListener('click',()=>enter(Number(b.dataset.value))));window.addEventListener('keydown',e=>{if(['INPUT','SELECT'].includes(document.activeElement.tagName))return;if(e.key>='1'&&e.key<='5'){enter(Number(e.key));}else if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();enter(0);}});$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('hint').addEventListener('click',giveHint);$('random').addEventListener('click',()=>load('random'));$('next').addEventListener('click',()=>load(level==='random'||level===24?'random':level+1));progressDraw();load(1);
+}
+init();
+</script></body></html>

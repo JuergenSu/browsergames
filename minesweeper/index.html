@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f7fb">
+<meta name="description" content="Minesweeper: Decke sichere Felder auf, markiere Minen und löse 24 Levels oder neue Zufallsrunden.">
+<title>Minesweeper – Das Minenrätsel</title>
+<style>
+:root{color-scheme:light;--ink:#25344b;--muted:#8c98aa;--blue:#3179ad;--navy:#20334c;--shadow:0 22px 60px #233b6117}
+*{box-sizing:border-box}
+body{min-height:100svh;margin:0;font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(ellipse at left top,#dcefff,transparent 38%),radial-gradient(ellipse at right bottom,#fbe5df,transparent 34%),#f5f7fb}
+button,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #81bdda;outline-offset:3px}
+.shell{max-width:1110px;margin:auto;padding:29px 20px 39px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:25px}.brand{display:flex;align-items:center;gap:14px}.logo{display:grid;place-items:center;width:55px;height:55px;border-radius:16px;background:#263d57;color:#ffb860;font-size:27px;box-shadow:0 12px 25px #23395336}.brand strong{font-size:25px;line-height:1;letter-spacing:-1.1px}.brand small{display:block;color:var(--muted);font-size:12px;margin-top:6px}.back{border:1px solid #e3e8ef;border-radius:40px;background:white;color:#57708b;padding:10px 15px;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
+.layout{display:grid;grid-template-columns:minmax(0,695px) minmax(240px,1fr);gap:24px;align-items:start}.card{background:#fffffff0;border-radius:25px;border:1px solid #e5ebf2;box-shadow:var(--shadow)}.game{padding:25px}.side{padding:24px}.heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}.eyebrow{font-size:10px;font-weight:850;letter-spacing:.12em;color:#98a5b7;text-transform:uppercase}.heading h1{font-size:23px;letter-spacing:-.65px;margin:3px 0 0;line-height:1.2}.level-select{max-width:162px;background:#f7f9fc;color:#536b84;border:1px solid #dce6ef;border-radius:11px;padding:10px;font-size:12px;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}.stat{background:#f4f7fa;border-radius:12px;padding:11px 12px;min-width:0}.stat small{display:block;color:#9ca9b7;font-size:9px;font-weight:850;letter-spacing:.04em;text-transform:uppercase}.stat b{display:block;font-size:21px;font-variant-numeric:tabular-nums;letter-spacing:-.5px}.stat b span{font-size:12px;letter-spacing:0;font-weight:750;color:#a0abb8}
+.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:13px}.toolbar small{font-size:10px;color:#95a6b1;font-weight:850;text-transform:uppercase;letter-spacing:.07em;margin-right:3px}.mode{background:#fff;color:#597589;border:1px solid #dfe7ee;border-radius:11px;padding:9px 14px;font-size:12px;font-weight:850;min-height:38px}.mode.active{background:#287fa7;border-color:#287fa7;color:white}.mode.flag.active{background:#d5675d;border-color:#d5675d;color:white}
+.board-wrap{background:linear-gradient(145deg,#344b64,#1c3047);max-width:615px;margin:auto;border-radius:17px;padding:clamp(8px,1.5vw,13px);box-shadow:0 15px 33px #20385045}.board{--n:8;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:clamp(1px,.27vw,3px);aspect-ratio:1;user-select:none;touch-action:manipulation}.cell{min-width:0;aspect-ratio:1;display:grid;place-items:center;position:relative;padding:0;border:0;border-radius:clamp(3px,.8vw,6px);background:linear-gradient(150deg,#6988aa,#426481);box-shadow:inset 0 2px 1px #d4e5f13d,inset 0 -3px #1b385951,0 1px 1px #10273d;transition:background .1s,transform .1s;font-weight:950;font-size:clamp(10px,calc(360px / var(--n) * .58),25px);line-height:1}.cell:hover:not(.revealed):not(:disabled){background:#7d9ebc}.cell:active:not(.revealed){transform:scale(.94)}.cell.revealed{background:#f3f5f8;box-shadow:inset 0 0 0 1px #dce4ee;color:#3d4e61;cursor:default}.cell.revealed:nth-child(even){background:#eef2f6}.cell.flagged{color:#ffda9e;background:linear-gradient(135deg,#4b7390,#36536d)}.cell.mine{background:#eacbd0;color:#bd354b;box-shadow:inset 0 0 0 1px #da9ca4}.cell.mine.exploded{background:#ea6370;color:white;box-shadow:inset 0 0 0 3px #ffccd1}.cell.wrong{background:#ffe3e5;color:#c85167}.cell.hint{outline:3px solid #ffd16f;outline-offset:-3px;z-index:2;animation:hint-pulse .9s infinite alternate}.cell.n1{color:#2870c7}.cell.n2{color:#218f57}.cell.n3{color:#e04f48}.cell.n4{color:#6556b3}.cell.n5{color:#ad4b79}.cell.n6{color:#218d95}.cell.n7{color:#3a4050}.cell.n8{color:#777f89}.cell .glyph{z-index:1;pointer-events:none}.cell.revealed.blank .glyph{opacity:0}@keyframes hint-pulse{to{outline-color:#fff;outline-offset:-1px}}
+.board-caption{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:615px;margin:13px auto 0;color:#9ba8b6;font-size:11px;font-weight:750}.status{min-height:40px;display:grid;place-items:center;margin:9px 0;text-align:center;color:#7c8ea4;font-size:12px;font-weight:750}.status.good{color:#27917d}.status.warn{color:#bc8a3b}.status.error{color:#c6505d}
+.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.btn{background:white;border:1px solid #dfe7f0;border-radius:12px;padding:12px 4px;min-height:45px;color:#5c7590;font-size:12px;font-weight:850}.btn.primary{background:#277fa7;border-color:#277fa7;color:white}.btn:not(:disabled):hover{filter:brightness(.97)}.btn:disabled{opacity:.42;cursor:not-allowed}
+.result{display:none;text-align:center;border-radius:14px;padding:16px;margin-top:14px;background:#e5f8ee;border:1px solid #c9e9d7}.result.show{display:block}.result.lost{background:#fff0ed;border-color:#f1d1ce}.result strong{font-size:20px;color:#218c74}.result.lost strong{color:#c15a55}.result p{margin:5px 0 11px;font-size:12px;color:#718c82}.result.lost p{color:#a27871}.result button{background:#238c7c;border:0;color:white;font-weight:850;border-radius:10px;padding:10px 21px}.result.lost button{background:#b97367}
+.side h2{font-size:19px;letter-spacing:-.5px;margin:0 0 18px}.rule{display:flex;gap:11px;margin:0 0 17px}.rule-num{width:33px;height:33px;flex:none;display:grid;place-items:center;background:#e6f0f8;color:#5a8bb1;border-radius:10px;font-size:15px;font-weight:900}.rule strong{font-size:12px}.rule p{font-size:12px;color:#8899a9;margin:3px 0 0;line-height:1.6}.example{display:flex;gap:7px;justify-content:center;padding:16px;border-radius:13px;background:#f5f8fb;margin:0 0 17px}.demo{display:grid;place-items:center;width:37px;height:37px;background:#eef2f7;border:1px solid #dce4ed;border-radius:8px;font-size:21px;font-weight:950;color:#2870c7}.demo.flag{background:#607f9d;color:#ffce72}.demo.hidden{background:#6b8dab}
+.note{background:#f3f8fb;color:#778da0;padding:13px;border-radius:13px;font-size:11px;line-height:1.65}.note strong{color:#497f9e}.progress{margin-top:22px;color:#668499;font-size:12px;font-weight:850;display:flex;justify-content:space-between}.bar{height:7px;margin-top:10px;border-radius:30px;background:#e7eff5;overflow:hidden}.bar span{display:block;height:100%;background:#4cadd0;width:0}.random{border-radius:12px;padding:12px;width:100%;margin-top:19px;color:#377f9c;background:#edf8fc;border:1px solid #bfdce9;font-weight:850}.foot{text-align:center;color:#a2b1c0;font-size:11px;margin-top:23px}
+@media(max-width:760px){.shell{max-width:655px;padding:16px 12px 30px}.top{margin-bottom:17px}.layout{grid-template-columns:1fr;gap:15px}.game,.side{padding:19px 15px}.logo{width:45px;height:45px;font-size:22px}.brand strong{font-size:21px}.back{font-size:11px;padding:9px 11px}.heading h1{font-size:20px}.stats{gap:6px}.stat{padding:9px 9px}.stat b{font-size:19px}.board-wrap{border-radius:13px;padding:7px}.cell{font-size:clamp(10px,calc(285px / var(--n) * .7),22px)}.btn{font-size:11px}.mode{padding:8px 12px}}@media(max-width:370px){.level-select{max-width:132px}.back{font-size:0}.back::after{content:'← Spiele';font-size:11px}.stat b{font-size:17px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body><main class="shell">
+<header class="top"><div class="brand"><span class="logo" aria-hidden="true">✹</span><div><strong>Minesweeper</strong><small>Jede Zahl ist ein Hinweis. Jede Mine zählt.</small></div></div><a class="back" href="../index.php">← Alle Spiele</a></header>
+<div class="layout"><section class="card game">
+<div class="heading"><div><div class="eyebrow">MINENSUCHE · KLASSIKER</div><h1>Finde alle sicheren Felder</h1></div><select class="level-select" id="level" aria-label="Level auswählen"></select></div>
+<div class="stats"><div class="stat"><small>Minen übrig</small><b id="remaining">10</b></div><div class="stat"><small>Aufgedeckt</small><b id="opened">0</b></div><div class="stat"><small>Züge</small><b id="moves">0</b></div><div class="stat"><small>Zeit</small><b id="time">00:00</b></div></div>
+<div class="toolbar"><small>WERKZEUG</small><button type="button" class="mode active" id="mode-reveal">◇ Aufdecken</button><button type="button" class="mode flag" id="mode-flag">⚑ Flagge setzen</button></div>
+<div class="board-wrap"><div class="board" id="board" role="group" aria-label="Minesweeper-Spielfeld"></div></div>
+<div class="board-caption"><span id="difficulty">8 × 8 · Einstieg</span><span id="board-message">Erster Klick ist sicher</span></div>
+<div class="status" id="status" role="status" aria-live="polite">Decke ein Feld auf, um zu beginnen.</div>
+<div class="controls"><button type="button" class="btn" id="undo">↶ Rückgängig</button><button type="button" class="btn" id="hint">✦ Sicherer Tipp</button><button type="button" class="btn primary" id="reset">↻ Neustart</button></div>
+<div class="result" id="result" aria-live="polite"><strong id="result-head"></strong><p id="result-text"></p><button type="button" id="next">Nächstes Level →</button></div>
+</section>
+<aside class="card side"><h2>So funktioniert's</h2>
+<div class="rule"><span class="rule-num">1</span><div><strong>Sichere Felder öffnen</strong><p>Tippe ein Feld an. Beim ersten Zug sind das Feld und seine direkten Nachbarn garantiert minenfrei.</p></div></div>
+<div class="rule"><span class="rule-num">2</span><div><strong>Zahlen verstehen</strong><p>Die Zahl zeigt, wie viele Minen sich in den acht umliegenden Feldern befinden – einschließlich der Diagonalen.</p></div></div>
+<div class="example" aria-hidden="true"><span class="demo">1</span><span class="demo flag">⚑</span><span class="demo hidden"></span></div>
+<div class="rule"><span class="rule-num">3</span><div><strong>Minen markieren</strong><p>Benutze „Flagge setzen“, einen Rechtsklick oder halte ein Feld auf dem Smartphone länger gedrückt.</p></div></div>
+<div class="rule"><span class="rule-num">4</span><div><strong>Zahlen kombinieren</strong><p>Tippe erneut auf eine aufgedeckte Zahl, deren Nachbarn korrekt markiert sind. Die übrigen Nachbarn werden automatisch geöffnet.</p></div></div>
+<div class="rule"><span class="rule-num">5</span><div><strong>Gewinnen</strong><p>Du gewinnst, sobald alle sicheren Felder aufgedeckt sind. Flaggen sind zur Orientierung da, aber nicht zwingend nötig.</p></div></div>
+<div class="note"><strong>Fairer Start:</strong> Der erste Klick und alle acht Nachbarfelder sind sicher. Anders als bei reinen Logikrätseln kann Minesweeper später dennoch Situationen enthalten, in denen eine Vermutung nötig ist.</div>
+<div class="progress"><span>Geschaffte Levels</span><span id="progress-text">0 / 24</span></div><div class="bar"><span id="progress-bar"></span></div>
+<button type="button" class="random" id="random">⚡ Zufallsrunde starten</button>
+</aside></div><footer class="foot">Ohne Anmeldung · Offline spielbar · Fortschritt bleibt auf diesem Gerät</footer>
+</main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id),KEY='minesweeper-game-v1';
+const COUNTS=[8,9,10,11,12,13,14,15,20,22,24,26,28,30,32,34,40,42,44,46,48,50,52,54];
+const NAMES={8:'Einstieg',12:'Fortgeschritten',16:'Experte'};
+function configFor(level){
+ if(level==='random'){const configs=[{n:8,mines:10},{n:12,mines:26},{n:16,mines:46}];return configs[Math.floor(Math.random()*configs.length)];}
+ return {n:level<=8?8:level<=16?12:16,mines:COUNTS[level-1]};
+}
+function neighbors(index,n){
+ const row=Math.floor(index/n),col=index%n,result=[];
+ for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+   if(!dr&&!dc)continue;const r=row+dr,c=col+dc;if(r>=0&&r<n&&c>=0&&c<n)result.push(r*n+c);
+ }
+ return result;
+}
+function rnd(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+function shuffle(v,rng){for(let i=v.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[v[i],v[j]]=[v[j],v[i]];}return v;}
+function createMines(cfg,safeIndex,level,serial=0){
+ const {n,mines}=cfg,blocked=new Set([safeIndex,...neighbors(safeIndex,n)]),rng=level==='random'?Math.random:rnd(hash('minesweeper:v1:'+level+':'+safeIndex+':'+serial));
+ const candidates=shuffle(Array.from({length:n*n},(_,i)=>i).filter(i=>!blocked.has(i)),rng);
+ if(candidates.length<mines)throw Error('Zu viele Minen für dieses Spielfeld.');
+ const mineSet=new Set(candidates.slice(0,mines)),numbers=Array.from({length:n*n},(_,i)=>mineSet.has(i)?-1:neighbors(i,n).filter(j=>mineSet.has(j)).length);
+ return {mines:mineSet,numbers};
+}
+function loadSave(){try{const data=JSON.parse(localStorage.getItem(KEY)||'{}');return data&&typeof data==='object'?data:{};}catch{return {};}}
+let progress=loadSave(),level=1,cfg={n:8,mines:8},mines=null,numbers=null,opened=[],flagged=[],tiles=[],history=[],moves=0,flags=0,openedCount=0,first=true,finished=false,won=false,detonated=-1,hintIndex=-1,mode='reveal',started=null,spent=0,ticker=null;
+function saveProgress(){try{localStorage.setItem(KEY,JSON.stringify(progress));}catch{}}
+function elapsed(){return spent+(started===null?0:Date.now()-started);}
+function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function refreshTime(){$('time').textContent=fmt(elapsed());}
+function startClock(){if(started===null&&!finished){started=Date.now();if(ticker===null)ticker=setInterval(refreshTime,250);}}
+function stopClock(){if(started!==null){spent+=Date.now()-started;started=null;}if(ticker!==null){clearInterval(ticker);ticker=null;}refreshTime();}
+function resetClock(){stopClock();spent=0;refreshTime();}
+function say(msg,type=''){$('status').textContent=msg;$('status').className='status'+(type?' '+type:'');}
+function setMode(next){mode=next;$('mode-reveal').classList.toggle('active',mode==='reveal');$('mode-flag').classList.toggle('active',mode==='flag');}
+function saveHistory(){history.push({opened:opened.slice(),flagged:flagged.slice(),moves,flags,openedCount,first,detonated,finished,won});}
+function buildBoard(){
+ const frag=document.createDocumentFragment();tiles=[];$('board').style.setProperty('--n',cfg.n);
+ for(let i=0;i<cfg.n*cfg.n;i++){
+   const tile=document.createElement('button'),span=document.createElement('span');tile.type='button';tile.className='cell';span.className='glyph';tile.appendChild(span);tile.dataset.index=i;
+   let held=false,holdTimer=null;
+   tile.addEventListener('pointerdown',ev=>{if(ev.pointerType==='touch'||ev.pointerType==='pen'){held=false;clearTimeout(holdTimer);holdTimer=setTimeout(()=>{held=true;mark(i);},520);}});
+   const clearHold=()=>{if(holdTimer!==null){clearTimeout(holdTimer);holdTimer=null;}};
+   tile.addEventListener('pointerup',clearHold);tile.addEventListener('pointercancel',clearHold);tile.addEventListener('pointerleave',clearHold);
+   tile.addEventListener('click',ev=>{if(held){held=false;return;}if(ev.shiftKey||mode==='flag')mark(i);else reveal(i);});
+   tile.addEventListener('contextmenu',ev=>{ev.preventDefault();if(!held)mark(i);held=false;});
+   tile.addEventListener('keydown',ev=>{const n=cfg.n,next={ArrowUp:i-n,ArrowDown:i+n,ArrowLeft:i-1,ArrowRight:i+1}[ev.key];if(next===undefined||next<0||next>=n*n||(ev.key==='ArrowLeft'&&i%n===0)||(ev.key==='ArrowRight'&&i%n===n-1))return;ev.preventDefault();tiles[next].focus();});
+   frag.appendChild(tile);tiles.push(tile);
+ }
+ $('board').replaceChildren(frag);
+}
+function draw(){
+ const n=cfg.n,total=n*n;
+ for(let i=0;i<total;i++){
+   const tile=tiles[i],isOpen=opened[i],flag=flagged[i],isMine=!!(mines&&mines.has(i)),number=numbers?numbers[i]:0;
+   let className='cell',content='';
+   if(isOpen){
+     className+=' revealed';
+     if(isMine)className+=' mine'+(detonated===i?' exploded':'');
+     else className+=number?' n'+number:' blank';
+     content=isMine?'✹':number?String(number):'';
+   }else if(flag){className+=' flagged';content='⚑';if(finished&&!won&&!isMine)className+=' wrong';}
+   else if(finished&&isMine){className+=' revealed mine';content='✹';}
+   if(hintIndex===i&&!finished)className+=' hint';
+   tile.className=className;tile.querySelector('.glyph').textContent=content;
+   let description='verdeckt';if(flag)description='markierte Mine';else if(isOpen)description=isMine?'Mine':number?'Zahl '+number:'leeres Feld';
+   tile.setAttribute('aria-label',`Zeile ${Math.floor(i/n)+1}, Spalte ${i%n+1}: ${description}`);
+ }
+ $('remaining').textContent=String(cfg.mines-flags);$('opened').textContent=openedCount+' / '+(total-cfg.mines);$('moves').textContent=String(moves);
+ $('undo').disabled=!history.length||finished;$('hint').disabled=first||finished;
+ $('board').setAttribute('aria-label',`Minesweeper: ${n} mal ${n} Felder, ${cfg.mines} Minen, ${openedCount} sichere Felder aufgedeckt`);
+}
+function load(l){
+ level=l;cfg=configFor(l);mines=null;numbers=null;opened=Array(cfg.n*cfg.n).fill(false);flagged=Array(cfg.n*cfg.n).fill(false);history=[];moves=0;flags=0;openedCount=0;first=true;finished=false;won=false;detonated=-1;hintIndex=-1;resetClock();
+ $('level').value=String(l);$('difficulty').textContent=cfg.n+' × '+cfg.n+' · '+NAMES[cfg.n];$('board-message').textContent='Erster Klick ist sicher';
+ $('result').className='result';$('random').textContent=l==='random'?'⚡ Andere Zufallsrunde':'⚡ Zufallsrunde starten';
+ buildBoard();draw();say('Decke ein Feld auf, um zu beginnen.');
+}
+function flood(start){
+ const todo=[start],seen=new Set();
+ while(todo.length){
+   const i=todo.pop();if(seen.has(i)||opened[i]||flagged[i])continue;seen.add(i);
+   if(mines.has(i)){detonated=i;return false;}
+   opened[i]=true;openedCount++;
+   if(numbers[i]===0)for(const j of neighbors(i,cfg.n))if(!seen.has(j))todo.push(j);
+ }
+ return true;
+}
+function reveal(index){
+ if(finished||flagged[index])return;
+ if(opened[index]){
+   if(!numbers||numbers[index]===0)return;
+   const adjacent=neighbors(index,cfg.n),marked=adjacent.filter(i=>flagged[i]).length;
+   if(marked!==numbers[index]){say(`Für diese ${numbers[index]} sind erst ${marked} Flaggen gesetzt.`,'warn');return;}
+   saveHistory();startClock();moves++;hintIndex=-1;
+   for(const i of adjacent)if(!flagged[i]&&!opened[i]){if(!flood(i)){lose();return;}}
+   draw();if(openedCount===cfg.n*cfg.n-cfg.mines)win();else say('Benachbarte Felder geöffnet.');
+   return;
+ }
+ saveHistory();
+ if(first){
+   const generated=createMines(cfg,index,level);mines=generated.mines;numbers=generated.numbers;first=false;
+   $('board-message').textContent='Minen sind verteilt';
+ }
+ startClock();moves++;hintIndex=-1;
+ if(!flood(index)){lose();return;}
+ draw();if(openedCount===cfg.n*cfg.n-cfg.mines)win();else say(numbers[index]===0?'Leerer Bereich aufgedeckt. Weiter so!':'Nutze die Zahlen, um sichere Nachbarn zu finden.');
+}
+function mark(index){
+ if(finished||opened[index])return;
+ saveHistory();flagged[index]=!flagged[index];flags+=flagged[index]?1:-1;moves++;hintIndex=-1;draw();say(flagged[index]?'Mine markiert.':'Flagge entfernt.');
+}
+function undo(){
+ if(!history.length||finished)return;
+ const old=history.pop();opened=old.opened;flagged=old.flagged;moves=old.moves;flags=old.flags;openedCount=old.openedCount;first=old.first;detonated=old.detonated;finished=old.finished;won=old.won;hintIndex=-1;
+ if(first){mines=null;numbers=null;$('board-message').textContent='Erster Klick ist sicher';}
+ if(first||!moves){stopClock();spent=0;refreshTime();}
+ draw();say('Letzten Schritt rückgängig gemacht.');
+}
+function giveHint(){
+ if(first||finished)return;
+ // Priorität für logisch zwingende Schritte; sonst ein garantiert sicheres Feld.
+ let candidate=-1,action='';
+ const incorrectFlag=flagged.findIndex((flag,i)=>flag&&!mines.has(i));
+ if(incorrectFlag>=0){hintIndex=incorrectFlag;draw();say('Tipp: Diese Flagge sitzt auf einem sicheren Feld – entferne sie.','warn');return;}
+ for(let i=0;i<cfg.n*cfg.n;i++)if(opened[i]&&numbers[i]>0){
+   const adjacent=neighbors(i,cfg.n),marked=adjacent.filter(j=>flagged[j]).length,hidden=adjacent.filter(j=>!opened[j]&&!flagged[j]);
+   if(!hidden.length)continue;
+   if(marked===numbers[i]){candidate=hidden.find(j=>!mines.has(j))??-1;if(candidate>=0){action='sicher aufdecken';break;}}
+   if(marked+hidden.length===numbers[i]){candidate=hidden.find(j=>mines.has(j))??-1;if(candidate>=0){action='als Mine markieren';break;}}
+ }
+ if(candidate<0){
+   candidate=opened.findIndex((isOpen,i)=>!isOpen&&!flagged[i]&&!mines.has(i));
+   action='sicher aufdecken';
+ }
+ if(candidate<0)return;
+ hintIndex=candidate;draw();
+ say(`Tipp: Zeile ${Math.floor(candidate/cfg.n)+1}, Spalte ${candidate%cfg.n+1} – ${action}.`,'warn');
+}
+function win(){
+ won=true;finished=true;stopClock();for(let i=0;i<cfg.n*cfg.n;i++)if(mines.has(i)&&!flagged[i]){flagged[i]=true;flags++;}
+ if(level!=='random'){
+   const old=progress[level],result={moves,time:spent};if(!old||result.time<old.time)progress[level]=result;
+   saveProgress();progressDraw();
+ }
+ draw();$('result-head').textContent='✦ Alles entschärft!';$('result-text').textContent=`Alle sicheren Felder in ${moves} Zügen und ${fmt(spent)} gefunden.`;
+ $('next').textContent=level==='random'||level===24?'Neue Zufallsrunde →':'Nächstes Level →';$('result').className='result show';say('Keine Mine erwischt. Großartig!','good');
+}
+function lose(){
+ finished=true;won=false;stopClock();draw();$('result-head').textContent='✹ Mine erwischt!';$('result-text').textContent='Das war eine Mine. Versuch es erneut – dein erster Klick bleibt sicher.';
+ $('next').textContent='Nochmal versuchen →';$('result').className='result show lost';say('Leider explodiert. Starte eine neue Runde.','error');
+}
+function progressDraw(){
+ const completed=Array.from({length:24},(_,i)=>i+1).filter(i=>progress[i]).length;
+ $('progress-text').textContent=completed+' / 24';$('progress-bar').style.width=completed/24*100+'%';
+}
+function init(){
+ for(const [a,b,name] of [[1,8,'8 × 8 · Einstieg'],[9,16,'12 × 12 · Fortgeschritten'],[17,24,'16 × 16 · Experte']]){
+   const group=document.createElement('optgroup');group.label=name;
+   for(let i=a;i<=b;i++){const option=document.createElement('option');option.value=i;option.textContent='Level '+i;group.appendChild(option);}
+   $('level').appendChild(group);
+ }
+ const option=document.createElement('option');option.value='random';option.textContent='⚡ Endlosmodus';$('level').appendChild(option);
+ $('level').addEventListener('change',ev=>load(ev.target.value==='random'?'random':Number(ev.target.value)));
+ $('mode-reveal').addEventListener('click',()=>setMode('reveal'));
+ $('mode-flag').addEventListener('click',()=>setMode('flag'));
+ $('undo').addEventListener('click',undo);$('hint').addEventListener('click',giveHint);$('reset').addEventListener('click',()=>load(level));
+ $('random').addEventListener('click',()=>load('random'));
+ $('next').addEventListener('click',()=>load(!won?level:level==='random'||level===24?'random':level+1));
+ progressDraw();load(1);
+}
+init();
+</script></body></html>

@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f6f1">
+  <title>Patches – Das Rechteck-Rätsel</title>
+  <style>
+    :root{color-scheme:light;--ink:#253b43;--soft:#6e8084;--teal:#267c83;--teal-dark:#16626a;--paper:#f8f6f1;--line:#e4e7e2;--coral:#d97f64;--shadow:0 24px 65px rgba(49,69,69,.08)}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100svh;background:radial-gradient(ellipse at 0 5%,#e1f3ee 0,transparent 38%),radial-gradient(ellipse at 100% 100%,#fff0df 0,transparent 42%),var(--paper);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+    button,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #4cb3b2;outline-offset:2px}
+    .shell{max-width:1070px;margin:auto;padding:27px 22px 40px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:27px}
+    .identity{display:flex;align-items:center;gap:13px}.logo{width:53px;height:53px;border-radius:15px;background:#277e83;display:grid;grid-template-columns:repeat(2,12px);grid-template-rows:repeat(2,12px);gap:3px;place-content:center;transform:rotate(-6deg);box-shadow:0 12px 28px #267c8333}.logo i{display:block;background:#d6ede7;border-radius:3px}.logo i:nth-child(2){background:#ffd9bd}.logo i:nth-child(3){background:#fbdc92}.logo i:nth-child(4){background:#a6c8e6}
+    .brand{font-size:25px;line-height:1;font-weight:900;letter-spacing:-1.3px}.tagline{font-size:12px;color:#819094;margin-top:6px}.offline{border:1px solid #e3eae6;border-radius:99px;padding:9px 13px;font-size:11px;font-weight:800;background:white;color:#68837d}
+    .layout{display:grid;grid-template-columns:minmax(0,640px) minmax(245px,1fr);gap:24px;align-items:start}
+    .game,.side-card{border:1px solid #e4e9e4;border-radius:25px;background:rgba(255,255,255,.97);box-shadow:var(--shadow)}.game{padding:23px 28px 26px}.side-card{padding:26px 23px}
+    .bar{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:17px}.eyebrow{font-size:10px;font-weight:850;letter-spacing:.12em;color:#94a19f;text-transform:uppercase}.bar h1{font-size:23px;letter-spacing:-.7px;line-height:1.2;margin:3px 0 0}
+    .level-select{appearance:none;background:#f5f8f7 url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23567779" stroke-width="2.5"%3E%3Cpath d="m6 9 6 6 6-6"/%3E%3C/svg%3E') no-repeat right 10px center;padding:9px 31px 9px 11px;border:1px solid #e3eae5;border-radius:11px;color:#38545b;font-size:12px;font-weight:800}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}.stat{background:#f6f8f6;padding:11px 13px;border-radius:13px;min-width:0}.stat small{display:block;font-size:10px;font-weight:750;text-transform:uppercase;letter-spacing:.07em;color:#8a9b99}.stat b{display:block;font-size:20px;letter-spacing:-.8px;line-height:1.35;font-variant-numeric:tabular-nums}.stat b span{font-size:12px;color:#a1aba9;letter-spacing:0}
+    .track{height:6px;background:#edf2ef;border-radius:99px;margin-bottom:19px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,#5fb5a5,#e6bd75);border-radius:99px;transition:width .15s}
+    .board-shell{max-width:538px;aspect-ratio:1;margin:0 auto;position:relative}.board{position:absolute;inset:0;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));grid-template-rows:repeat(var(--n),minmax(0,1fr));border:3px solid #344e52;border-radius:13px;overflow:hidden;background:#fff;touch-action:none;user-select:none;-webkit-user-select:none}
+    .cell{position:relative;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;background:#fff;border:1px solid #e5eae5;transition:background .09s}
+    .cell.placed{background:var(--patch-fill);border-color:var(--patch-fill)}.cell.edge-l{border-left:3px solid var(--patch-edge)}.cell.edge-r{border-right:3px solid var(--patch-edge)}.cell.edge-t{border-top:3px solid var(--patch-edge)}.cell.edge-b{border-bottom:3px solid var(--patch-edge)}
+    .cell.preview{background:#b5e4dd!important;border-color:#75c0b2!important}.cell.preview.bad{background:#ffd9d2!important;border-color:#eeada2!important}.cell.hint{background:#ffe6a6!important;border-color:#ddac47!important}.cell.cursor{outline:2px dashed #1b7e86;outline-offset:-5px;z-index:2}
+    .clue{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px;width:73%;height:73%;max-width:49px;max-height:49px;min-width:24px;min-height:24px;border-radius:11px;background:#fff;color:#2d464b;border:1px solid #e0e7e3;box-shadow:0 2px 7px rgba(32,49,48,.13);line-height:1}.clue strong{font-size:clamp(12px,2.7vw,19px);font-weight:900;letter-spacing:-.7px}.clue .shape{display:block;height:11px;min-height:11px;position:relative;margin-top:1px}.shape .shape-drawing{border:2px solid #50777a;border-radius:1px;display:block}.shape .shape-square{width:10px;height:10px}.shape .shape-wide{width:17px;height:8px;margin-top:1px}.shape .shape-tall{width:7px;height:11px}.shape .shape-any{border:0;font-size:13px;font-weight:850;margin-top:-2px}.clue.only-shape .shape{height:20px;display:grid;place-items:center}.clue.only-shape .shape-drawing{transform:scale(1.22)}
+    .message{margin:13px auto 12px;text-align:center;min-height:34px;font-size:12px;font-weight:700;color:#77888b}.message.error{color:#bc5c4d}.message.success{color:#237e68}
+    .actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.btn{display:flex;align-items:center;justify-content:center;gap:6px;border-radius:12px;padding:12px 8px;border:1px solid #dde7e2;background:#fff;color:#496369;font-size:12px;font-weight:850;transition:background .15s}.btn:hover{background:#edf8f4}.btn:disabled{opacity:.4;cursor:not-allowed}.btn.primary{background:var(--teal);border-color:var(--teal);color:white}.btn.primary:hover{background:var(--teal-dark)}
+    .side-card h2{font-size:18px;letter-spacing:-.5px;margin:0 0 16px}.rule{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px}.rule-ico{width:32px;height:32px;flex:none;display:grid;place-items:center;border-radius:10px;background:#ecf5f2;color:#327b7a;font-size:14px;font-weight:850}.rule strong{display:block;font-size:12px;margin:1px 0 4px}.rule p{font-size:12px;line-height:1.5;color:#81908f;margin:0}
+    .legend{padding:15px;background:#f7faf6;border-radius:14px;margin:6px 0 18px}.legend strong{font-size:12px}.legend-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 9px;margin-top:10px}.legend-grid div{display:flex;align-items:center;gap:7px;font-size:11px;color:#667e7c}.legend-symbol{width:23px;height:19px;display:grid;place-items:center;color:#537775}.legend-symbol i{border:2px solid #578483;display:block}.legend-symbol .sq{width:13px;height:13px}.legend-symbol .wide{width:21px;height:10px}.legend-symbol .tall{width:9px;height:18px}
+    .tip{background:#fff4e8;border-radius:12px;padding:13px 14px;font-size:11px;color:#957459;line-height:1.6;margin-bottom:16px}.tip strong{display:block;color:#845d39;font-size:12px;margin-bottom:3px}.new{width:100%;border:1px solid #cfdfd9;background:#e8f4ef;color:#2d7774;font-size:12px;font-weight:850;padding:13px;border-radius:12px}.new:hover{background:#d9ede5}.foot{text-align:center;font-size:10px;color:#a3aeaa;margin-top:15px}
+    .win{position:absolute;inset:0;border-radius:11px;background:#fffffff0;backdrop-filter:blur(5px);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:13px;padding:18px}.win[hidden]{display:none}.trophy{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#dcf6ed;color:#209579;font-size:32px}.win h2{font-size:26px;letter-spacing:-1px;margin:0}.win p{margin:0;font-size:13px;color:#738685}.win .btn{padding:13px 21px}
+    @media(max-width:830px){.layout{grid-template-columns:1fr;max-width:680px;margin:0 auto}.shell{max-width:720px;padding:17px 13px 30px}.top{margin-bottom:18px}.game{padding:18px 20px 21px}.side-card{padding:21px}.offline{display:none}}
+    @media(max-width:380px){.shell{padding:12px 7px}.game{padding:14px 11px}.bar h1{font-size:19px}.level-select{max-width:133px;font-size:11px}.stat{padding:9px 8px}.stat b{font-size:17px}.btn{font-size:11px;padding:10px 3px}.clue{border-radius:7px}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="top"><div class="identity"><div class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div><div class="brand">Patches</div><div class="tagline">Ein Rechteck. Ein Hinweis. Ein perfektes Raster.</div></div></div><div class="offline">● Offline spielbar</div></header>
+    <main class="layout">
+      <section class="game" aria-label="Patches-Rätsel">
+        <div class="bar"><div><div class="eyebrow" id="round">Rätsel 01</div><h1>Finde alle Rechtecke</h1></div><label><span class="eyebrow" style="display:block;margin-bottom:4px">Schwierigkeit</span><select class="level-select" id="level" aria-label="Schwierigkeit"><option value="easy">Leicht · 6 × 6</option><option value="medium">Mittel · 7 × 7</option><option value="hard">Schwer · 8 × 8</option></select></label></div>
+        <div class="stats"><div class="stat"><small>Zeit</small><b id="time">00:00</b></div><div class="stat"><small>Rechtecke</small><b><span id="done" style="font:inherit;color:inherit">0</span><span id="total"> / 8</span></b></div><div class="stat"><small>Belegte Felder</small><b><span id="covered" style="font:inherit;color:inherit">0</span><span id="area"> / 36</span></b></div></div>
+        <div class="track"><div class="fill" id="progress"></div></div>
+        <div class="board-shell"><div class="board" id="board" role="grid" tabindex="0" aria-label="Rechtecke durch Ziehen von einer Ecke zur gegenüberliegenden Ecke markieren"></div><div class="win" id="win" hidden><div class="trophy">✓</div><h2>Alles passt!</h2><p id="win-detail">Du hast das Raster vollständig ausgefüllt.</p><button class="btn primary" id="again">Nächstes Rätsel →</button></div></div>
+        <div class="message" id="message" role="status" aria-live="polite">Ziehe von einer Rechteck-Ecke zur gegenüberliegenden Ecke.</div>
+        <div class="actions"><button class="btn" id="undo" disabled>↶ Rückgängig</button><button class="btn" id="reset">⟳ Neustart</button><button class="btn" id="hint">✦ Hinweis</button></div>
+      </section>
+      <aside><div class="side-card"><h2>So geht Patches</h2>
+        <div class="rule"><div class="rule-ico">▦</div><div><strong>Das ganze Raster ausfüllen</strong><p>Alle Felder gehören zu genau einem Rechteck – ohne Lücken oder Überlappungen.</p></div></div>
+        <div class="rule"><div class="rule-ico">1</div><div><strong>Genau ein Hinweis je Rechteck</strong><p>Das Rechteck muss ein Hinweisfeld enthalten, aber niemals zwei.</p></div></div>
+        <div class="rule"><div class="rule-ico">4</div><div><strong>Zahl = Fläche</strong><p>Eine 4 bedeutet genau vier Kästchen. Bei ? musst du die Größe selbst ermitteln.</p></div></div>
+        <div class="rule"><div class="rule-ico">□</div><div><strong>Symbol = Form</strong><p>Das Symbol zeigt Quadrat, breites oder hohes Rechteck an. Ohne Formvorgabe ist alles erlaubt.</p></div></div>
+        <div class="legend"><strong>Formensymbole</strong><div class="legend-grid"><div><span class="legend-symbol"><i class="sq"></i></span>Quadrat</div><div><span class="legend-symbol"><i class="wide"></i></span>Breit</div><div><span class="legend-symbol"><i class="tall"></i></span>Hoch</div><div><span class="legend-symbol">◇</span>Beliebig</div></div></div>
+        <div class="tip"><strong>💡 Tipp zur Bedienung</strong>Ziehe über das Raster, um eine Fläche aufzuspannen. Tippe auf ein fertiges Rechteck, um es zu entfernen. Ein Hinweis markiert kurz den korrekten Bereich.</div>
+        <button class="new" id="new">+ Neues Rätsel erzeugen</button>
+      </div><div class="foot">Eigenständige Version nach den Patches-Regeln · Keine Verbindung zu LinkedIn</div></aside>
+    </main>
+  </div>
+  <script>
+  (()=>{
+    'use strict';
+    const $=id=>document.getElementById(id);
+    const board=$('board'),settings={easy:{size:6,parts:8,hidden:2},medium:{size:7,parts:10,hidden:5},hard:{size:8,parts:13,hidden:9}};
+    const palette=[['#d4f0e8','#4f9c86'],['#ffe8ce','#d5995a'],['#e4e5fc','#8989d0'],['#ffe4e0','#ce8279'],['#deedf9','#6b9cbe'],['#e9f1c8','#9baa64'],['#f2e5f2','#b58cb9'],['#d9f1f0','#60aaa5'],['#f5e9cf','#c5a36a'],['#fbe3eb','#d18ea8'],['#e7ebe1','#899d84'],['#e2e7fc','#899acc'],['#fff1d9','#e3b66e']];
+    let level='easy',edition=1,puzzle,placements=new Map(),history=[],cells=[],anchor=-1,cursor=-1,preview=null,dragId=null,dragging=false,hintRect=null,hintTimeout=null,startedAt=null,priorMs=0,ticker=null,finished=false,hintCount=0;
+
+    function randomMaker(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+    function hash(str){let v=2166136261;for(let i=0;i<str.length;i++){v^=str.charCodeAt(i);v=Math.imul(v,16777619);}return v>>>0;}
+    function shuffle(arr,rng){for(let i=arr.length-1;i>0;i--){let j=Math.floor(rng()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+    function area(rect){return rect.w*rect.h;}
+    function shape(rect){return rect.w===rect.h?'square':rect.w>rect.h?'wide':'tall';}
+    function inside(rect,x,y){return x>=rect.x&&x<rect.x+rect.w&&y>=rect.y&&y<rect.y+rect.h;}
+    function rectIndices(rect,n){let result=[];for(let y=rect.y;y<rect.y+rect.h;y++)for(let x=rect.x;x<rect.x+rect.w;x++)result.push(y*n+x);return result;}
+    function sameRect(a,b){return !!a&&!!b&&a.x===b.x&&a.y===b.y&&a.w===b.w&&a.h===b.h;}
+
+    function makeTiling(n,partCount,rng){
+      const rects=[{x:0,y:0,w:n,h:n}];
+      while(rects.length<partCount){
+        const options=rects.map((rect,i)=>{
+          const cuts=[];
+          for(let cut=1;cut<rect.w;cut++)if(cut*rect.h>=2&&(rect.w-cut)*rect.h>=2)cuts.push({axis:'x',cut});
+          for(let cut=1;cut<rect.h;cut++)if(cut*rect.w>=2&&(rect.h-cut)*rect.w>=2)cuts.push({axis:'y',cut});
+          return {rect,i,cuts};
+        }).filter(x=>x.cuts.length);
+        if(!options.length)break;
+        options.sort((a,b)=>area(b.rect)-area(a.rect));
+        const chosen=options[Math.floor(rng()*Math.min(3,options.length))];
+        const cuts=chosen.cuts.filter(c=>{
+          const length=c.axis==='x'?chosen.rect.w:chosen.rect.h;
+          return c.cut>=Math.max(1,Math.floor(length/4))&&c.cut<=Math.ceil(length*3/4);
+        });
+        const pool=cuts.length?cuts:chosen.cuts;
+        const cut=pool[Math.floor(rng()*pool.length)];
+        const a={...chosen.rect},b={...chosen.rect};
+        if(cut.axis==='x'){a.w=cut.cut;b.x+=cut.cut;b.w-=cut.cut;}else{a.h=cut.cut;b.y+=cut.cut;b.h-=cut.cut;}
+        rects.splice(chosen.i,1,a,b);
+      }
+      return rects;
+    }
+
+    function candidatesForClues(n,clues){
+      const byClue=[],byCell=Array.from({length:n*n},()=>[]);
+      for(let ci=0;ci<clues.length;ci++){
+        const clue=clues[ci],list=[];
+        for(let h=1;h<=n;h++)for(let w=1;w<=n;w++){
+          if(clue.size!==null&&w*h!==clue.size)continue;
+          if(clue.shape!==null&&shape({w,h})!==clue.shape)continue;
+          for(let y=Math.max(0,clue.y-h+1);y<=Math.min(clue.y,n-h);y++)for(let x=Math.max(0,clue.x-w+1);x<=Math.min(clue.x,n-w);x++){
+            const rect={x,y,w,h};
+            if(clues.some((other,oi)=>oi!==ci&&inside(rect,other.x,other.y)))continue;
+            let mask=0n;const indices=rectIndices(rect,n);
+            for(const p of indices)mask|=1n<<BigInt(p);
+            const candidate={clue:ci,rect,mask};list.push(candidate);for(const p of indices)byCell[p].push(candidate);
+          }
+        }
+        byClue.push(list);
+      }
+      return {byClue,byCell};
+    }
+
+    function countSolutions(n,clues,limit=2,nodeLimit=65000){
+      const {byClue,byCell}=candidatesForClues(n,clues),full=(1n<<BigInt(n*n))-1n,allClues=(1<<clues.length)-1;
+      if(byClue.some(x=>!x.length))return 0;
+      let found=0,nodes=0,cutoff=false;
+      function dfs(covered,used){
+        if(cutoff||found>=limit)return;
+        if(++nodes>nodeLimit){cutoff=true;return;}
+        if(used===allClues){if(covered===full)found++;return;}
+        let best=null,bestCount=Infinity;
+        for(let i=0;i<clues.length;i++)if(!(used&(1<<i))){
+          const opts=byClue[i].filter(candidate=>(candidate.mask&covered)===0n);
+          if(!opts.length)return;
+          if(opts.length<bestCount){best=opts;bestCount=opts.length;}
+        }
+        if(bestCount>1){
+          for(let p=0;p<n*n;p++)if(!(covered&(1n<<BigInt(p)))){
+            let opts=[];
+            for(const c of byCell[p])if(!(used&(1<<c.clue))&&(c.mask&covered)===0n)opts.push(c);
+            if(!opts.length)return;
+            if(opts.length<bestCount){best=opts;bestCount=opts.length;if(bestCount===1)break;}
+          }
+        }
+        for(const c of best){dfs(covered|c.mask,used|(1<<c.clue));if(found>=limit||cutoff)return;}
+      }
+      dfs(0n,0);
+      return cutoff?-1:found;
+    }
+
+    function createPuzzle(difficulty,serial){
+      const {size:n,parts,hidden}=settings[difficulty];
+      const today=new Date(),key=[today.getFullYear(),today.getMonth()+1,today.getDate()].join('-');
+      const rng=randomMaker(hash('patchwork-original:'+key+':'+difficulty+':'+serial));
+      for(let attempt=0;attempt<90;attempt++){
+        const solution=makeTiling(n,parts,rng);
+        if(solution.length!==parts)continue;
+        const clues=solution.map((rect,id)=>{
+          // Vary clue locations while keeping them well inside their patch.
+          const x=rect.x+Math.floor(rng()*rect.w),y=rect.y+Math.floor(rng()*rect.h);
+          return {id,x,y,size:area(rect),shape:shape(rect)};
+        });
+        if(countSolutions(n,clues)!==1)continue;
+        const actions=shuffle(clues.flatMap(c=>[{id:c.id,field:'size'},{id:c.id,field:'shape'}]),rng);
+        let removed=0;
+        for(const action of actions){
+          if(removed>=hidden)break;
+          const clue=clues[action.id],prior=clue[action.field];clue[action.field]=null;
+          if(countSolutions(n,clues,2,24000)===1)removed++;
+          else clue[action.field]=prior;
+        }
+        return {size:n,clues,solution,hidden:removed};
+      }
+      // Guaranteed-unique fallback (all pieces span a full row).
+      const solution=Array.from({length:n},(_,y)=>({x:0,y,w:n,h:1}));
+      const clues=solution.map((r,id)=>({id,x:Math.floor(n/2),y:id,size:n,shape:'wide'}));
+      return {size:n,clues,solution,hidden:0};
+    }
+
+    function elapsed(){return priorMs+(startedAt===null?0:Date.now()-startedAt);}
+    function formatted(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+    function updateTime(){$('time').textContent=formatted(elapsed());}
+    function startClock(){if(startedAt===null&&!finished){startedAt=Date.now();if(ticker===null)ticker=setInterval(updateTime,400);}}
+    function stopClock(){if(startedAt!==null){priorMs+=Date.now()-startedAt;startedAt=null;}if(ticker!==null){clearInterval(ticker);ticker=null;}updateTime();}
+    function message(text,type=''){$('message').textContent=text;$('message').className='message'+(type?' '+type:'');}
+    function clonePlacements(){return new Map([...placements].map(([key,rect])=>[key,{...rect}]));}
+    function record(){history.push(clonePlacements());$('undo').disabled=false;}
+    function newPuzzle(){edition++;loadPuzzle();}
+    function loadPuzzle(){
+      stopClock();priorMs=0;startedAt=null;finished=false;hintCount=0;history=[];placements=new Map();preview=null;hintRect=null;anchor=-1;cursor=-1;dragging=false;dragId=null;
+      if(hintTimeout!==null){clearTimeout(hintTimeout);hintTimeout=null;}
+      puzzle=createPuzzle(level,edition);
+      board.style.setProperty('--n',puzzle.size);board.replaceChildren();cells=[];
+      const fragment=document.createDocumentFragment();
+      const clueByCell=new Map(puzzle.clues.map(c=>[c.y*puzzle.size+c.x,c]));
+      for(let i=0;i<puzzle.size*puzzle.size;i++){
+        const cell=document.createElement('div');cell.className='cell';cell.dataset.index=i;cell.setAttribute('role','gridcell');
+        const clue=clueByCell.get(i);
+        if(clue){
+          const badge=document.createElement('span');badge.className='clue'+(clue.size===null?' only-shape':'');
+          const number=document.createElement('strong');number.textContent=clue.size===null?'?':clue.size;badge.appendChild(number);
+          const icon=document.createElement('span');icon.className='shape';
+          const drawing=document.createElement('span');drawing.className='shape-drawing '+(clue.shape===null?'shape-any':'shape-'+clue.shape);drawing.textContent=clue.shape===null?'◇':'';icon.appendChild(drawing);badge.appendChild(icon);cell.appendChild(badge);
+        }
+        const row=Math.floor(i/puzzle.size),col=i%puzzle.size;
+        cell.setAttribute('aria-label',`Zeile ${row+1}, Spalte ${col+1}`+(clue?`, Hinweis ${clue.size??'unbekannt'}, ${clue.shape??'beliebige Form'}`:''));
+        fragment.appendChild(cell);cells.push(cell);
+      }
+      board.appendChild(fragment);
+      $('round').textContent='Rätsel '+String(edition).padStart(2,'0');$('total').textContent=' / '+puzzle.clues.length;$('area').textContent=' / '+puzzle.size*puzzle.size;
+      $('level').value=level;$('win').hidden=true;$('undo').disabled=true;updateTime();render();message('Ziehe von einer Rechteck-Ecke zur gegenüberliegenden Ecke.');
+    }
+
+    function rectangle(a,b){const n=puzzle.size,ax=a%n,ay=Math.floor(a/n),bx=b%n,by=Math.floor(b/n);return {x:Math.min(ax,bx),y:Math.min(ay,by),w:Math.abs(ax-bx)+1,h:Math.abs(ay-by)+1};}
+    function ownerMap(){const map=Array(puzzle.size*puzzle.size).fill(-1);for(const [ci,rect] of placements)for(const index of rectIndices(rect,puzzle.size))map[index]=ci;return map;}
+    function validate(rect){
+      const matches=puzzle.clues.filter(c=>inside(rect,c.x,c.y));
+      if(matches.length!==1)return {ok:false,error:matches.length===0?'Das Rechteck braucht genau ein Hinweisfeld.':'Zwei Hinweisfelder dürfen nicht in einem Rechteck liegen.'};
+      const clue=matches[0];
+      if(clue.size!==null&&area(rect)!==clue.size)return {ok:false,error:`Die Fläche muss ${clue.size} Kästchen groß sein.`};
+      if(clue.shape!==null&&shape(rect)!==clue.shape)return {ok:false,error:'Die Form passt nicht zum Symbol.'};
+      const owners=ownerMap();
+      if(rectIndices(rect,puzzle.size).some(index=>owners[index]!==-1))return {ok:false,error:'Die Rechtecke dürfen sich nicht überlappen.'};
+      return {ok:true,clue};
+    }
+
+    function render(){
+      const n=puzzle.size,owners=ownerMap();
+      for(let i=0;i<cells.length;i++){
+        const cell=cells[i],ci=owners[i];
+        cell.className='cell';
+        if(ci!==-1){
+          const rect=placements.get(ci),y=Math.floor(i/n),x=i%n,[fill,edge]=palette[ci%palette.length];
+          cell.classList.add('placed');cell.style.setProperty('--patch-fill',fill);cell.style.setProperty('--patch-edge',edge);
+          if(x===rect.x)cell.classList.add('edge-l');if(x===rect.x+rect.w-1)cell.classList.add('edge-r');
+          if(y===rect.y)cell.classList.add('edge-t');if(y===rect.y+rect.h-1)cell.classList.add('edge-b');
+        }
+        if(hintRect&&inside(hintRect,i%n,Math.floor(i/n)))cell.classList.add('hint');
+        if(preview&&inside(preview.rect,i%n,Math.floor(i/n))){cell.classList.add('preview');if(!preview.ok)cell.classList.add('bad');}
+        if(cursor===i)cell.classList.add('cursor');
+      }
+      const covered=owners.filter(i=>i!==-1).length;
+      $('done').textContent=placements.size;$('covered').textContent=covered;
+      $('progress').style.width=100*covered/(n*n)+'%';$('undo').disabled=history.length===0||finished;
+    }
+
+    function finish(){
+      finished=true;stopClock();render();
+      $('win-detail').textContent=`${puzzle.clues.length} Rechtecke in ${formatted(elapsed())}`+(hintCount?` · ${hintCount} Hinweis${hintCount===1?'':'e'}`:' · ohne Hinweise')+'.';
+      $('win').hidden=false;message('Das Raster ist vollständig und korrekt gefüllt!','success');
+    }
+    function place(rect){
+      if(finished)return false;
+      const verdict=validate(rect);
+      if(!verdict.ok){message(verdict.error,'error');return false;}
+      record();placements.set(verdict.clue.id,rect);startClock();preview=null;
+      if(placements.size===puzzle.clues.length&&placements.values().reduce((a,r)=>a+area(r),0)===puzzle.size*puzzle.size){finish();return true;}
+      render();message(`Gut! ${placements.size} von ${puzzle.clues.length} Rechtecken gelegt.`);return true;
+    }
+    function removeAt(index){
+      const owner=ownerMap()[index];if(owner===-1||finished)return false;
+      record();placements.delete(owner);render();message('Rechteck entfernt.');return true;
+    }
+    function undo(){if(!history.length||finished)return;placements=history.pop();preview=null;render();message('Letzte Aktion rückgängig gemacht.');}
+    function reset(){loadPuzzle();}
+    function hint(){
+      if(finished)return;
+      const wanted=puzzle.solution.find((rect,i)=>!sameRect(rect,placements.get(i)));
+      if(!wanted){message('Alle Rechtecke sind bereits richtig gesetzt.');return;}
+      hintCount++;hintRect=wanted;render();message('Hinweis: Dieser gelb markierte Bereich bildet ein Rechteck.');
+      if(hintTimeout!==null)clearTimeout(hintTimeout);
+      hintTimeout=setTimeout(()=>{hintRect=null;hintTimeout=null;render();},2700);
+    }
+
+    function cellFromPointer(event){const b=board.getBoundingClientRect(),x=(event.clientX-b.left)/b.width,y=(event.clientY-b.top)/b.height;if(x<0||y<0||x>=1||y>=1)return -1;return Math.floor(y*puzzle.size)*puzzle.size+Math.floor(x*puzzle.size);}
+    board.addEventListener('pointerdown',event=>{
+      if(event.button!==0||finished)return;const index=cellFromPointer(event);if(index<0)return;
+      event.preventDefault();board.focus({preventScroll:true});cursor=-1;
+      if(removeAt(index))return;
+      anchor=index;dragId=event.pointerId;dragging=true;preview={rect:rectangle(index,index),ok:validate(rectangle(index,index)).ok};render();
+      try{board.setPointerCapture(event.pointerId);}catch{}
+    });
+    board.addEventListener('pointermove',event=>{
+      if(!dragging||event.pointerId!==dragId)return;
+      const index=cellFromPointer(event);if(index<0)return;
+      const rect=rectangle(anchor,index);
+      if(preview&&sameRect(preview.rect,rect))return;
+      preview={rect,ok:validate(rect).ok};render();
+    });
+    function endPointer(event,cancel){
+      if(!dragging||event.pointerId!==dragId)return;
+      const index=cellFromPointer(event),finalRect=index>=0?rectangle(anchor,index):preview?.rect;
+      dragging=false;dragId=null;anchor=-1;preview=null;
+      try{board.releasePointerCapture(event.pointerId);}catch{}
+      if(!cancel&&finalRect)place(finalRect);render();
+    }
+    board.addEventListener('pointerup',event=>endPointer(event,false));board.addEventListener('pointercancel',event=>endPointer(event,true));
+    board.addEventListener('keydown',event=>{
+      if(event.key==='Backspace'||event.key==='z'||event.key==='Z'){event.preventDefault();undo();return;}
+      if(event.key==='Escape'){event.preventDefault();anchor=-1;preview=null;render();return;}
+      if(event.key==='Enter'||event.key===' '){
+        event.preventDefault();if(finished)return;
+        if(cursor<0)cursor=0;
+        if(anchor<0){if(removeAt(cursor)){render();return;}anchor=cursor;message('Jetzt die gegenüberliegende Ecke mit den Pfeiltasten wählen und Enter drücken.');}
+        else{const rect=rectangle(anchor,cursor);anchor=-1;preview=null;place(rect);}
+        render();return;
+      }
+      const move={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];
+      if(!move)return;event.preventDefault();
+      if(cursor<0)cursor=0;else{const y=Math.floor(cursor/puzzle.size),x=cursor%puzzle.size;cursor=Math.max(0,Math.min(puzzle.size-1,y+move[0]))*puzzle.size+Math.max(0,Math.min(puzzle.size-1,x+move[1]));}
+      if(anchor>=0){const rect=rectangle(anchor,cursor);preview={rect,ok:validate(rect).ok};}render();
+    });
+    $('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('hint').addEventListener('click',hint);$('new').addEventListener('click',newPuzzle);$('again').addEventListener('click',newPuzzle);
+    $('level').addEventListener('change',event=>{level=event.target.value;edition=1;loadPuzzle();});
+    loadPuzzle();
+    window.patchesTest={createPuzzle,countSolutions,candidatesForClues,rectIndices,inside,area,shape,settings};
+  })();
+  </script>
+</body>
+</html>

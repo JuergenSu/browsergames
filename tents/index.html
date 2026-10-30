@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7fb">
+  <title>Tents & Trees · Rätselwerkstatt</title>
+  <style>
+  :root{--accent:#4f9878;--ink:#27334b;--muted:#8d97a9;--line:#e7eaf1;--paper:#fff;--tone:#f6f7fb}
+  *{box-sizing:border-box}body{margin:0;min-height:100svh;background:radial-gradient(ellipse at 8% 0%,#e8eeff 0,transparent 43%),radial-gradient(ellipse at 99% 100%,#fff0e3 0,transparent 39%),var(--tone);color:var(--ink);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+  button,select{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:3px}.page{max-width:1050px;margin:auto;padding:25px 18px 48px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:14px}.brand-icon{display:grid;place-items:center;width:58px;height:58px;font-size:27px;background:var(--accent);color:#fff;border-radius:19px;box-shadow:0 12px 23px #2a38521a}.brand h1{font-size:25px;letter-spacing:-1px;line-height:1;margin:0}.brand p{font-size:12px;color:var(--muted);margin:6px 0 0}.home{display:block;white-space:nowrap;border-radius:99px;padding:10px 15px;border:1px solid var(--line);background:#fff;color:#65738f;text-decoration:none;font-size:12px;font-weight:750}
+  .layout{display:grid;grid-template-columns:minmax(0,645px) minmax(250px,1fr);gap:22px;align-items:start}.card{border:1px solid #e6eaf0;border-radius:24px;background:#fffffff5;box-shadow:0 22px 56px #27365814}.play{padding:25px}.aside{padding:24px}.head{display:flex;justify-content:space-between;align-items:center;gap:14px}.eyebrow{color:#9ba5b7;font-weight:850;font-size:10px;letter-spacing:.13em;text-transform:uppercase}.head h2{margin:3px 0 0;font-size:20px;letter-spacing:-.6px}.head select{max-width:145px;color:#50607b;background:#f7f9ff;border:1px solid var(--line);border-radius:11px;padding:10px;font-size:12px;font-weight:800}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 0}.stat{padding:10px 12px;background:#f7f9fc;border-radius:13px}.stat span{display:block;color:#9aa5b5;font-size:10px;letter-spacing:.065em;font-weight:850;text-transform:uppercase}.stat b{display:block;font-size:20px;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+  .board-wrap{display:flex;justify-content:center;overflow:auto;max-width:100%}.board{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:3px;padding:7px;background:#26394f;border-radius:17px;width:min(100%,var(--max-board,570px));box-shadow:0 17px 34px #30415c21;touch-action:pan-y;user-select:none}.tile{position:relative;display:grid;place-items:center;min-width:0;aspect-ratio:1;border:0;border-radius:7px;color:#31415c;background:#fff;font-weight:850;font-size:clamp(15px,3.4vw,25px);transition:background .12s,transform .1s;overflow:hidden}.tile:active{transform:scale(.96)}.tile:hover{filter:brightness(.97)}.tile:disabled{cursor:default}.tile.hint{outline:3px solid #ffbd67;outline-offset:-3px;z-index:1}.tile.error{box-shadow:inset 0 0 0 3px #eb6676}
+  .status{min-height:40px;margin:13px 0 8px;display:grid;place-items:center;text-align:center;color:#738299;font-weight:700;font-size:12px}.status.ok{color:#138767}.status.warn{color:#d17a44}.buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.btn{min-height:45px;padding:10px 7px;border:1px solid var(--line);border-radius:12px;background:white;color:#5a6680;font-weight:850;font-size:12px}.btn.primary{background:var(--accent);border-color:var(--accent);color:white}.btn:disabled{opacity:.4;cursor:default}.btn:not(:disabled):hover{filter:brightness(.96)}.numpad{display:none;grid-template-columns:repeat(9,1fr);gap:5px;margin:12px 0}.numpad.on{display:grid}.num{background:#f2f5fb;border:1px solid #e1e8f0;border-radius:9px;color:#344763;font-weight:900;padding:10px 0}.num.active{background:var(--accent);color:white}
+  .aside h3{font-size:16px;margin:0 0 12px}.aside p,.aside li{font-size:13px;line-height:1.7;color:#718098}.aside ul{padding-left:18px;margin:10px 0 21px}.aside li{margin:6px 0}.tag{display:inline-flex;background:#edf3ff;padding:6px 10px;border-radius:99px;color:#7385a5;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.progress{margin:11px 0 21px;height:10px;border-radius:99px;background:#eef1f7;overflow:hidden}.progress>span{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .2s}.tiny{color:#a6b0c0!important;font-size:11px!important}.footer{margin-top:17px;color:#9aa5b8;font-size:11px;text-align:center}
+  .tile.wall{background:#314158;color:#edf5ff}.tile.block{background:#314158}.tile.clue{background:#33445c}.tile.black{background:#27394f}.tile.bulb{background:#ffd76d;color:#936515;text-shadow:0 0 7px #fff}.tile.lit{background:#fff0b8}.tile.cross{color:#9ba7b6}.tile.grass{background:#eaf3df;color:#78a46c}.tile.tent{background:#fff0c6;color:#91642d}.tile.tree{background:#d5eddd;font-size:clamp(17px,3.5vw,27px)}.tile.hitori-black{background:#33445c;color:#fff}.tile.hitori-white{background:#fff}.tile.path{background:#f5f8fc}.tile.selected{background:#fff4cc}.tile.endpoint{background:#eaf1fa}.tile.kakuro-clue{background:linear-gradient(to bottom right,#34445b 49%,#d0d7e2 49.7%,#d0d7e2 50.3%,#34445b 51%);color:#fff;font-size:11px}.tile.kakuro-clue .across{position:absolute;right:4px;top:2px}.tile.kakuro-clue .down{position:absolute;left:4px;bottom:2px}.tile.kakuro-given{background:#edf3ff;color:#5674b0}.tile.kakuro-active{background:#fff1bc;box-shadow:inset 0 0 0 2px #e4ba54}.tile .route{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.tile .node{z-index:1;display:grid;place-items:center;border-radius:50%;width:55%;aspect-ratio:1;background:#fff;color:var(--node-color,#fff);font-size:clamp(10px,2.6vw,17px);box-shadow:0 1px 4px #0003}.tile .tile-label{position:relative;z-index:1}
+  @media(max-width:760px){.page{padding:15px 12px 30px}.layout{grid-template-columns:1fr;gap:14px}.play,.aside{padding:17px}.brand-icon{width:49px;height:49px;border-radius:15px}.brand h1{font-size:21px}.brand p{font-size:10px}.home{font-size:11px;padding:9px 11px}.board{gap:2px;padding:5px;border-radius:13px}.tile{border-radius:4px}.stats{margin:13px 0}.stat{padding:8px}.stat b{font-size:18px}}
+  @media(max-width:385px){.brand p{max-width:170px}.head h2{font-size:17px}.head select{max-width:115px}.tile{font-size:14px}.tile.kakuro-clue{font-size:9px}}
+  </style>
+</head>
+<body>
+<div class="page">
+  <header><div class="brand"><div class="brand-icon">⛺</div><div><h1>Tents & Trees</h1><p>Camping mit Köpfchen</p></div></div><a class="home" href="../">← Alle Spiele</a></header>
+  <div class="layout">
+    <main class="card play">
+      <div class="head"><div><span class="eyebrow">Rätselwerkstatt · 24 Level</span><h2 id="levelLabel">Level 1</h2></div><select id="level" aria-label="Level wählen"></select></div>
+      <div class="stats"><div class="stat"><span>Zeit</span><b id="time">00:00</b></div><div class="stat"><span>Züge</span><b id="moves">0</b></div><div class="stat"><span>Fortschritt</span><b id="count">0/0</b></div></div>
+      <div class="board-wrap"><div class="board" id="board" role="group" aria-label="Spielbrett"></div></div>
+      <div class="numpad" id="numpad"></div><div id="status" class="status" aria-live="polite">Viel Spaß!</div>
+      <div class="buttons"><button id="undo" class="btn">↶ Zurück</button><button id="hint" class="btn">✦ Hinweis</button><button id="restart" class="btn">⟳ Neustart</button></div>
+      <div class="buttons" style="margin-top:9px"><button id="prev" class="btn">← Vorheriges</button><button id="next" class="btn primary">Nächstes →</button><button id="random" class="btn">∞ Endlos</button></div>
+    </main>
+    <aside class="card aside"><span class="tag">So funktioniert's</span><h3 style="margin-top:16px">Tents & Trees</h3><div id="rules"><p>Jeder Baum braucht genau ein Zelt neben sich – waagerecht oder senkrecht.</p><ul><li>Jedes Zelt gehört genau zu einem Baum.</li><li>Zelte berühren sich nie, auch nicht diagonal.</li><li>Die Zahlen am Rand verraten die Zeltanzahl in jeder Zeile und Spalte.</li><li>Ein Tipp setzt ein Zelt, der zweite markiert Gras, der dritte leert das Feld.</li></ul></div><h3>Dein Fortschritt</h3><p id="progressText">0 von 24 Level geschafft</p><div class="progress"><span id="progressBar"></span></div><p class="tiny">Alle Spielstände bleiben lokal in diesem Browser. Kein Login und keine Internetverbindung nötig.</p><p class="tiny">Tipp: Auf dem Smartphone kannst du die Felder direkt antippen.</p></aside>
+  </div><div class="footer">Mit Liebe zum Knobeln · Unabhängige Browser-Version</div>
+</div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id),U={
+ hash(s){let x=2166136261;for(let i=0;i<s.length;i++)x=Math.imul(x^s.charCodeAt(i),16777619);return x>>>0},
+ rng(seed){let a=seed>>>0;return()=>{a+=0x6D2B79F5;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}},
+ shuffle(arr,rng){for(let i=arr.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr},
+ neighbors(i,r,c){let y=Math.floor(i/c),x=i%c,res=[];if(y>0)res.push(i-c);if(x<c-1)res.push(i+1);if(y<r-1)res.push(i+c);if(x>0)res.push(i-1);return res},
+ rc(i,c){return [Math.floor(i/c),i%c]},
+ unique(arr){return Array.from(new Set(arr))}
+};
+const GAME={
+ id:'tents',maxWidth:'570px',
+ generate(level,seed,rng){const N=level==='random'?[6,7,8][Math.floor(rng()*3)]:level<=8?6:level<=16?7:8,target=N===6?5:N===7?7:9;
+  for(let attempt=0;attempt<600;attempt++){
+   const tents=[];for(const idx of U.shuffle(Array.from({length:N*N},(_,i)=>i),rng)){
+    let r=Math.floor(idx/N),c=idx%N;if(tents.some(t=>Math.abs(Math.floor(t/N)-r)<=1&&Math.abs(t%N-c)<=1))continue;
+    tents.push(idx);if(tents.length===target)break;
+   }if(tents.length!==target)continue;
+   const tentSet=new Set(tents),trees=[],taken=new Set();
+   for(const tent of U.shuffle(tents.slice(),rng)){
+    const options=U.shuffle(U.neighbors(tent,N,N).filter(x=>!tentSet.has(x)&&!taken.has(x)),rng);
+    if(!options.length)break;trees.push(options[0]);taken.add(options[0]);
+   }if(trees.length!==target)continue;
+   const rows=Array(N).fill(0),cols=Array(N).fill(0);for(const i of tents){rows[Math.floor(i/N)]++;cols[i%N]++}
+   let givens=[],count=tentsSolutionCount(N,trees,rows,cols,givens,2);
+   for(const idx of U.shuffle(tents.slice(),rng)){if(count===1)break;givens.push(idx);count=tentsSolutionCount(N,trees,rows,cols,givens,2)}
+   if(count!==1||givens.length>Math.ceil(target*.55))continue;
+   return {rows:N+1,cols:N+1,N,trees,rowsHint:rows,colsHint:cols,givens,solution:tents};
+  }throw Error('Zelt-Rätsel mit eindeutiger Lösung nicht gefunden');
+ },
+ initial(p){const values=Array(p.N*p.N).fill(0);for(const i of p.givens)values[i]=1;return {values}},
+ act(p,s,i,mode){const [r,c]=U.rc(i,p.cols);if(r===0||c===0)return false;const j=(r-1)*p.N+(c-1);if(p.trees.includes(j)||p.givens.includes(j))return false;s.values[j]=mode==='right'?(s.values[j]===2?0:2):(s.values[j]+1)%3;},
+ cell(p,s,i){const [r,c]=U.rc(i,p.cols);if(r===0&&c===0)return {cls:'wall',text:'✦',title:'Zelt-Rätsel'};
+  if(r===0)return {cls:'wall',text:p.colsHint[c-1],title:p.colsHint[c-1]+' Zelte in Spalte '+c};
+  if(c===0)return {cls:'wall',text:p.rowsHint[r-1],title:p.rowsHint[r-1]+' Zelte in Zeile '+r};
+  const j=(r-1)*p.N+(c-1);if(p.trees.includes(j))return {cls:'tree',text:'🌳',title:'Baum'};
+  return {cls:s.values[j]===1?'tent':s.values[j]===2?'grass':'',text:s.values[j]===1?'⛺':s.values[j]===2?'·':'',title:'Zeile '+r+', Spalte '+c+(p.givens.includes(j)?' – festes Zelt':'')}
+ },
+ check(p,s){const t=s.values.map((v,i)=>v===1?i:-1).filter(i=>i>=0),errors=[];
+  const row=Array(p.N).fill(0),col=Array(p.N).fill(0);for(const i of t){row[Math.floor(i/p.N)]++;col[i%p.N]++;}
+  for(const i of t){const r=Math.floor(i/p.N),c=i%p.N;if(row[r]>p.rowsHint[r]||col[c]>p.colsHint[c]||t.some(j=>i!==j&&Math.abs(Math.floor(j/p.N)-r)<=1&&Math.abs(j%p.N-c)<=1)||!p.trees.some(j=>U.neighbors(j,p.N,p.N).includes(i)))errors.push((r+1)*p.cols+c+1)}
+  let valid=row.every((v,i)=>v===p.rowsHint[i])&&col.every((v,i)=>v===p.colsHint[i]);
+  if(valid&&errors.length===0)valid=tentsMatching(p.N,p.trees,t);
+  return {won:valid&&errors.length===0,errors};
+ },
+ progress(p,s){return [s.values.filter(v=>v===1).length,p.solution.length]},
+ hint(p,s){const bad=s.values.findIndex((v,i)=>v===1&&!p.solution.includes(i));if(bad>=0)return {index:(Math.floor(bad/p.N)+1)*p.cols+(bad%p.N)+1,message:'Dieses Zelt ist vermutlich falsch. Prüfe die angrenzenden Felder.'};let i=p.solution.find(j=>s.values[j]!==1);return i===undefined?null:{index:(Math.floor(i/p.N)+1)*p.cols+(i%p.N)+1,message:'In diesem Feld könnte ein Zelt stehen.'}},
+ feedback(){return 'Jeder Baum braucht ein Zelt. Zelte dürfen sich nicht berühren.'}
+};
+function tentsMatching(N,trees,tents){if(trees.length!==tents.length)return false;const used=new Set();const rec=(j)=>{if(j===trees.length)return true;for(const t of tents){if(used.has(t)||!U.neighbors(trees[j],N,N).includes(t))continue;used.add(t);if(rec(j+1))return true;used.delete(t)}return false};return rec(0)}
+function tentsSolutionCount(N,trees,rows,cols,givens,limit=2){
+ let candidates=trees.map(t=>U.neighbors(t,N,N).filter(v=>!trees.includes(v))),order=trees.map((_,i)=>i).sort((a,b)=>candidates[a].length-candidates[b].length),row=Array(N).fill(0),col=Array(N).fill(0),placed=[],sets=new Set();
+ function rec(d){if(sets.size>=limit)return;if(d===order.length){if(!row.every((v,i)=>v===rows[i])||!col.every((v,i)=>v===cols[i]))return;if(givens.some(v=>!placed.includes(v)))return;sets.add(placed.slice().sort((a,b)=>a-b).join(','));return}
+  for(const i of candidates[order[d]]){const r=Math.floor(i/N),c=i%N;if(row[r]>=rows[r]||col[c]>=cols[c]||placed.some(j=>Math.abs(Math.floor(j/N)-r)<=1&&Math.abs(j%N-c)<=1))continue;
+   row[r]++;col[c]++;placed.push(i);rec(d+1);placed.pop();row[r]--;col[c]--;if(sets.size>=limit)return}
+ }rec(0);return sets.size;
+}
+
+const KEY='raetselwerkstatt-'+GAME.id+'-v2',TOTAL=24;
+let store={done:{},best:{},last:1};try{store=Object.assign(store,JSON.parse(localStorage.getItem(KEY)||'{}')||{});}catch{}
+let puzzle=null,state=null,level=1,history=[],moves=0,won=false,startAt=null,spent=0,timer=null,hintIndex=-1,tiles=[],lastMessage='';
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch{}}
+function elapsed(){return spent+(startAt===null?0:Date.now()-startAt)}
+function clock(){let s=Math.floor(elapsed()/1000);$('time').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function startClock(){if(startAt===null&&!won){startAt=Date.now();timer=setInterval(clock,300)}}
+function stopClock(){if(startAt!==null){spent+=Date.now()-startAt;startAt=null}clearInterval(timer);timer=null;clock()}
+function message(msg,kind=''){$('status').textContent=msg;$('status').className='status '+kind}
+function snapshot(){history.push({state:JSON.parse(JSON.stringify(state)),moves});if(history.length>140)history.shift()}
+function levelName(n){return n==='random'?'Endlos-Modus':n<=8?'Leicht · Level '+n:n<=16?'Mittel · Level '+n:'Schwer · Level '+n}
+function updateProgress(){let count=Object.keys(store.done).filter(k=>store.done[k]&&Number(k)<=24).length;$('progressText').textContent=count+' von 24 Level geschafft';$('progressBar').style.width=(count/24*100)+'%'}
+function render(){
+ const result=GAME.check(puzzle,state),errors=new Set(result.errors||[]),complete=GAME.progress(puzzle,state);
+ for(let i=0;i<tiles.length;i++){let t=tiles[i],d=GAME.cell(puzzle,state,i);t.className='tile '+(d.cls||'')+(errors.has(i)?' error':'')+(hintIndex===i?' hint':'');t.innerHTML=d.html??String(d.text??'');t.title=d.title||'';t.setAttribute('aria-label',d.title||'Feld '+(i+1));t.style.cssText=d.style||'';}
+ $('moves').textContent=moves;$('count').textContent=complete[0]+'/'+complete[1];$('undo').disabled=!history.length||won;$('hint').disabled=won;$('prev').disabled=level===1;$('next').disabled=level==='random'||level===24&&!won;
+ if(GAME.afterRender)GAME.afterRender(puzzle,state);
+ if(result.won&&!won){won=true;stopClock();let sec=Math.max(1,Math.floor(elapsed()/1000));if(level!=='random'){store.done[level]=true;store.best[level]=Math.min(store.best[level]||Infinity,sec);}persist();updateProgress();message('🎉 Gelöst! '+(level==='random'?'Noch eine Runde?':'Weiter zum nächsten Level!'),'ok');$('next').disabled=level==='random'||level===24;$('hint').disabled=true;$('undo').disabled=true;}
+}
+function apply(index,mode='click'){
+ if(won)return;if(index<0||index>=puzzle.rows*puzzle.cols)return;
+ let before=JSON.stringify(state);let proposed=JSON.parse(before),result=GAME.act(puzzle,proposed,index,mode);
+ if(result===false||JSON.stringify(proposed)===before)return;
+ if(GAME.selectionOnly){state=proposed;hintIndex=-1;render();return;}
+ snapshot();state=proposed;moves++;hintIndex=-1;startClock();message(GAME.feedback?.(puzzle,state)||'Weiter so – löse das gesamte Feld.');render();
+}
+function selectNumber(n){if(won||!GAME.number)return;const before=JSON.stringify(state),copy=JSON.parse(before);if(GAME.number(puzzle,copy,n)===false||JSON.stringify(copy)===before)return;snapshot();state=copy;moves++;startClock();hintIndex=-1;message('Zahl gesetzt.');render()}
+function boardSetup(){
+ $('board').style.setProperty('--cols',puzzle.cols);$('board').style.setProperty('--max-board',GAME.maxWidth||'570px');let f=document.createDocumentFragment();tiles=[];
+ for(let i=0;i<puzzle.rows*puzzle.cols;i++){
+  let el=document.createElement('button');el.type='button';el.className='tile';el.addEventListener('click',()=>apply(i,'click'));
+  el.addEventListener('contextmenu',e=>{e.preventDefault();apply(i,'right')});
+  el.addEventListener('keydown',e=>{let r=Math.floor(i/puzzle.cols),c=i%puzzle.cols,j={ArrowLeft:c?i-1:-1,ArrowRight:c<puzzle.cols-1?i+1:-1,ArrowUp:r?i-puzzle.cols:-1,ArrowDown:r<puzzle.rows-1?i+puzzle.cols:-1}[e.key];if(j>=0){e.preventDefault();tiles[j].focus()}});
+  if(GAME.drag){el.addEventListener('pointerenter',e=>{if(e.buttons===1&&e.pointerType==='mouse')apply(i,'drag')})}
+  tiles.push(el);f.appendChild(el);
+ }
+ $('board').replaceChildren(f);
+ if(GAME.drag){$('board').addEventListener('pointermove',e=>{if(e.pointerType!=='touch'||e.buttons!==1)return;const el=document.elementFromPoint(e.clientX,e.clientY);let i=tiles.indexOf(el?.closest?.('.tile'));if(i>=0&&i!==GAME._lastDrag){GAME._lastDrag=i;apply(i,'drag')}});$('board').addEventListener('pointerup',()=>{GAME._lastDrag=-1})}
+}
+function load(n,randomSeed){stopClock();spent=0;clock();level=n;let seed=typeof randomSeed==='number'?randomSeed:U.hash(GAME.id+'-v3-'+n),rng=U.rng(seed);
+ try{puzzle=GAME.generate(n,seed,rng)}catch(e){console.error(e);message('Level konnte nicht erzeugt werden. Bitte neu starten.','warn');return}
+ state=GAME.initial(puzzle);history=[];moves=0;won=false;hintIndex=-1;$('level').value=String(n);$('levelLabel').textContent=levelName(n);store.last=n==='random'?store.last:n;persist();boardSetup();GAME.mount?.(puzzle,state);message('Los geht’s – viel Freude beim Knobeln!');render();}
+function hint(){if(won)return;let suggestion=GAME.hint(puzzle,state);if(!suggestion){message('Gerade kein sinnvoller Hinweis verfügbar.','warn');return}hintIndex=suggestion.index??-1;message(suggestion.message||'Dieses Feld ist ein guter nächster Schritt.','ok');render();}
+function init(){for(let i=1;i<=24;i++)$('level').add(new Option((i<=8?'●':i<=16?'◆':'★')+' '+i+(store.done[i]?' ✓':''),i));$('level').add(new Option('∞ Endlos','random'));
+ $('level').addEventListener('change',e=>load(e.target.value==='random'?'random':Number(e.target.value)));
+ $('restart').addEventListener('click',()=>load(level,level==='random'?Math.floor(Math.random()*4294967295):undefined));
+ $('random').addEventListener('click',()=>load('random',Math.floor(Math.random()*4294967295)));
+ $('prev').addEventListener('click',()=>{if(level!=='random')load(Math.max(1,level-1))});
+ $('next').addEventListener('click',()=>{if(level!=='random'&&level<24)load(level+1)});
+ $('undo').addEventListener('click',()=>{if(!history.length||won)return;let prev=history.pop();state=prev.state;moves=prev.moves;hintIndex=-1;message('Letzter Zug zurückgenommen.');render()});
+ $('hint').addEventListener('click',hint);let n=$('numpad');if(GAME.numpad){n.classList.add('on');for(let v=1;v<=9;v++){let b=document.createElement('button');b.type='button';b.className='num';b.textContent=v;b.addEventListener('click',()=>selectNumber(v));n.appendChild(b)}let b=document.createElement('button');b.type='button';b.className='num';b.style.gridColumn='1 / -1';b.textContent='⌫ Feld löschen';b.addEventListener('click',()=>selectNumber(0));n.appendChild(b);document.addEventListener('keydown',e=>{if(e.target.matches('input,select,textarea'))return;if(/^[1-9]$/.test(e.key))selectNumber(Number(e.key));if(e.key==='Backspace'||e.key==='Delete')selectNumber(0)})}
+ updateProgress();load(Math.min(24,Math.max(1,Number(store.last)||1)))}
+init();
+</script>
+</body></html>

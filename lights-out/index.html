@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f7fb">
+  <meta name="description" content="Lights Out: Schalte auf einem 6×6-Spielfeld alle Lichter aus. 24 lösbare Rätsel, Tipps und Endlosmodus.">
+  <title>Lights Out – Das Lichträtsel</title>
+  <style>
+    :root{color-scheme:light;--ink:#243047;--muted:#8490a4;--cyan:#159baf;--deep:#076b83;--paper:#f4f7fb;--border:#e2e8f0;--shadow:0 20px 60px rgba(26,54,91,.09)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100svh;background:radial-gradient(ellipse at 5% 0%,#dcf5f3 0,transparent 34%),radial-gradient(ellipse at 100% 90%,#fff1db 0,transparent 35%),var(--paper);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+    button,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #74cddd;outline-offset:3px}button:disabled{cursor:not-allowed;opacity:.45}
+    .shell{max-width:1060px;margin:auto;padding:30px 22px 44px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:25px}.identity{display:flex;align-items:center;gap:13px}.logo{width:54px;height:54px;display:grid;place-items:center;border-radius:16px;background:#17283d;color:#ffcf65;font-size:28px;box-shadow:0 10px 22px #17283d24}.brand{font-size:24px;font-weight:900;line-height:1.05;letter-spacing:-1.1px}.subtitle{color:var(--muted);font-size:12px;margin-top:5px}.all-games{text-decoration:none;background:white;color:#53667a;border:1px solid var(--border);border-radius:99px;padding:10px 15px;font-size:12px;font-weight:800;white-space:nowrap}
+    .layout{display:grid;grid-template-columns:minmax(0,625px) minmax(240px,1fr);gap:23px;align-items:start}.panel{background:rgba(255,255,255,.96);border:1px solid #e6ecf2;border-radius:25px;box-shadow:var(--shadow)}.game{padding:25px 28px 26px}.side{padding:26px 24px}.heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}.eyebrow{font-size:10px;color:#92a0ad;font-weight:850;letter-spacing:.13em;text-transform:uppercase}.heading h1{font-size:24px;letter-spacing:-.7px;line-height:1.2;margin:3px 0 0}.level-select{background:#f7fafb;border:1px solid #dfe7ec;border-radius:11px;padding:10px 9px;color:#40566a;font-size:12px;font-weight:750;max-width:165px}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:16px}.stat{background:#f5f8fa;border-radius:13px;padding:10px 12px;min-width:0}.stat small{display:block;text-transform:uppercase;letter-spacing:.06em;font-size:9px;font-weight:850;color:#97a2b0}.stat b{display:block;margin-top:2px;font-size:21px;font-weight:900;line-height:1.3;letter-spacing:-.5px;font-variant-numeric:tabular-nums}.stat b small{font-size:10px;display:inline;letter-spacing:0;font-weight:700;text-transform:none}
+    .track{height:6px;border-radius:99px;background:#e9eef3;overflow:hidden;margin-bottom:18px}.track-fill{height:100%;background:linear-gradient(90deg,#34b5c3,#9bdcba);width:0;transition:width .25s}
+    .board-frame{background:linear-gradient(145deg,#1a2b40,#101d2c);border-radius:22px;padding:clamp(10px,2.4vw,18px);box-shadow:0 20px 45px #1220342c,inset 0 2px 2px #ffffff0a;max-width:525px;margin:0 auto;position:relative}.board{--gap:clamp(5px,1vw,9px);display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--gap);aspect-ratio:1;user-select:none;touch-action:manipulation}.tile{position:relative;display:grid;place-items:center;min-width:0;min-height:0;aspect-ratio:1;border:1px solid #374557;border-radius:clamp(8px,1.6vw,14px);background:linear-gradient(150deg,#2a3c51,#19293b);box-shadow:inset 0 2px 2px #ffffff0a,inset 0 -4px 8px #0715225c,0 3px 0 #0a1421;transition:background .17s,border-color .17s,box-shadow .17s,transform .12s}.tile::before{content:"";position:absolute;width:22%;aspect-ratio:1;border-radius:50%;background:#46566a;box-shadow:0 1px 2px #0c1825,inset 0 1px 2px #c7d4dd25;transition:all .17s}.tile.is-on{border-color:#ffe5a5;background:linear-gradient(145deg,#ffeebc,#ffcb6b 55%,#f5a84d);box-shadow:inset 0 2px 3px #ffffffd6,inset 0 -5px 9px #cf7d316b,0 0 21px #f6c36759,0 3px 0 #9f6e35}.tile.is-on::before{width:26%;background:#fff8dd;box-shadow:0 0 13px 5px #fff5bb,0 0 28px #fff8d5;filter:brightness(1.05)}.tile:hover{transform:translateY(-1px)}.tile:active{transform:translateY(2px)}.tile.affected:not(.is-on){border-color:#83b9ca;background:linear-gradient(145deg,#375266,#22374c)}.tile.affected.is-on{border-color:#fff6da;box-shadow:inset 0 2px 3px #ffffffd6,0 0 0 2px #82d7d0,0 0 26px #f6c36766}.tile.hint{outline:3px solid #5fd6ce;outline-offset:-5px;z-index:2;animation:hint-pulse .85s infinite alternate}.tile.just-changed{animation:pop .19s ease-out}.tile:focus-visible{outline:3px solid #7ae1e6;outline-offset:-4px;z-index:3}@keyframes pop{50%{transform:scale(.9)}}@keyframes hint-pulse{to{outline-color:#ffffff;outline-offset:-2px}}
+    .board-caption{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:15px auto 0;max-width:525px;color:#93a0ae;font-size:11px;font-weight:750}.board-caption strong{color:#6c7d8b}.status{min-height:43px;margin:13px 0 11px;display:grid;place-items:center;text-align:center;color:#7d8a99;font-size:12px;font-weight:700}.status.good{color:#168e78}.status.warn{color:#b27a32}.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.btn{border:1px solid #dfe7ee;border-radius:12px;background:white;color:#4c6477;padding:12px 7px;font-weight:850;font-size:12px;min-height:44px}.btn:not(:disabled):hover{background:#f0f8fa}.btn.primary{background:#108aa2;color:#fff;border-color:#108aa2}.btn.primary:hover{background:#086b84}.win-banner{display:none;margin:12px 0 3px;background:linear-gradient(125deg,#e3f9f0,#fff5dd);border:1px solid #ccebd8;border-radius:15px;padding:17px;text-align:center}.win-banner.show{display:block;animation:appear .3s ease-out}.win-banner strong{display:block;font-size:20px;letter-spacing:-.5px;color:#177d6b}.win-banner p{margin:5px 0 12px;font-size:12px;color:#668278}.win-banner button{border:0;background:#147f77;color:#fff;border-radius:10px;padding:11px 20px;font-size:12px;font-weight:850}@keyframes appear{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+    .side h2{margin:0 0 17px;font-size:19px;letter-spacing:-.5px}.step{display:flex;gap:12px;margin:0 0 16px}.step-num{width:30px;height:30px;flex:none;display:grid;place-items:center;background:#e7f6f6;color:#09879b;border-radius:10px;font-size:13px;font-weight:900}.step strong{font-size:12px}.step p{font-size:12px;color:#8793a2;margin:3px 0 0;line-height:1.55}.cross{display:grid;grid-template-columns:repeat(3,32px);gap:5px;width:max-content;margin:14px auto 19px}.cross div{height:32px;border-radius:8px;background:#e8edf1;display:grid;place-items:center;color:#718598;font-size:17px;font-weight:900}.cross .active{background:#ffe1a2;color:#b87429;box-shadow:inset 0 -2px #e9bf70}.cross .center{background:#ffd078;color:#925920}.rule-note{padding:13px 15px;border-radius:13px;background:#f3f9fa;color:#6e8492;font-size:11px;line-height:1.65}.rule-note strong{color:#25899a}.side .divider{height:1px;background:#e8edf2;margin:19px 0}.progress-label{font-weight:850;font-size:11px;color:#607486;display:flex;justify-content:space-between;gap:10px}.side-progress{height:7px;border-radius:10px;background:#edf2f5;margin-top:11px;overflow:hidden}.side-progress span{display:block;height:100%;background:#43b8bc;width:0;transition:width .25s}.record{font-size:11px;color:#8696a2;margin:11px 0 0;min-height:17px}.random-btn{display:block;width:100%;margin-top:16px;border-radius:12px;padding:12px 8px;border:1px solid #bddedc;color:#168b8b;font-size:12px;font-weight:850;background:#f3fbfa}.random-btn:hover{background:#e6f7f6}
+    .foot{color:#9ca9b5;font-size:11px;text-align:center;margin-top:23px}
+    @media(max-width:760px){.shell{max-width:630px;padding:17px 13px 32px}.top{margin-bottom:18px}.logo{width:46px;height:46px;font-size:24px}.brand{font-size:21px}.all-games{padding:9px 11px;font-size:11px}.layout{grid-template-columns:1fr;gap:15px}.game{padding:18px 15px 20px}.side{padding:21px 19px}.board-frame{border-radius:17px}.heading h1{font-size:21px}.stat{padding:9px 8px}.stat b{font-size:19px}.stats{gap:6px}.btn{padding:11px 4px;font-size:11px}.cross{margin-left:0}}
+    @media(max-width:370px){.all-games{font-size:0}.all-games::after{content:"← Spiele";font-size:11px}.level-select{max-width:134px}.heading h1{font-size:19px}.stat b{font-size:17px}.board{--gap:4px}.brand{font-size:19px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <div class="identity"><div class="logo" aria-hidden="true">✹</div><div><div class="brand">Lights Out</div><div class="subtitle">Ein Klick. Fünf Felder. Ein Ziel.</div></div></div>
+      <a class="all-games" href="../index.php">← Alle Spiele</a>
+    </header>
+
+    <div class="layout">
+      <section class="panel game" aria-label="Lights-Out-Spiel">
+        <div class="heading"><div><div class="eyebrow">6 × 6 · Licht aus!</div><h1>Alle Lichter löschen</h1></div><label><span class="eyebrow" style="display:block;margin-bottom:4px">LEVEL</span><select class="level-select" id="level" aria-label="Level auswählen"></select></label></div>
+        <div class="stats">
+          <div class="stat"><small>An</small><b id="on-count">0</b></div>
+          <div class="stat"><small>Züge</small><b id="move-count">0</b></div>
+          <div class="stat"><small>Optimal</small><b id="ideal-count">–</b></div>
+          <div class="stat"><small>Zeit</small><b id="time">00:00</b></div>
+        </div>
+        <div class="track" aria-hidden="true"><div class="track-fill" id="track-fill"></div></div>
+        <div class="board-frame"><div id="board" class="board" role="group" aria-label="Spielfeld mit 6 Zeilen und 6 Spalten; die Pfeiltasten bewegen den Fokus"></div></div>
+        <div class="board-caption"><span id="difficulty">EINSTIEG</span><strong id="goal-label">Alle 36 Felder ausschalten</strong></div>
+        <div class="status" role="status" aria-live="polite" id="status">Tippe ein Feld an, um die Lichter umzuschalten.</div>
+        <div class="controls">
+          <button type="button" class="btn" id="undo">↶ Rückgängig</button>
+          <button type="button" class="btn" id="hint">✦ Tipp</button>
+          <button type="button" class="btn primary" id="reset">↻ Neustart</button>
+        </div>
+        <div class="win-banner" id="win-banner" aria-live="polite"><strong>✦ Alle Lichter aus!</strong><p id="win-description"></p><button type="button" id="next">Nächstes Level →</button></div>
+      </section>
+
+      <aside class="panel side" aria-label="Anleitung und Fortschritt">
+        <h2>So funktioniert's</h2>
+        <div class="step"><span class="step-num">1</span><div><strong>Feld antippen</strong><p>Das angetippte Licht wechselt seinen Zustand: an wird aus und umgekehrt.</p></div></div>
+        <div class="step"><span class="step-num">2</span><div><strong>Nachbarn schalten mit</strong><p>Die vier direkten Nachbarn oben, unten, links und rechts wechseln ebenfalls. Diagonale Felder nicht.</p></div></div>
+        <div class="cross" aria-label="Kreuz mit fünf betroffenen Feldern"><div></div><div class="active">↕</div><div></div><div class="active">↔</div><div class="active center">✦</div><div class="active">↔</div><div></div><div class="active">↕</div><div></div></div>
+        <div class="step"><span class="step-num">3</span><div><strong>Alles ausschalten</strong><p>Du gewinnst, sobald alle 36 Felder dunkel sind. Ein Tipp zeigt dir einen sinnvollen nächsten Zug.</p></div></div>
+        <div class="rule-note"><strong>Gut zu wissen:</strong> Jedes Level ist garantiert lösbar. Die angezeigte optimale Zugzahl ist die tatsächlich kürzeste Lösung.</div>
+        <div class="divider"></div>
+        <div class="progress-label"><span>Dein Fortschritt</span><span id="progress-text">0 / 24</span></div>
+        <div class="side-progress"><span id="side-progress"></span></div>
+        <p class="record" id="record"></p>
+        <button class="random-btn" type="button" id="random">⚡ Zufälliges Rätsel starten</button>
+      </aside>
+    </div>
+    <footer class="foot">Ohne Anmeldung · Offline spielbar · Fortschritt wird auf diesem Gerät gespeichert</footer>
+  </main>
+
+  <script>
+    'use strict';
+    const SIZE=6, TOTAL=SIZE*SIZE, STORAGE_KEY='lights-out-v1';
+    const LEVEL_PRESS_COUNTS=[2,2,3,3,4,4,5,5,6,7,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    const AFFECTS=Array.from({length:TOTAL},(_,i)=>{
+      const row=Math.floor(i/SIZE),col=i%SIZE,result=[i];
+      if(row>0)result.push(i-SIZE);
+      if(row<SIZE-1)result.push(i+SIZE);
+      if(col>0)result.push(i-1);
+      if(col<SIZE-1)result.push(i+1);
+      return result;
+    });
+    const $=id=>document.getElementById(id);
+    let currentLevel=1,startBoard=[],board=[],history=[],moves=0,ideal=0,hints=0,finished=false,startedAt=null,elapsedMs=0,timer=null,hintIndex=-1,tiles=[],progress=loadProgress();
+
+    function seededRandom(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+    function hash(value){let h=2166136261;for(const ch of value){h^=ch.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+    function shuffle(array,rng){for(let i=array.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
+    function toggle(input,index){const output=input.slice();for(const cell of AFFECTS[index])output[cell]^=1;return output;}
+    function createPuzzle(level){
+      const random=level==='random',rng=random?Math.random:seededRandom(hash('lights-out:level-v1:'+level));
+      const count=random?9+Math.floor(rng()*12):LEVEL_PRESS_COUNTS[level-1];
+      const presses=shuffle(Array.from({length:TOTAL},(_,i)=>i),rng).slice(0,count);
+      let result=Array(TOTAL).fill(0);
+      for(const index of presses)result=toggle(result,index);
+      return result;
+    }
+
+    // Löse das lineare Gleichungssystem A × x = b über GF(2).
+    // Auf einem 6×6-Brett hat A vollen Rang: Jede Stellung ist eindeutig lösbar.
+    function solve(input){
+      const rows=Array.from({length:TOTAL},(_,r)=>{
+        const line=new Uint8Array(TOTAL+1);
+        for(const col of AFFECTS[r])line[col]=1;
+        line[TOTAL]=input[r];
+        return line;
+      });
+      const pivotColumns=[];
+      for(let col=0,rank=0;col<TOTAL&&rank<TOTAL;col++){
+        let pivot=rank;
+        while(pivot<TOTAL&&!rows[pivot][col])pivot++;
+        if(pivot===TOTAL)continue;
+        [rows[rank],rows[pivot]]=[rows[pivot],rows[rank]];
+        for(let r=0;r<TOTAL;r++)if(r!==rank&&rows[r][col]){
+          for(let c=col;c<=TOTAL;c++)rows[r][c]^=rows[rank][c];
+        }
+        pivotColumns.push(col);rank++;
+      }
+      for(let r=pivotColumns.length;r<TOTAL;r++)if(rows[r][TOTAL])return null;
+      const answer=Array(TOTAL).fill(0);
+      for(let r=0;r<pivotColumns.length;r++)answer[pivotColumns[r]]=rows[r][TOTAL];
+      return answer;
+    }
+
+    function loadProgress(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');return data&&typeof data==='object'?data:{};}catch{return {};}}
+    function saveProgress(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(progress));}catch{/* Privater Modus: ohne Speicherung weiter spielen. */}}
+    function timeString(ms){const seconds=Math.floor(ms/1000);return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');}
+    function currentTime(){return elapsedMs+(startedAt===null?0:Date.now()-startedAt);}
+    function refreshTime(){$('time').textContent=timeString(currentTime());}
+    function startTimer(){if(startedAt===null&&!finished){startedAt=Date.now();if(timer===null)timer=setInterval(refreshTime,250);}}
+    function stopTimer(){if(startedAt!==null){elapsedMs+=Date.now()-startedAt;startedAt=null;}if(timer!==null){clearInterval(timer);timer=null;}refreshTime();}
+    function resetTimer(){stopTimer();elapsedMs=0;refreshTime();}
+    function message(value,type=''){$('status').textContent=value;$('status').className='status'+(type?' '+type:'');}
+    function countOn(){return board.reduce((sum,value)=>sum+value,0);}
+    function levelName(level){return level==='random'?'Zufallsrätsel':`Level ${level}`;}
+    function difficultyLabel(level){return level==='random'?'ENDLOSMODUS':level<=8?'EINSTIEG':level<=16?'FORTGESCHRITTEN':'EXPERTE';}
+
+    function paint(changed=[]){
+      const on=countOn();
+      for(let i=0;i<TOTAL;i++){
+        const tile=tiles[i],light=!!board[i];
+        tile.classList.toggle('is-on',light);
+        tile.classList.toggle('hint',hintIndex===i);
+        tile.classList.remove('just-changed');
+        tile.setAttribute('aria-pressed',String(light));
+        tile.setAttribute('aria-label',`Zeile ${Math.floor(i/SIZE)+1}, Spalte ${i%SIZE+1}: ${light?'an':'aus'}`);
+      }
+      for(const i of changed){const tile=tiles[i];if(tile){void tile.offsetWidth;tile.classList.add('just-changed');}}
+      $('on-count').textContent=String(on);
+      $('move-count').textContent=String(moves);
+      $('ideal-count').textContent=String(ideal);
+      $('track-fill').style.width=((TOTAL-on)/TOTAL*100)+'%';
+      $('undo').disabled=!history.length||finished;
+      $('hint').disabled=finished;
+      $('board').setAttribute('aria-label',`Lights Out: 6 mal 6 Felder, ${on} Lichter eingeschaltet`);
+    }
+
+    function preview(index,show){
+      for(const i of AFFECTS[index])tiles[i].classList.toggle('affected',show);
+    }
+
+    function buildBoard(){
+      const fragment=document.createDocumentFragment();tiles=[];
+      for(let i=0;i<TOTAL;i++){
+        const tile=document.createElement('button');
+        tile.type='button';tile.className='tile';tile.dataset.index=i;tile.setAttribute('aria-pressed','false');
+        tile.addEventListener('click',()=>press(i));
+        tile.addEventListener('pointerenter',event=>{if(event.pointerType!=='touch')preview(i,true);});
+        tile.addEventListener('pointerleave',()=>preview(i,false));
+        tile.addEventListener('focus',()=>preview(i,true));
+        tile.addEventListener('blur',()=>preview(i,false));
+        tile.addEventListener('keydown',event=>{
+          const next={ArrowUp:i-SIZE,ArrowDown:i+SIZE,ArrowLeft:i-1,ArrowRight:i+1}[event.key];
+          if(next===undefined)return;
+          if((event.key==='ArrowLeft'&&i%SIZE===0)||(event.key==='ArrowRight'&&i%SIZE===SIZE-1)||next<0||next>=TOTAL)return;
+          event.preventDefault();tiles[next].focus();
+        });
+        tiles.push(tile);fragment.appendChild(tile);
+      }
+      $('board').replaceChildren(fragment);
+    }
+
+    function loadLevel(level){
+      currentLevel=level;startBoard=createPuzzle(level);board=startBoard.slice();history=[];moves=0;hints=0;finished=false;hintIndex=-1;resetTimer();
+      const solution=solve(board);ideal=solution?solution.reduce((a,b)=>a+b,0):0;
+      $('level').value=String(level);
+      $('difficulty').textContent=difficultyLabel(level);
+      $('goal-label').textContent='36 Felder · 1 Ziel';
+      $('win-banner').classList.remove('show');
+      $('random').textContent=level==='random'?'⚡ Anderes Zufallsrätsel':'⚡ Zufälliges Rätsel starten';
+      const saved=progress[level];
+      $('record').textContent=saved?`Dein Rekord hier: ${saved.moves} Züge · ${timeString(saved.time)}`:'Noch kein Rekord für dieses Level.';
+      message('Tippe ein Feld an, um die Lichter umzuschalten.');
+      paint();
+    }
+
+    function press(index){
+      if(finished)return;
+      startTimer();
+      history.push(board.slice());board=toggle(board,index);moves++;hintIndex=-1;
+      paint(AFFECTS[index]);
+      if(board.every(value=>value===0))win();
+      else message('Noch '+countOn()+' '+(countOn()===1?'Licht':'Lichter')+' an. Du schaffst das!');
+    }
+
+    function undo(){
+      if(!history.length||finished)return;
+      board=history.pop();moves--;hintIndex=-1;
+      if(moves===0)resetTimer();
+      message('Letzten Zug rückgängig gemacht.');paint();
+    }
+
+    function reset(){
+      board=startBoard.slice();history=[];moves=0;hints=0;finished=false;hintIndex=-1;resetTimer();
+      $('win-banner').classList.remove('show');
+      message('Level zurückgesetzt. Viel Erfolg!');paint();
+    }
+
+    function showHint(){
+      if(finished)return;
+      const solution=solve(board),index=solution?solution.findIndex(v=>v===1):-1;
+      if(index<0){message('Alle Lichter sind bereits aus!','good');return;}
+      hints++;hintIndex=index;paint();tiles[index].scrollIntoView?.({block:'nearest',inline:'nearest'});
+      message(`Tipp: Tippe Zeile ${Math.floor(index/SIZE)+1}, Spalte ${index%SIZE+1}.`,'warn');
+    }
+
+    function win(){
+      finished=true;stopTimer();paint();
+      let improved=false;
+      if(currentLevel!=='random'){
+        const old=progress[currentLevel],candidate={moves,time:elapsedMs};
+        improved=!old||moves<old.moves||(moves===old.moves&&elapsedMs<old.time);
+        if(improved)progress[currentLevel]=candidate;
+        saveProgress();updateProgress();
+      }
+      const optimal=moves===ideal;
+      $('win-description').textContent=`Geschafft in ${moves} ${moves===1?'Zug':'Zügen'} und ${timeString(elapsedMs)}. ${optimal?'Perfekt – die optimale Lösung!':`Optimal wären ${ideal} Züge gewesen.`}${hints?' · '+hints+' Tipp(s) benutzt.':''}${improved?' Neuer Rekord!':''}`;
+      $('next').textContent=currentLevel==='random'?'Neues Zufallsrätsel →':currentLevel===24?'Endlosmodus starten →':'Nächstes Level →';
+      $('win-banner').classList.add('show');
+      $('record').textContent=currentLevel!=='random'&&progress[currentLevel]?`Dein Rekord hier: ${progress[currentLevel].moves} Züge · ${timeString(progress[currentLevel].time)}`:'Zufallsrätsel geschafft!';
+      message('Alle 36 Lichter sind ausgeschaltet. Glückwunsch!','good');
+    }
+
+    function updateProgress(){
+      const done=Object.keys(progress).filter(k=>/^(?:[1-9]|1[0-9]|2[0-4])$/.test(k)&&progress[k]).length;
+      $('progress-text').textContent=`${done} / 24`;
+      $('side-progress').style.width=(done/24*100)+'%';
+      for(const option of $('level').querySelectorAll('option[data-number]')){
+        const id=option.dataset.number;
+        option.textContent=(progress[id]?'✓ ':'')+`Level ${id}`;
+      }
+    }
+
+    function init(){
+      const select=$('level');
+      for(const [start,end,label] of [[1,8,'Einstieg'],[9,16,'Fortgeschritten'],[17,24,'Experte']]){
+        const group=document.createElement('optgroup');group.label=label;
+        for(let level=start;level<=end;level++){
+          const option=document.createElement('option');option.value=level;option.dataset.number=level;option.textContent=`Level ${level}`;group.appendChild(option);
+        }
+        select.appendChild(group);
+      }
+      const random=document.createElement('option');random.value='random';random.textContent='⚡ Endlosmodus';select.appendChild(random);
+      buildBoard();updateProgress();
+      select.addEventListener('change',()=>loadLevel(select.value==='random'?'random':Number(select.value)));
+      $('undo').addEventListener('click',undo);$('hint').addEventListener('click',showHint);$('reset').addEventListener('click',reset);
+      $('random').addEventListener('click',()=>loadLevel('random'));
+      $('next').addEventListener('click',()=>loadLevel(currentLevel==='random'||currentLevel===24?'random':currentLevel+1));
+      loadLevel(1);
+    }
+    init();
+  </script>
+</body>
+</html>

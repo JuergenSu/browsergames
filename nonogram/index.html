@@ -1,0 +1,123 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#f3f8fa"><title>Nonogram – Das Pixelrätsel</title>
+<style>
+:root{color-scheme:light;--ink:#253447;--muted:#8494a5;--accent:#248a99;--shadow:0 20px 55px #17465a15}*{box-sizing:border-box}body{margin:0;min-height:100svh;background:radial-gradient(ellipse at top left,#d8f1f0,transparent 39%),radial-gradient(ellipse at bottom right,#ffefd9,transparent 35%),#f3f8fa;color:var(--ink);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #79cfc3;outline-offset:3px}
+.shell{max-width:1080px;margin:auto;padding:26px 18px 35px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:23px}.identity{display:flex;align-items:center;gap:13px}.logo{display:grid;place-items:center;background:#1d7d8c;color:white;border-radius:16px;width:55px;height:55px;font-size:27px;box-shadow:0 11px 23px #15738735}.identity strong{font-size:25px;line-height:1;letter-spacing:-1px}.identity small{display:block;color:var(--muted);font-size:12px;margin-top:6px}.back{text-decoration:none;background:#fff;border:1px solid #dce9ec;border-radius:30px;padding:10px 15px;color:#52747e;font-weight:800;font-size:12px}
+.layout{display:grid;grid-template-columns:minmax(0,650px) minmax(245px,1fr);gap:23px;align-items:start}.card{background:#ffffffeb;border-radius:24px;border:1px solid #e3eaf0;box-shadow:var(--shadow)}.main{padding:24px}.side{padding:24px}.heading{display:flex;align-items:center;justify-content:space-between;gap:14px}.eyebrow{color:#98a8ae;letter-spacing:.12em;font-weight:850;font-size:10px}.heading h1{font-size:22px;letter-spacing:-.6px;margin:4px 0 0}.heading select{max-width:150px;background:#f5faf9;border:1px solid #d9e7e9;color:#4d777b;border-radius:11px;padding:10px;font-size:12px;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:17px 0}.stat{background:#f1f7f8;padding:9px 13px;border-radius:12px}.stat small{font-size:10px;color:#98abb0;font-weight:850;letter-spacing:.05em;text-transform:uppercase;display:block}.stat b{font-size:20px;font-variant-numeric:tabular-nums}.toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:13px}.toolbar small{font-size:11px;font-weight:800;color:#94a4a8;margin-right:4px}.mode{border-radius:10px;padding:9px 15px;border:1px solid #dae8e9;background:white;color:#54787b;font-size:12px;font-weight:850}.mode.active{background:#16899b;color:#fff;border-color:#16899b}.mode.mark.active{background:#667789;border-color:#667789}
+.board-scroller{overflow-x:auto;padding:4px 1px 7px}.board{--size:5;display:grid;grid-template-columns:58px repeat(var(--size),minmax(0,1fr));grid-template-rows:65px repeat(var(--size),minmax(0,1fr));gap:2px;max-width:555px;min-width:290px;margin:auto;background:#d0dfe3;padding:4px;border-radius:12px;box-shadow:0 10px 28px #2e68742a}.corner{background:#f1f7f8;border-radius:7px;display:grid;place-items:center;color:#c3cfd2;font-size:20px}.rowclue,.colclue{background:#f1f7f8;display:flex;justify-content:center;align-items:center;gap:3px;color:#587985;font-variant-numeric:tabular-nums;font-weight:900;font-size:clamp(11px,1.8vw,15px)}.rowclue{flex-wrap:wrap;border-radius:5px 2px 2px 5px;padding:2px}.colclue{flex-direction:column;justify-content:flex-end;padding:3px 0 6px;border-radius:5px 5px 2px 2px}.rowclue.done,.colclue.done{color:#16a48f;background:#e5f6ed}.pixel{position:relative;aspect-ratio:1;border:0;border-radius:3px;background:#fff;display:grid;place-items:center;font-size:clamp(9px,2.1vw,16px);font-weight:900;color:#96a9b4;transition:background .12s}.pixel:hover{box-shadow:inset 0 0 0 2px #58afb3}.pixel.filled{background:#267c96;box-shadow:inset 0 -4px #14596f54}.pixel.marked{background:#edf3f5}.pixel.marked::after{content:'×';font-size:18px;color:#a6b6bf}.pixel.hint{outline:3px solid #f3af41;outline-offset:-3px;z-index:1}.pixel.line-r{border-right:2px solid #8ba9b1}.pixel.line-b{border-bottom:2px solid #8ba9b1}
+.status{min-height:35px;margin:14px 0 6px;display:grid;place-items:center;text-align:center;font-size:12px;color:#789399;font-weight:750}.status.good{color:#1b927c}.status.warn{color:#b48c3f}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.btn{border:1px solid #d6e6e9;border-radius:11px;padding:12px 5px;background:white;color:#4c7882;font-size:12px;font-weight:850;min-height:44px}.btn.primary{background:#158a99;color:white;border-color:#158a99}.btn:disabled{opacity:.45;cursor:not-allowed}.win{display:none;background:#e7f7ec;border:1px solid #ccecd6;border-radius:13px;text-align:center;padding:15px;margin-top:14px}.win.show{display:block}.win strong{font-size:19px;color:#20907a}.win p{font-size:12px;color:#70887e;margin:4px 0 10px}.win button{background:#288e7c;color:white;border:0;border-radius:9px;padding:10px 20px;font-weight:850}
+.side h2{margin:0 0 17px;font-size:19px;letter-spacing:-.5px}.rule{display:flex;gap:11px;margin:0 0 17px}.num{flex:none;background:#e0f2f1;color:#2c8993;border-radius:9px;width:31px;height:31px;display:grid;place-items:center;font-weight:900}.rule strong{font-size:12px}.rule p{color:#8a9da6;font-size:12px;margin:4px 0 0;line-height:1.6}.example{display:flex;align-items:center;gap:5px;background:#f2f8fa;padding:13px;border-radius:11px;color:#73939b;font-weight:800;margin:10px 0 16px}.demo-cell{width:24px;height:24px;flex:none;background:#fff;border:1px solid #d8e7eb;border-radius:4px}.demo-cell.on{background:#247c95}.note{background:#f2f9f8;padding:13px;border-radius:12px;color:#78969c;font-size:11px;line-height:1.6}.progress{margin-top:21px;font-weight:850;color:#6e8992;font-size:12px}.bar{background:#e8f0f2;border-radius:50px;height:7px;margin-top:10px;overflow:hidden}.bar span{display:block;height:100%;width:0;background:#3daab3}.random{width:100%;margin-top:20px;padding:12px;border:1px solid #b6dadb;background:#edf9f8;border-radius:11px;color:#2e8790;font-weight:850}.foot{text-align:center;margin-top:23px;font-size:11px;color:#a3b2b9}
+@media(max-width:755px){.shell{max-width:615px;padding:16px 11px 30px}.top{margin-bottom:17px}.layout{grid-template-columns:1fr;gap:15px}.main,.side{padding:17px 13px}.logo{width:45px;height:45px}.identity strong{font-size:21px}.back{font-size:11px;padding:8px 10px}.heading h1{font-size:20px}.board{grid-template-columns:41px repeat(var(--size),minmax(0,1fr));grid-template-rows:53px repeat(var(--size),minmax(0,1fr))}.rowclue,.colclue{font-size:10px}.toolbar .mode{padding:8px 11px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><main class="shell"><header class="top"><div class="identity"><span class="logo">▦</span><div><strong>Nonogram</strong><small>Entdecke das verborgene Bild.</small></div></div><a class="back" href="../index.php">← Alle Spiele</a></header>
+<div class="layout"><section class="card main"><div class="heading"><div><div class="eyebrow">PIXEL FÜR PIXEL</div><h1>Das Bilderrätsel</h1></div><select id="level" aria-label="Level auswählen"></select></div>
+<div class="stats"><div class="stat"><small>Felder gefüllt</small><b id="filled">0</b></div><div class="stat"><small>Züge</small><b id="moves">0</b></div><div class="stat"><small>Zeit</small><b id="time">00:00</b></div></div>
+<div class="toolbar"><small>WERKZEUG</small><button class="mode active" id="paint">■ Füllen</button><button class="mode mark" id="mark">× Leer markieren</button></div>
+<div class="board-scroller"><div id="board" class="board" role="group" aria-label="Nonogram-Spielfeld"></div></div><div id="status" class="status" role="status" aria-live="polite">Lies die Zahlen an den Zeilen und Spalten.</div>
+<div class="controls"><button class="btn" id="undo">↶ Rückgängig</button><button class="btn" id="hint">✦ Tipp</button><button class="btn primary" id="reset">↻ Neustart</button></div>
+<div class="win" id="win"><strong>✦ Bild entdeckt!</strong><p id="win-text"></p><button id="next">Nächstes Level →</button></div></section>
+<aside class="card side"><h2>So funktioniert's</h2>
+<div class="rule"><span class="num">1</span><div><strong>Zahlen lesen</strong><p>Eine 3 bedeutet: genau drei direkt zusammenhängende gefüllte Felder.</p></div></div>
+<div class="rule"><span class="num">2</span><div><strong>Blöcke trennen</strong><p>Mehrere Zahlen bedeuten mehrere Gruppen. Dazwischen muss mindestens ein leeres Feld liegen.</p></div></div>
+<div class="example"><b style="margin-right:5px">3</b><span class="demo-cell on"></span><span class="demo-cell on"></span><span class="demo-cell on"></span><span class="demo-cell"></span><span class="demo-cell"></span></div>
+<div class="rule"><span class="num">3</span><div><strong>Füllen oder X setzen</strong><p>Wähle dein Werkzeug. Rechtsklick verwendet das andere. Leere Felder musst du zum Gewinnen nicht markieren.</p></div></div>
+<div class="rule"><span class="num">4</span><div><strong>Bild enthüllen</strong><p>Das Rätsel ist gelöst, wenn alle gefüllten Pixel richtig gesetzt sind.</p></div></div>
+<div class="note">Jedes Rätsel wird vor dem Anzeigen geprüft. Es gibt jeweils genau eine mit den Zahlen vereinbare Pixelanordnung.</div>
+<div class="progress">Abgeschlossene Levels <span id="progress-text">0 / 24</span><div class="bar"><span id="progress-bar"></span></div></div><button class="random" id="random">⚡ Zufälliges Rätsel starten</button></aside></div><div class="foot">Offline · Keine Anmeldung · Fortschritt lokal gespeichert</div></main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id),KEY='nonogram-game-v1';
+function rnd(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+function clues(bits){const lengths=[];let run=0;for(const v of bits){if(v)run++;else if(run){lengths.push(run);run=0;}}if(run)lengths.push(run);return lengths.length?lengths:[0];}
+function eq(a,b){return a.length===b.length&&a.every((v,i)=>v===b[i]);}
+function cluesFor(board,n){const rows=[],cols=[];for(let r=0;r<n;r++)rows.push(clues(board.slice(r*n,r*n+n)));for(let c=0;c<n;c++)cols.push(clues(Array.from({length:n},(_,r)=>board[r*n+c])));return {rows,cols};}
+function countSolutions(rows,cols,n,limit=2){
+ const masks=Array.from({length:1<<n},(_,i)=>i),bits=m=>Array.from({length:n},(_,j)=>(m>>j)&1);
+ const rowOptions=rows.map(clue=>masks.filter(m=>eq(clues(bits(m)),clue)));
+ const colOptions=cols.map(clue=>masks.filter(m=>eq(clues(bits(m)),clue)));
+ if(rowOptions.some(v=>!v.length)||colOptions.some(v=>!v.length))return {count:0,first:null};
+ let count=0,first=null;const chosen=[];
+ function search(r,possible){
+   if(r===n){count++;if(!first)first=chosen.flatMap(m=>bits(m));return count>=limit;}
+   for(const mask of rowOptions[r]){
+     const filtered=possible.map((options,c)=>options.filter(m=>((m>>r)&1)===((mask>>c)&1)));
+     if(filtered.some(a=>!a.length))continue;
+     chosen.push(mask);if(search(r+1,filtered))return true;chosen.pop();
+   }
+   return false;
+ }
+ search(0,colOptions);return {count,first};
+}
+function createPattern(n,rng){
+ const board=Array(n*n).fill(0);
+ const centers=2+Math.floor(rng()*3),blobs=[];
+ for(let j=0;j<centers;j++)blobs.push({r:rng()*(n-1),c:rng()*(n-1),radius:1.3+rng()*n*.22});
+ for(let r=0;r<n;r++)for(let c=0;c<n;c++){
+   let score=0;for(const b of blobs){const dist=Math.hypot(r-b.r,c-b.c);if(dist<b.radius)score+=.33;}
+   const wiggle=(rng()-.5)*.8;
+   board[r*n+c]=(score+wiggle>.32)?1:0;
+ }
+ // Add sparse crisp detail so that small images are not indistinct circles.
+ for(let k=0;k<n;k++)if(rng()<.12)board[Math.floor(rng()*n)*n+k]=1;
+ return board;
+}
+function generate(level){
+ const n=level==='random'?([5,8,10][Math.floor(Math.random()*3)]):level<=8?5:level<=16?8:10;
+ const rng=level==='random'?Math.random:rnd(hash('nonogram-v2:'+level));
+ for(let trial=0;trial<280;trial++){
+   const solution=createPattern(n,rng),{rows,cols}=cluesFor(solution,n),filled=solution.reduce((a,b)=>a+b,0);
+   if(filled<Math.floor(n*n*.17)||filled>Math.floor(n*n*.75))continue;
+   if(countSolutions(rows,cols,n).count===1)return {n,solution,rows,cols};
+ }
+ // Worst-case fallback: the first completely filled row is unambiguous.
+ const solution=Array.from({length:n*n},(_,i)=>Math.floor(i/n)===0?1:0);
+ const {rows,cols}=cluesFor(solution,n);
+ return {n,solution,rows,cols};
+}
+function loadSave(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch{return {};}}
+let progress=loadSave(),puzzle,states=[],cells=[],rowClues=[],colClues=[],history=[],level=1,moves=0,tool=1,hint=-1,finished=false,started=null,spent=0,ticker=null;
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(progress));}catch{}}
+function time(){return spent+(started===null?0:Date.now()-started);}
+function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function refreshTime(){$('time').textContent=fmt(time());}
+function start(){if(started===null&&!finished){started=Date.now();ticker=setInterval(refreshTime,300);}}
+function stop(){if(started!==null){spent+=Date.now()-started;started=null;}if(ticker){clearInterval(ticker);ticker=null;}refreshTime();}
+function status(s,type=''){$('status').className='status '+type;$('status').textContent=s;}
+function setTool(v){tool=v;$('paint').classList.toggle('active',v===1);$('mark').classList.toggle('active',v===0);}
+function draw(){
+ const n=puzzle.n;let filled=0;
+ for(let i=0;i<n*n;i++){const cell=cells[i],v=states[i];if(v===1)filled++;cell.className='pixel'+(v===1?' filled':v===0?' marked':'')+(hint===i?' hint':'')+(i%n===4&&n>5?' line-r':'')+(Math.floor(i/n)===4&&n>5?' line-b':'');cell.setAttribute('aria-label',`Zeile ${Math.floor(i/n)+1}, Spalte ${i%n+1}: ${v===1?'gefüllt':v===0?'leer markiert':'unbekannt'}`);}
+ for(let r=0;r<n;r++){rowClues[r].classList.toggle('done',eq(clues(states.slice(r*n,r*n+n).map(v=>v===1?1:0)),puzzle.rows[r]));colClues[r].classList.toggle('done',eq(clues(Array.from({length:n},(_,i)=>states[i*n+r]===1?1:0)),puzzle.cols[r]));}
+ $('filled').textContent=filled;$('moves').textContent=moves;$('undo').disabled=!history.length||finished;$('hint').disabled=finished;
+}
+function createBoard(){
+ const n=puzzle.n,frag=document.createDocumentFragment();cells=[];rowClues=[];colClues=[];$('board').style.setProperty('--size',n);
+ const corner=document.createElement('div');corner.className='corner';corner.textContent='▦';frag.appendChild(corner);
+ for(let c=0;c<n;c++){const v=document.createElement('div');v.className='colclue';for(const clue of puzzle.cols[c]){const item=document.createElement('span');item.textContent=clue;v.appendChild(item);}colClues.push(v);frag.appendChild(v);}
+ for(let r=0;r<n;r++){
+   const cl=document.createElement('div');cl.className='rowclue';cl.textContent=puzzle.rows[r].join(' ');rowClues.push(cl);frag.appendChild(cl);
+   for(let c=0;c<n;c++){
+     const index=r*n+c,tile=document.createElement('button');tile.className='pixel';tile.type='button';
+     tile.addEventListener('click',()=>change(index,tool));tile.addEventListener('contextmenu',e=>{e.preventDefault();change(index,1-tool);});
+     tile.addEventListener('keydown',e=>{const dest={ArrowUp:index-n,ArrowDown:index+n,ArrowLeft:index-1,ArrowRight:index+1}[e.key];if(dest===undefined||dest<0||dest>=n*n||(e.key==='ArrowLeft'&&c===0)||(e.key==='ArrowRight'&&c===n-1))return;e.preventDefault();cells[dest].focus();});
+     cells.push(tile);frag.appendChild(tile);
+   }
+ }
+ $('board').replaceChildren(frag);
+}
+function load(value){
+ stop();spent=0;refreshTime();level=value;puzzle=generate(value);states=Array(puzzle.n*puzzle.n).fill(-1);history=[];moves=0;hint=-1;finished=false;$('level').value=String(level);$('win').classList.remove('show');$('random').textContent=value==='random'?'⚡ Anderes Zufallsrätsel':'⚡ Zufälliges Rätsel starten';createBoard();draw();status('Lies die Zahlen an den Zeilen und Spalten.');
+}
+function change(i,val){if(finished)return;const next=states[i]===val?-1:val;if(next===states[i])return;start();history.push(states.slice());states[i]=next;moves++;hint=-1;draw();if(states.every((v,j)=>(v===1)===(puzzle.solution[j]===1)))win();else status('Vergleiche die Gruppen von links nach rechts und von oben nach unten.');}
+function undo(){if(!history.length||finished)return;states=history.pop();moves--;hint=-1;if(!moves){stop();spent=0;refreshTime();}draw();status('Letzten Zug rückgängig gemacht.');}
+function reset(){stop();spent=0;refreshTime();states=Array(puzzle.n*puzzle.n).fill(-1);history=[];moves=0;hint=-1;finished=false;$('win').classList.remove('show');draw();status('Rätsel zurückgesetzt.');}
+function giveHint(){if(finished)return;const i=states.findIndex((v,j)=>(v===1)!==(puzzle.solution[j]===1));if(i===-1)return;hint=i;draw();status(`Tipp: Zeile ${Math.floor(i/puzzle.n)+1}, Spalte ${i%puzzle.n+1} ${puzzle.solution[i]?'ausfüllen':'leer lassen'}.`,'warn');}
+function win(){finished=true;stop();if(level!=='random'){progress[level]=true;persist();progressDraw();}draw();$('win-text').textContent=`Geschafft mit ${moves} Zügen in ${fmt(spent)}.`;$('next').textContent=level==='random'||level===24?'Neues Zufallsrätsel →':'Nächstes Level →';$('win').classList.add('show');status('Alle Pixel stimmen – Rätsel gelöst!','good');}
+function progressDraw(){const done=Array.from({length:24},(_,i)=>i+1).filter(v=>progress[v]).length;$('progress-text').textContent=done+' / 24';$('progress-bar').style.width=done/24*100+'%';}
+function init(){
+ for(const [a,b,label] of [[1,8,'5 × 5 · Einstieg'],[9,16,'8 × 8 · Mittel'],[17,24,'10 × 10 · Experte']]){const g=document.createElement('optgroup');g.label=label;for(let i=a;i<=b;i++){const o=document.createElement('option');o.value=i;o.textContent='Level '+i;g.appendChild(o);}$('level').appendChild(g);}
+ const opt=document.createElement('option');opt.value='random';opt.textContent='⚡ Endlosmodus';$('level').appendChild(opt);
+ $('level').addEventListener('change',e=>load(e.target.value==='random'?'random':Number(e.target.value)));$('paint').addEventListener('click',()=>setTool(1));$('mark').addEventListener('click',()=>setTool(0));$('undo').addEventListener('click',undo);$('reset').addEventListener('click',reset);$('hint').addEventListener('click',giveHint);$('random').addEventListener('click',()=>load('random'));$('next').addEventListener('click',()=>load(level==='random'||level===24?'random':level+1));progressDraw();load(1);
+}
+init();
+</script></body></html>

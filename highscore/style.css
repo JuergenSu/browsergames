@@ -1,0 +1,25 @@
+.highscore-account{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;max-width:1110px;margin:24px auto;font:14px/1.5 system-ui,sans-serif;text-align:left}
+.highscore-profile{min-width:0;color:inherit}
+.highscore-profile.is-editing{padding:18px 20px;border:1px solid #b7c8dc;border-radius:14px;background:#f1f6ff;color:#24354e}
+.highscore-profile [hidden]{display:none!important}
+.highscore-profile form{display:flex;align-items:end;gap:10px;flex-wrap:wrap}
+.highscore-profile label{display:grid;gap:5px;font-weight:650}
+.highscore-profile input{box-sizing:border-box;min-width:0;width:220px;max-width:100%;border:1px solid #92a6c1;border-radius:8px;padding:10px;font:inherit;background:white;color:#24354e}
+.highscore-profile button{padding:11px 17px;border:0;border-radius:8px;background:#285baf;color:white;font:inherit;cursor:pointer}
+.highscore-greeting{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:650}
+.highscore-greeting span{overflow-wrap:anywhere}
+.highscore-profile .highscore-edit{display:inline-flex;align-items:center;justify-content:center;flex:none;width:36px;height:36px;padding:8px;background:transparent;color:inherit;opacity:.7}
+.highscore-profile .highscore-edit:hover{background:#8a9ab820;opacity:1}
+.highscore-profile .highscore-cancel{background:transparent;color:#37577e}
+.highscore-navigation a{color:inherit;font-weight:700;text-decoration:none;white-space:nowrap}
+.highscore-navigation a:hover{text-decoration:underline}
+.highscore-profile p{margin:10px 0 0;font-size:13px;font-weight:400}
+.highscore-profile p:empty{display:none}
+.highscore-retry{margin-top:10px}
+.highscore-account :focus-visible{outline:3px solid #538eff;outline-offset:3px}
+.game-header-links{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.game-highscore-link{display:inline-flex;align-items:center;padding:10px 14px;border:1px solid #dce4ee;border-radius:24px;background:#fff;color:#37577e;text-decoration:none;font:750 12px/1.5 system-ui,sans-serif;white-space:nowrap}
+.game-highscore-link:hover{background:#edf4ff;border-color:#9cb7db}
+.game-highscore-link:focus-visible{outline:3px solid #538eff;outline-offset:3px}
+@media(max-width:600px){.game-header-links{flex-shrink:1}.game-highscore-link{padding:8px 10px}}
+@media(max-width:480px){.highscore-account{gap:12px}.highscore-profile.is-editing{padding:15px}.highscore-profile.is-editing label{width:100%}}

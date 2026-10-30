@@ -88,7 +88,7 @@
     <header class="top">
       <div class="identity"><div class="logo" aria-hidden="true">ZIP</div><div><div class="headline">Ein Pfad. Alle Felder.</div><div class="subtitle">Ein kleines Logikspiel für zwischendurch</div></div></div>
       <div class="top-pill"><span class="dot"></span> Offline spielbar</div>
-    </header>
+    <nav class="game-header-links" aria-label="Spielnavigation"><a class="game-highscore-link" data-game-highscores href="../highscores.html?game=zip">🏆 Highscores</a><a class="game-highscore-link game-back-link" href="../index.php">← Alle Spiele</a></nav></header>
     <main class="layout">
       <section class="game-card" aria-label="Zip-Spielfeld">
         <div class="bar"><div><div class="eyebrow" id="puzzle-label">Rätsel 01</div><h1>Verbinde die Zahlen</h1></div><label><span class="eyebrow" style="display:block">Schwierigkeit</span><select class="level-select" id="difficulty" aria-label="Schwierigkeitsgrad"><option value="easy">Leicht · 6 × 6</option><option value="medium">Mittel · 7 × 7</option><option value="hard">Schwer · 8 × 8</option></select></label></div>
@@ -115,7 +115,8 @@
       </div><div class="footnote">Eigenständige Interpretation der Zip-Regeln · Keine Verbindung zu LinkedIn</div></aside>
     </main>
   </div>
-  <script>
+  <script src="../highscore/client.js"></script>
+<script>
     (() => {
       'use strict';
       const $ = id => document.getElementById(id);
@@ -212,7 +213,7 @@
       }
 
       function finish(){
-        finished=true;stopClock();
+        finished=true;stopClock();window.Highscore?.submit({game:'zip',level:difficulty,time:getElapsed()});
         $('win-summary').textContent=`${puzzle.size*puzzle.size} Felder in ${formatTime(getElapsed())} verbunden`+(hintsUsed?` · ${hintsUsed} Hinweis${hintsUsed===1?'':'e'}`:' · ohne Hinweise')+'.';
         $('win').hidden=false;notice('Rätsel gelöst! Stark gemacht.','success');
       }

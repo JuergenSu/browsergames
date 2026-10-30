@@ -27,7 +27,7 @@
   <main class="shell">
     <header class="top">
       <div class="identity"><div class="logo" aria-hidden="true">✹</div><div><div class="brand">Lights Out</div><div class="subtitle">Ein Klick. Fünf Felder. Ein Ziel.</div></div></div>
-      <a class="all-games" href="../index.php">← Alle Spiele</a>
+      <nav class="game-header-links" aria-label="Spielnavigation"><a class="game-highscore-link" data-game-highscores href="../highscores.html?game=lights-out">🏆 Highscores</a><a class="all-games" href="../index.php">← Alle Spiele</a></nav>
     </header>
 
     <div class="layout">
@@ -68,7 +68,8 @@
     <footer class="foot">Ohne Anmeldung · Offline spielbar · Fortschritt wird auf diesem Gerät gespeichert</footer>
   </main>
 
-  <script>
+  <script src="../highscore/client.js"></script>
+<script>
     'use strict';
     const SIZE=6, TOTAL=SIZE*SIZE, STORAGE_KEY='lights-out-v1';
     const LEVEL_PRESS_COUNTS=[2,2,3,3,4,4,5,5,6,7,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
@@ -225,7 +226,7 @@
     }
 
     function win(){
-      finished=true;stopTimer();paint();
+      finished=true;stopTimer();paint();window.Highscore?.submit({game:'lights-out',level:currentLevel,time:elapsedMs,moves});
       let improved=false;
       if(currentLevel!=='random'){
         const old=progress[currentLevel],candidate={moves,time:elapsedMs};

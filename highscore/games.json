@@ -1,0 +1,17 @@
+{
+  "akari": { "name": "Akari", "metric": "time", "order": "asc" },
+  "bridges": { "name": "Bridges", "metric": "moves", "order": "asc" },
+  "futoshiki": { "name": "Futoshiki", "metric": "time", "order": "asc" },
+  "hitori": { "name": "Hitori", "metric": "time", "order": "asc" },
+  "kakuro": { "name": "Kakuro", "metric": "time", "order": "asc" },
+  "lights-out": { "name": "Lights Out", "metric": "moves", "order": "asc" },
+  "minesweeper": { "name": "Minesweeper", "metric": "time", "order": "asc" },
+  "nonogram": { "name": "Nonogram", "metric": "moves", "order": "asc" },
+  "numberlink": { "name": "Numberlink", "metric": "time", "order": "asc" },
+  "patches": { "name": "Patches", "metric": "time", "order": "asc" },
+  "queens": { "name": "Queens", "metric": "time", "order": "asc" },
+  "slitherlink": { "name": "Slitherlink", "metric": "moves", "order": "asc" },
+  "tango": { "name": "Tango", "metric": "moves", "order": "asc" },
+  "tents": { "name": "Tents", "metric": "time", "order": "asc" },
+  "zip": { "name": "ZIP", "metric": "time", "order": "asc" }
+}

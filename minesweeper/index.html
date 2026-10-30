@@ -25,7 +25,7 @@ button,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tra
 </style>
 </head>
 <body><main class="shell">
-<header class="top"><div class="brand"><span class="logo" aria-hidden="true">✹</span><div><strong>Minesweeper</strong><small>Jede Zahl ist ein Hinweis. Jede Mine zählt.</small></div></div><a class="back" href="../index.php">← Alle Spiele</a></header>
+<header class="top"><div class="brand"><span class="logo" aria-hidden="true">✹</span><div><strong>Minesweeper</strong><small>Jede Zahl ist ein Hinweis. Jede Mine zählt.</small></div></div><nav class="game-header-links" aria-label="Spielnavigation"><a class="game-highscore-link" data-game-highscores href="../highscores.html?game=minesweeper">🏆 Highscores</a><a class="back" href="../index.php">← Alle Spiele</a></nav></header>
 <div class="layout"><section class="card game">
 <div class="heading"><div><div class="eyebrow">MINENSUCHE · KLASSIKER</div><h1>Finde alle sicheren Felder</h1></div><select class="level-select" id="level" aria-label="Level auswählen"></select></div>
 <div class="stats"><div class="stat"><small>Minen übrig</small><b id="remaining">10</b></div><div class="stat"><small>Aufgedeckt</small><b id="opened">0</b></div><div class="stat"><small>Züge</small><b id="moves">0</b></div><div class="stat"><small>Zeit</small><b id="time">00:00</b></div></div>
@@ -48,6 +48,7 @@ button,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tra
 <button type="button" class="random" id="random">⚡ Zufallsrunde starten</button>
 </aside></div><footer class="foot">Ohne Anmeldung · Offline spielbar · Fortschritt bleibt auf diesem Gerät</footer>
 </main>
+<script src="../highscore/client.js"></script>
 <script>
 'use strict';
 const $=id=>document.getElementById(id),KEY='minesweeper-game-v1';
@@ -190,7 +191,7 @@ function giveHint(){
  say(`Tipp: Zeile ${Math.floor(candidate/cfg.n)+1}, Spalte ${candidate%cfg.n+1} – ${action}.`,'warn');
 }
 function win(){
- won=true;finished=true;stopClock();for(let i=0;i<cfg.n*cfg.n;i++)if(mines.has(i)&&!flagged[i]){flagged[i]=true;flags++;}
+ won=true;finished=true;stopClock();window.Highscore?.submit({game:'minesweeper',level,time:elapsed(),moves});for(let i=0;i<cfg.n*cfg.n;i++)if(mines.has(i)&&!flagged[i]){flagged[i]=true;flags++;}
  if(level!=='random'){
    const old=progress[level],result={moves,time:spent};if(!old||result.time<old.time)progress[level]=result;
    saveProgress();progressDraw();

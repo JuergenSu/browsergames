@@ -22,7 +22,7 @@
 </head>
 <body>
 <div class="page">
-  <header><div class="brand"><div class="brand-icon">💡</div><div><h1>Akari</h1><p>Licht ins Dunkel bringen</p></div></div><a class="home" href="../">← Alle Spiele</a></header>
+  <header><div class="brand"><div class="brand-icon">💡</div><div><h1>Akari</h1><p>Licht ins Dunkel bringen</p></div></div><nav class="game-header-links" aria-label="Spielnavigation"><a class="game-highscore-link" data-game-highscores href="../highscores.html?game=akari">🏆 Highscores</a><a class="home" href="../">← Alle Spiele</a></nav></header>
   <div class="layout">
     <main class="card play">
       <div class="head"><div><span class="eyebrow">Rätselwerkstatt · 24 Level</span><h2 id="levelLabel">Level 1</h2></div><select id="level" aria-label="Level wählen"></select></div>
@@ -35,6 +35,7 @@
     <aside class="card aside"><span class="tag">So funktioniert's</span><h3 style="margin-top:16px">Akari</h3><div id="rules"><p>Platziere Lampen auf den hellen Feldern. Jede Lampe beleuchtet waagerecht und senkrecht bis zur nächsten Wand.</p><ul><li>Alle weißen Felder müssen beleuchtet sein.</li><li>Keine Lampe darf eine andere beleuchten.</li><li>Eine Zahl an der Wand gibt an, wie viele Lampen direkt angrenzen.</li><li>Ein Tipp setzt eine Lampe, der zweite ein X, der dritte macht das Feld wieder leer.</li></ul></div><h3>Dein Fortschritt</h3><p id="progressText">0 von 24 Level geschafft</p><div class="progress"><span id="progressBar"></span></div><p class="tiny">Alle Spielstände bleiben lokal in diesem Browser. Kein Login und keine Internetverbindung nötig.</p><p class="tiny">Tipp: Auf dem Smartphone kannst du die Felder direkt antippen.</p></aside>
   </div><div class="footer">Mit Liebe zum Knobeln · Unabhängige Browser-Version</div>
 </div>
+<script src="../highscore/client.js"></script>
 <script>
 'use strict';
 const $=id=>document.getElementById(id),U={
@@ -120,7 +121,7 @@ function render(){
  for(let i=0;i<tiles.length;i++){let t=tiles[i],d=GAME.cell(puzzle,state,i);t.className='tile '+(d.cls||'')+(errors.has(i)?' error':'')+(hintIndex===i?' hint':'');t.innerHTML=d.html??String(d.text??'');t.title=d.title||'';t.setAttribute('aria-label',d.title||'Feld '+(i+1));t.style.cssText=d.style||'';}
  $('moves').textContent=moves;$('count').textContent=complete[0]+'/'+complete[1];$('undo').disabled=!history.length||won;$('hint').disabled=won;$('prev').disabled=level===1;$('next').disabled=level==='random'||level===24&&!won;
  if(GAME.afterRender)GAME.afterRender(puzzle,state);
- if(result.won&&!won){won=true;stopClock();let sec=Math.max(1,Math.floor(elapsed()/1000));if(level!=='random'){store.done[level]=true;store.best[level]=Math.min(store.best[level]||Infinity,sec);}persist();updateProgress();message('🎉 Gelöst! '+(level==='random'?'Noch eine Runde?':'Weiter zum nächsten Level!'),'ok');$('next').disabled=level==='random'||level===24;$('hint').disabled=true;$('undo').disabled=true;}
+ if(result.won&&!won){won=true;stopClock();window.Highscore?.submit({game:'akari',level,time:elapsed(),moves});let sec=Math.max(1,Math.floor(elapsed()/1000));if(level!=='random'){store.done[level]=true;store.best[level]=Math.min(store.best[level]||Infinity,sec);}persist();updateProgress();message('🎉 Gelöst! '+(level==='random'?'Noch eine Runde?':'Weiter zum nächsten Level!'),'ok');$('next').disabled=level==='random'||level===24;$('hint').disabled=true;$('undo').disabled=true;}
 }
 function apply(index,mode='click'){
  if(won)return;if(index<0||index>=puzzle.rows*puzzle.cols)return;

@@ -145,13 +145,14 @@ usort($games, static function (array $a, array $b): int {
         }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
     </style>
-</head>
+<script defer src="highscore/client.js"></script></head>
 <body>
 <main class="container">
     <div class="eyebrow">SPIELEWELT</div>
     <h1>Was spielen wir heute?</h1>
     <p class="intro">Wähle ein Spiel aus und leg direkt los. Für eine kurze Denkpause, eine knifflige Herausforderung oder einfach eine Runde zwischendurch.</p>
 
+    <div data-player-profile></div>
     <div class="section-top">
         <h2>Unsere Spiele</h2>
         <span class="counter"><?= count($games) ?> <?= count($games) === 1 ? 'Spiel' : 'Spiele' ?></span>

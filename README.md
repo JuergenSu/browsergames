@@ -1,0 +1,71 @@
+# Spielewelt mit PHP-Highscores
+
+## Deployment durch Kopieren
+
+Voraussetzung: PHP ab Version 8.1 (64 Bit) und ein Webserver mit PHP-Unterstützung.
+Keine Datenbank, kein Composer, keine zusätzlichen Pakete und kein Build notwendig.
+
+1. Den gesamten Projektordner einschließlich `data/.htaccess` auf den PHP-Webspace kopieren. Das Projekt funktioniert auch in einem Unterverzeichnis wie `/games/`.
+2. Dem PHP-Prozess Schreibrechte für `data/` geben. Die Rechte müssen auch das Anlegen und Umbenennen von Dateien erlauben; keine pauschalen 777-Rechte nötig.
+3. Die Projektadresse beziehungsweise `index.php` öffnen. Die vorhandene PHP-Seite erkennt Spielordner automatisch und enthält die Namenseingabe und den Link zu `highscores.html`.
+
+Die API ist direkt über `highscore/api.php` erreichbar. URL-Rewriting und ein separater Anwendungsserver sind nicht erforderlich. JavaScript läuft nur im Browser für Spiele, Cookie-Verwaltung und API-Aufrufe; der Dienst läuft in PHP.
+
+Falls eine frühere Version bereits auf dem Webspace liegt, deren `index.html`, `server.js`, `package.json` und `highscore/home.js` entfernen. Insbesondere darf eine alte `index.html` die PHP-Startseite nicht überdecken. Bei einem späteren Update vorhandene Highscore-Daten in `data/` erhalten.
+
+## JSON-Datei und Zugriffsschutz
+
+Beim ersten Ergebnis entsteht `data/highscores.json`; beim Zugriff wird zusätzlich `data/highscores.lock` angelegt. Alle PHP-Prozesse verwenden dieselbe Dateisperre. Geschrieben wird zuerst in eine temporäre Datei und dann durch Umbenennen, damit parallele Übertragungen keine Ergebnisse überschreiben. Das Datenverzeichnis muss auf einem Dateisystem liegen, das `flock` und atomare Umbenennungen unterstützt.
+
+Unter Apache 2.4 verhindert die mitgelieferte `data/.htaccess` öffentliche Zugriffe auf das Datenverzeichnis, sofern der Hoster diese Regeln zulässt (`AllowOverride`). Für IIS liegt eine `data/web.config` bei, die die Dateiauslieferung sperrt. Bei nginx oder deaktivierten `.htaccess`-Regeln das Datenverzeichnis in der Webserver-Konfiguration sperren, z. B. bei Deployment unter `/games/`:
+
+```nginx
+location ^~ /games/data/ { deny all; }
+```
+
+Alternativ kann `HIGHSCORE_DATA_DIR` als Server-Umgebungsvariable auf ein beschreibbares Verzeichnis außerhalb des öffentlichen Webverzeichnisses zeigen. Der Pfad wird ausschließlich serverseitig konfiguriert. Die JSON-Datei regelmäßig sichern; sie ist von Git ausgeschlossen.
+
+## Bedienung
+
+Der Spielername (1–30 Zeichen) wird für ein Jahr als Cookie gespeichert und kann auf der Startseite, in den Spielen und in der Highscore-Ansicht geändert werden. Bereits gespeicherte Einträge behalten ihren bisherigen Namen.
+
+Alle 15 Spiele übermitteln nach einem erfolgreichen Abschluss ihre Zeit in Millisekunden und, soweit vorhanden, die Zugzahl. Ohne Namen wartet das Ergebnis auf die Eingabe. Bei Verbindungsproblemen lässt es sich mit „Erneut senden“ erneut übertragen, ohne einen doppelten Eintrag anzulegen. Wartende Ergebnisse bleiben bis zum Verlassen der Seite im Arbeitsspeicher. Nach dem Speichern des Namens erscheint nur „Hallo <Spielername>“ mit einem Stift zum Ändern; der Highscore-Link steht separat daneben.
+
+`highscores.html` zeigt die besten zehn Runden je Spiel und Level bzw. Schwierigkeitsgrad. Jede Runde zählt; ein Name kann mehrfach vorkommen. Bei gleicher Hauptwertung entscheidet die Zeit, danach der frühere Eintrag. Zufallsrunden sind eine eigene Kategorie und wegen unterschiedlicher Rätsel nur eingeschränkt vergleichbar.
+
+## Weitere Spiele ergänzen
+
+1. Spielordner mit `index.html` anlegen.
+2. Das Spiel in `highscore/games.json` registrieren, beispielsweise:
+
+```json
+"mein-spiel": { "name": "Mein Spiel", "metric": "points", "order": "desc" }
+```
+
+Mögliche Hauptwertungen sind `time`, `moves`, `points`; `asc` bedeutet weniger ist besser, `desc` mehr ist besser. Die Konfiguration wird bei jedem API-Aufruf geladen. Ein Serverneustart ist nicht erforderlich.
+
+3. Nach dem öffnenden Body und vor dem Spielskript den Client laden:
+
+```html
+<script src="../highscore/client.js"></script>
+```
+
+4. Einmal beim erfolgreichen Abschluss aufrufen:
+
+```js
+window.Highscore?.submit({
+  game: 'mein-spiel', level: 1,
+  time: 12345, // Millisekunden, immer erforderlich
+  points: 900, moves: 20 // weitere Werte nach Bedarf
+});
+```
+
+Level sind positive Zahlen bis 9999 oder `easy`, `medium`, `hard`, `expert`, `random`. Alle Messwerte sind nichtnegative ganze Zahlen; die konfigurierte Hauptwertung muss enthalten sein.
+
+## PHP-API
+
+- `GET highscore/api.php?action=games`: registrierte Spiele mit Wertung.
+- `GET highscore/api.php?action=scores&game=zip&level=easy`: Top 10 und vorhandene Level.
+- `POST highscore/api.php?action=scores`: JSON mit `game`, `level` (String), `time`, Hauptwertung, `name` und eindeutiger `submissionId`. Der Browser-Client erzeugt diese ID automatisch und verwendet sie bei einer Wiederholung erneut. Neue Einträge liefern HTTP 201, Wiederholungen HTTP 200.
+
+Namen sind keine authentifizierten Identitäten. Der Dienst prüft die Datenformate, aber nicht die vom Browser gemeldete Spielleistung.

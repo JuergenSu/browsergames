@@ -38,7 +38,7 @@
 </head>
 <body>
   <div class="shell">
-    <header class="top"><div class="identity"><div class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div><div class="brand">Patches</div><div class="tagline">Ein Rechteck. Ein Hinweis. Ein perfektes Raster.</div></div></div><div class="offline">● Offline spielbar</div></header>
+    <header class="top"><div class="identity"><div class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div><div class="brand">Patches</div><div class="tagline">Ein Rechteck. Ein Hinweis. Ein perfektes Raster.</div></div></div><div class="offline">● Offline spielbar</div><nav class="game-header-links" aria-label="Spielnavigation"><a class="game-highscore-link" data-game-highscores href="../highscores.html?game=patches">🏆 Highscores</a><a class="game-highscore-link game-back-link" href="../index.php">← Alle Spiele</a></nav></header>
     <main class="layout">
       <section class="game" aria-label="Patches-Rätsel">
         <div class="bar"><div><div class="eyebrow" id="round">Rätsel 01</div><h1>Finde alle Rechtecke</h1></div><label><span class="eyebrow" style="display:block;margin-bottom:4px">Schwierigkeit</span><select class="level-select" id="level" aria-label="Schwierigkeit"><option value="easy">Leicht · 6 × 6</option><option value="medium">Mittel · 7 × 7</option><option value="hard">Schwer · 8 × 8</option></select></label></div>
@@ -59,7 +59,8 @@
       </div><div class="foot">Eigenständige Version nach den Patches-Regeln · Keine Verbindung zu LinkedIn</div></aside>
     </main>
   </div>
-  <script>
+  <script src="../highscore/client.js"></script>
+<script>
   (()=>{
     'use strict';
     const $=id=>document.getElementById(id);
@@ -246,7 +247,7 @@
     }
 
     function finish(){
-      finished=true;stopClock();render();
+      finished=true;stopClock();render();window.Highscore?.submit({game:'patches',level,time:elapsed()});
       $('win-detail').textContent=`${puzzle.clues.length} Rechtecke in ${formatted(elapsed())}`+(hintCount?` · ${hintCount} Hinweis${hintCount===1?'':'e'}`:' · ohne Hinweise')+'.';
       $('win').hidden=false;message('Das Raster ist vollständig und korrekt gefüllt!','success');
     }

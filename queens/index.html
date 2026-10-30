@@ -32,7 +32,7 @@
 </head>
 <body>
   <div class="shell">
-    <header class="top"><div class="identity"><div class="logo" aria-hidden="true">♛</div><div><div class="brand">Queens</div><div class="tagline">Eine Krone pro Farbe, Zeile und Spalte</div></div></div><div class="offline">● Offline spielbar</div></header>
+    <header class="top"><div class="identity"><div class="logo" aria-hidden="true">♛</div><div><div class="brand">Queens</div><div class="tagline">Eine Krone pro Farbe, Zeile und Spalte</div></div></div><div class="offline">● Offline spielbar</div><nav class="game-header-links" aria-label="Spielnavigation"><a class="game-highscore-link" data-game-highscores href="../highscores.html?game=queens">🏆 Highscores</a><a class="game-highscore-link game-back-link" href="../index.php">← Alle Spiele</a></nav></header>
     <main class="layout">
       <section class="game" aria-label="Queens-Spiel">
         <div class="game-heading"><div><div class="eyebrow" id="edition">Rätsel 01</div><h1>Setze die Kronen</h1></div><label><span class="eyebrow" style="display:block;margin-bottom:4px">Schwierigkeit</span><select id="level" class="level-select" aria-label="Schwierigkeitsgrad"><option value="easy">Leicht · 6 × 6</option><option value="medium">Mittel · 7 × 7</option><option value="hard">Schwer · 8 × 8</option></select></label></div>
@@ -53,7 +53,8 @@
       </div><div class="foot">Eigenständige Interpretation der Queens-Regeln · Keine Verbindung zu LinkedIn</div></aside>
     </main>
   </div>
-  <script>
+  <script src="../highscore/client.js"></script>
+<script>
   (()=>{
     'use strict';
     const $=id=>document.getElementById(id),board=$('board');
@@ -199,7 +200,7 @@
     }
     function checkWin(){
       const crowns=queenPositions();if(crowns.length!==puzzle.size||conflictingQueens().size)return false;
-      finished=true;stopClock();render();
+      finished=true;stopClock();render();window.Highscore?.submit({game:'queens',level,time:elapsed()});
       $('win-detail').textContent=`${puzzle.size} Kronen in ${timeFormat(elapsed())}`+(hints?` · ${hints} Hinweis${hints===1?'':'e'}`:' · ohne Hinweise')+'.';
       $('win').hidden=false;say('Alle Zeilen, Spalten und Regionen sind korrekt besetzt!','success');return true;
     }

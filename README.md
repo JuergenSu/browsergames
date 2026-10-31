@@ -101,7 +101,7 @@ GAMES_URL=http://127.0.0.1:8000 node --test tests/browser.test.cjs
 
 ## Tetris Puzzle
 
-`tetris-puzzle/index.html` ist ein Blockpuzzle auf einem 10×10-Feld. Die sieben klassischen Tetrominos werden einzeln angeboten, lassen sich kostenlos drehen und werden per Klick oder Touch mit ihrer linken oberen Ecke am gewählten Feld platziert. Es gibt keine Schwerkraft und kein Zeitlimit. Tastatur: mit Tab ins Feld, Pfeiltasten zur Auswahl, Enter oder Leertaste zum Platzieren, R zum Drehen.
+`tetris-puzzle/index.html` ist ein Blockpuzzle auf einem 10×10-Feld. Die sieben klassischen Tetrominos werden einzeln angeboten, lassen sich kostenlos drehen und werden per Drag-and-drop mit Maus, Touch oder Stift platziert. Alternativ wird per Klick oder Tippen ihre linke obere Ecke am gewählten Feld platziert. Beim Ziehen folgt eine Vorschau in Spielfeldgröße; auf Touchgeräten erscheint sie über dem Finger. Ungültige Ablagen, Abbruch der Touchgeste, Fokusverlust und Escape behalten den Stein bei. Nur die Steinablage sperrt während einer Touchgeste das Scrollen; die übrige Seite bleibt scrollbar. Es gibt keine Schwerkraft und kein Zeitlimit. Tastatur: mit Tab ins Feld, Pfeiltasten zur Auswahl, Enter oder Leertaste zum Platzieren, R zum Drehen.
 
 Vollständige Zeilen und Spalten werden gleichzeitig entfernt, ohne dass andere Steine nachrücken. Jedes tatsächlich entfernte Feld zählt genau einmal: eine Linie = 10 Punkte, eine sich kreuzende Zeile und Spalte = 19 Punkte. Platzierte Steine allein bringen keine Punkte. Die Runde endet, sobald der nächste Stein in keiner seiner Drehungen mehr platziert werden kann. Es gibt keine Möglichkeit, Steine zu überspringen.
 

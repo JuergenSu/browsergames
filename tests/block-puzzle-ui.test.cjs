@@ -11,7 +11,7 @@ function setup({initial,storage=new Map(),blockStorage=false}={}){
   let doc;
   class Element{
     constructor(tag='div'){
-      this.tagName=tag;this.children=[];this.listeners={};this.dataset={};this.attributes={};this.textContent='';this.className='';this.tabIndex=-1;this.hidden=false;this.disabled=false;
+      this.tagName=tag;this.children=[];this.listeners={};this.dataset={};this.attributes={};this.captures=new Set();this.textContent='';this.className='';this.tabIndex=-1;this.hidden=false;this.disabled=false;
       this.style={setProperty:(name,value)=>{this.style[name]=value;}};
       this.classList={
         contains:name=>this.className.split(' ').includes(name),
@@ -22,8 +22,13 @@ function setup({initial,storage=new Map(),blockStorage=false}={}){
     }
     setAttribute(key,value){this.attributes[key]=String(value);}
     addEventListener(name,listener){(this.listeners[name]??=[]).push(listener);}
-    append(...elements){for(const e of elements){if(e.tagName==='#fragment')this.append(...e.children);else this.children.push(e);}}
+    append(...elements){for(const e of elements){if(e.tagName==='#fragment')this.append(...e.children);else {this.children.push(e);e.parent=this;}}}
     replaceChildren(...elements){this.children=[];this.append(...elements);}
+    remove(){if(this.parent)this.parent.children=this.parent.children.filter(e=>e!==this);}
+    setPointerCapture(id){this.captures.add(id);}
+    hasPointerCapture(id){return this.captures.has(id);}
+    releasePointerCapture(id){this.captures.delete(id);}
+    getBoundingClientRect(){const i=Number(this.dataset.index);return this.dataset.index===undefined?{left:100,top:400,width:81,height:81}:{left:100+i%10*22,top:100+Math.floor(i/10)*22,width:20,height:20};}
     contains(element){return element===this||this.children.some(c=>c.contains(element));}
     closest(){return null;}
     dispatch(name,event={}){let prevented=false;const e={target:this,preventDefault(){prevented=true;},...event};for(const listener of this.listeners[name]||[])listener(e);return prevented;}
@@ -33,12 +38,12 @@ function setup({initial,storage=new Map(),blockStorage=false}={}){
   const ids={};
   for(const id of ['board','points','best','placed','lines','piece-label','piece','rotate','status','game-over','result','again','restart'])ids[id]=new Element();
   ids['game-over'].hidden=true;
-  doc=new Element('document');doc.activeElement=null;doc.getElementById=id=>ids[id];doc.createElement=tag=>new Element(tag);doc.createDocumentFragment=()=>new Element('#fragment');
+  doc=new Element('document');doc.body=new Element('body');doc.activeElement=null;doc.getElementById=id=>ids[id];doc.createElement=tag=>new Element(tag);doc.createDocumentFragment=()=>new Element('#fragment');
   const submissions=[];let clock=0;
   const block={...P,newGame:()=>initial?structuredClone(initial):P.newGame(()=>0.5)};
-  const context={window:{BlockPuzzle:block,Highscore:{submit:r=>submissions.push(r)}},document:doc,performance:{now:()=>{clock+=100;return clock;}},setTimeout:()=>1,clearTimeout:()=>{},localStorage:{getItem:k=>{if(blockStorage)throw Error('blocked');return storage.get(k)??null;},setItem:(k,v)=>{if(blockStorage)throw Error('blocked');storage.set(k,v);}}};
+  const context={window:Object.assign(new Element('window'),{BlockPuzzle:block,Highscore:{submit:r=>submissions.push(r)}}),document:doc,performance:{now:()=>{clock+=100;return clock;}},setTimeout:()=>1,clearTimeout:()=>{},localStorage:{getItem:k=>{if(blockStorage)throw Error('blocked');return storage.get(k)??null;},setItem:(k,v)=>{if(blockStorage)throw Error('blocked');storage.set(k,v);}}};
   vm.runInNewContext(script,context);
-  return {ids,doc,storage,submissions,cells:ids.board.children};
+  return {ids,doc,window:context.window,storage,submissions,cells:ids.board.children};
 }
 function fixture(board,points=0){return {...P.newGame(()=>0.5),board,piece:{kind:'O',cells:P.normalize(P.SHAPES.O)},bag:['O'],points};}
 test('UI builds a 100-cell board and never places pieces by itself',()=>{
@@ -82,4 +87,64 @@ test('Missing or malformed local storage does not prevent playing',()=>{
   for(const value of ['NaN','-20','Infinity','{}','999999999999999999999']){
     const {ids}=setup({storage:new Map([['spielewelt-tetris-puzzle-best-v1',value]])});assert.equal(ids.best.textContent,0);
   }
+});
+
+function pointer(id,type,x,y){return {pointerId:id,pointerType:type,clientX:x,clientY:y,button:0,isPrimary:true};}
+for(const type of ['mouse','touch','pen'])test(type+': drag from tray places exactly once at the visible target',()=>{
+  const {ids,cells,doc}=setup({initial:fixture(Array(100).fill(null))});
+  assert.equal(ids.piece.dispatch('pointerdown',pointer(1,type,110,410)),true);
+  assert.equal(doc.body.children.length,1);assert.equal(ids.piece.hasPointerCapture(1),true);
+  const lift=type==='touch'?50:0;
+  ids.piece.dispatch('pointermove',pointer(1,type,154,154+lift));
+  assert.deepEqual(cells.flatMap((c,i)=>c.classList.contains('preview')?[i]:[]),[22,23,32,33]);
+  assert.equal(ids.placed.textContent,0);
+  ids.piece.dispatch('pointerup',pointer(1,type,154,154+lift));
+  assert.equal(ids.placed.textContent,1);assert.equal(doc.body.children.length,0);assert.equal(ids.piece.hasPointerCapture(1),false);
+  ids.piece.dispatch('pointerup',pointer(1,type,154,154+lift));assert.equal(ids.placed.textContent,1);
+});
+test('Invalid and off-board drops preserve the current stone and score',()=>{
+  const board=Array(100).fill(null);board[22]='T';
+  const {ids,doc}=setup({initial:fixture(board)});
+  for(const [x,y] of [[154,154],[20,20],[308,308]]){
+    ids.piece.dispatch('pointerdown',pointer(1,'mouse',110,410));
+    ids.piece.dispatch('pointerup',pointer(1,'mouse',x,y));
+    assert.equal(ids.placed.textContent,0);assert.equal(ids.points.textContent,0);assert.equal(doc.body.children.length,0);
+  }
+  ids.piece.dispatch('pointerdown',pointer(2,'mouse',110,410));
+  ids.piece.dispatch('pointerup',pointer(2,'mouse',110,110));assert.equal(ids.placed.textContent,1);
+});
+test('Touch cancellation, lost capture, Escape and blur clean up without placement',()=>{
+  for(const cause of ['pointercancel','lostpointercapture','escape','blur','visibility']){
+    const {ids,doc,window}=setup({initial:fixture(Array(100).fill(null))});
+    ids.piece.dispatch('pointerdown',pointer(7,'touch',110,410));
+    if(cause==='escape')doc.dispatch('keydown',{key:'Escape'});
+    else if(cause==='blur')window.dispatch('blur');
+    else if(cause==='visibility'){doc.hidden=true;doc.dispatch('visibilitychange');}
+    else ids.piece.dispatch(cause,pointer(7,'touch',154,204));
+    assert.equal(ids.placed.textContent,0);assert.equal(doc.body.children.length,0);assert.equal(ids.piece.classList.contains('dragging'),false);
+  }
+});
+test('Second pointers cannot steal a drag and rotation cannot replace a dragged stone',()=>{
+  const {ids,doc}=setup({initial:fixture(Array(100).fill(null))});
+  ids.piece.dispatch('pointerdown',pointer(1,'touch',110,410));
+  ids.piece.dispatch('pointerdown',{...pointer(2,'touch',130,410),isPrimary:false});
+  ids.piece.dispatch('pointerup',pointer(2,'touch',154,204));assert.equal(ids.placed.textContent,0);assert.equal(doc.body.children.length,1);
+  ids.rotate.click();ids.piece.dispatch('pointerup',pointer(1,'touch',154,204));assert.equal(ids.placed.textContent,1);
+});
+test('Restart during a drag discards only the gesture and resets cleanly',()=>{
+  const {ids,doc}=setup();ids.piece.dispatch('pointerdown',pointer(1,'mouse',110,410));ids.restart.click();
+  assert.equal(doc.body.children.length,0);assert.equal(ids.placed.textContent,0);ids.piece.dispatch('pointerup',pointer(1,'mouse',154,154));assert.equal(ids.placed.textContent,0);
+});
+test('The grabbed part of a stone stays under the pointer when dropping',()=>{
+  const {ids,cells}=setup({initial:fixture(Array(100).fill(null))});
+  ids.piece.dispatch('pointerdown',pointer(1,'mouse',130,430));
+  ids.piece.dispatch('pointerup',pointer(1,'mouse',176,176));
+  assert.deepEqual(cells.flatMap((c,i)=>c.classList.contains('filled')?[i]:[]),[22,23,32,33]);
+});
+test('Rotated long stones can be dragged to the bottom-right edge',()=>{
+  const initial=P.newGame(()=>0.5);initial.piece={kind:'I',cells:P.SHAPES.I};
+  const {ids,cells}=setup({initial});ids.rotate.click();
+  ids.piece.dispatch('pointerdown',pointer(1,'touch',110,410));
+  ids.piece.dispatch('pointerup',pointer(1,'touch',308,292));
+  assert.deepEqual(cells.flatMap((c,i)=>c.classList.contains('filled')?[i]:[]),[69,79,89,99]);
 });

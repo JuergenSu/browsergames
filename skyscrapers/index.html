@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f6fa">
+<meta name="description" content="Skyscrapers: Eine Skyline voller Logik. 24 kostenlose Logikrätsel mit Highscores, direkt im Browser.">
+<title>Skyscrapers – Spielewelt</title>
+<link rel="stylesheet" href="../puzzle/style.css">
+</head>
+<body data-game="skyscrapers">
+<main class="shell">
+<header class="top">
+<div class="brand"><span class="brand-icon" aria-hidden="true">▥</span><div><strong>Skyscrapers</strong><small>Eine Skyline voller Logik.</small></div></div>
+<nav class="game-header-links" aria-label="Spielnavigation"><a data-game-highscores href="../highscores.html?game=skyscrapers">🏆 Highscores</a><a href="../index.php">← Alle Spiele</a></nav>
+</header>
+<div class="layout">
+<section class="card" aria-label="Skyscrapers spielen">
+<div class="heading"><div><div class="eyebrow" id="difficulty">24 Level · Logikrätsel</div><h1>Wie hoch ist deine Skyline?</h1></div><select id="level" aria-label="Level auswählen"></select></div>
+<div class="stats"><div><small>Gefüllt</small><b id="filled">0</b></div><div><small>Züge</small><b id="moves">0</b></div><div><small>Zeit</small><b id="time">00:00</b></div></div>
+<div class="board-wrap"><div id="board" class="board" role="group" aria-label="Spielfeld"></div></div>
+<div class="number-pad" id="number-pad" role="group" aria-label="Gebäudehöhe auswählen" hidden></div>
+<div class="dpad" id="dpad" role="group" aria-label="Bewegen" hidden><span></span><button type="button" data-direction="0" aria-label="Nach oben">↑</button><span></span><button type="button" data-direction="3" aria-label="Nach links">←</button><button type="button" data-direction="2" aria-label="Nach unten">↓</button><button type="button" data-direction="1" aria-label="Nach rechts">→</button></div>
+<p class="status" id="status" role="status" aria-live="polite"></p>
+<div class="controls"><button type="button" id="undo">↶ Rückgängig</button><button type="button" id="check" hidden>✓ Prüfen</button><button type="button" class="primary" id="reset">↻ Neustart</button></div>
+<div class="win" id="win" hidden><strong>Geschafft! ✦</strong><p id="win-text"></p><button type="button" id="next">Nächstes Level →</button></div>
+<div data-player-profile></div>
+</section>
+<aside class="card side"><h2>So geht Skyscrapers</h2><div class="rule"><strong>01 · Höhen verteilen</strong><p>Jede Zeile und jede Spalte enthält jede Höhe von 1 bis zur Spielfeldgröße genau einmal.</p></div><div class="rule"><strong>02 · Sichtzahlen beachten</strong><p>Die Zahlen am Rand sagen, wie viele Gebäude du von dieser Seite siehst. Höhere verdecken alle kleineren dahinter.</p></div><div class="rule"><strong>03 · Ein Beispiel</strong><p>Bei 2 · 1 · 4 · 3 sieht man von links zwei Gebäude: die 2 und die 4. Von rechts sieht man ebenfalls zwei: die 3 und die 4.</p></div><div class="rule"><strong>04 · Eingeben und prüfen</strong><p>Wähle ein Feld, dann eine Zahl. Du kannst auch die Tastatur und Pfeiltasten nutzen. Farbige Vorgaben sind fest; „Prüfen“ markiert Regelverstöße.</p></div><div class="note">Alle 24 Rätsel sind eindeutig lösbar. Die Uhr beginnt mit deiner ersten Eingabe. Die Highscores werten die Zeit.</div><div class="progress-label" id="progress">0 / 24 geschafft</div><nav id="levels" class="level-grid" aria-label="Alle 24 Level"></nav></aside>
+</div>
+<p class="foot">24 feste Level · Fortschritt lokal gespeichert · Ohne Anmeldung spielbar</p>
+</main>
+<script src="../highscore/client.js"></script>
+<script src="../puzzle/engines.js"></script>
+<script src="../puzzle/game.js"></script>
+</body>
+</html>

@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Spiele-Übersicht
  * Diese Datei in /games/index.php ablegen. Spielordner mit index.html
- * werden automatisch erkannt. Das Kachelbild liegt im Ordner unter titel.jpg.
+ * werden automatisch erkannt. Das Kachelbild liegt im Ordner unter titel.jpg oder titel.svg.
  */
 
 function escapeHtml(string $text): string
@@ -37,12 +37,13 @@ if ($directories !== false) {
         }
 
         $folderUrl = rawurlencode($directory) . '/';
-        $imageExists = is_file($directoryPath . DIRECTORY_SEPARATOR . 'titel.jpg');
+        $imageFile = is_file($directoryPath . DIRECTORY_SEPARATOR . 'titel.jpg') ? 'titel.jpg'
+            : (is_file($directoryPath . DIRECTORY_SEPARATOR . 'titel.svg') ? 'titel.svg' : null);
 
         $games[] = array(
             'name' => displayName($directory),
             'url' => $folderUrl . 'index.html',
-            'image' => $imageExists ? $folderUrl . 'titel.jpg' : null,
+            'image' => $imageFile !== null ? $folderUrl . $imageFile : null,
         );
     }
 }
@@ -187,3 +188,4 @@ usort($games, static function (array $a, array $b): int {
 </main>
 </body>
 </html>
+

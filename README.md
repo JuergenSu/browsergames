@@ -29,7 +29,7 @@ Alternativ kann `HIGHSCORE_DATA_DIR` als Server-Umgebungsvariable auf ein beschr
 
 Der Spielername (1–30 Zeichen) wird für ein Jahr als Cookie gespeichert und kann auf der Startseite, in den Spielen und in der Highscore-Ansicht geändert werden. Bereits gespeicherte Einträge behalten ihren bisherigen Namen.
 
-Alle 15 Spiele übermitteln nach einem erfolgreichen Abschluss ihre Zeit in Millisekunden und, soweit vorhanden, die Zugzahl. Ohne Namen wartet das Ergebnis auf die Eingabe. Bei Verbindungsproblemen lässt es sich mit „Erneut senden“ erneut übertragen, ohne einen doppelten Eintrag anzulegen. Wartende Ergebnisse bleiben bis zum Verlassen der Seite im Arbeitsspeicher. Nach dem Speichern des Namens erscheint nur „Hallo <Spielername>“ mit einem Stift zum Ändern; der Highscore-Link steht separat daneben.
+Alle 18 Spiele übermitteln nach einem erfolgreichen Abschluss ihre Zeit in Millisekunden und, soweit vorhanden, die Zugzahl. Ohne Namen wartet das Ergebnis auf die Eingabe. Bei Verbindungsproblemen lässt es sich mit „Erneut senden“ erneut übertragen, ohne einen doppelten Eintrag anzulegen. Wartende Ergebnisse bleiben bis zum Verlassen der Seite im Arbeitsspeicher. Nach dem Speichern des Namens erscheint nur „Hallo <Spielername>“ mit einem Stift zum Ändern; der Highscore-Link steht separat daneben.
 
 `highscores.html` zeigt die besten zehn Runden je Spiel und Level bzw. Schwierigkeitsgrad. Jede Runde zählt; ein Name kann mehrfach vorkommen. Bei gleicher Hauptwertung entscheidet die Zeit, danach der frühere Eintrag. Zufallsrunden sind eine eigene Kategorie und wegen unterschiedlicher Rätsel nur eingeschränkt vergleichbar.
 
@@ -69,3 +69,32 @@ Level sind positive Zahlen bis 9999 oder `easy`, `medium`, `hard`, `expert`, `ra
 - `POST highscore/api.php?action=scores`: JSON mit `game`, `level` (String), `time`, Hauptwertung, `name` und eindeutiger `submissionId`. Der Browser-Client erzeugt diese ID automatisch und verwendet sie bei einer Wiederholung erneut. Neue Einträge liefern HTTP 201, Wiederholungen HTTP 200.
 
 Namen sind keine authentifizierten Identitäten. Der Dienst prüft die Datenformate, aber nicht die vom Browser gemeldete Spielleistung.
+
+
+## Netwalk, Skyscrapers und Sokoban
+
+Drei weitere Spiele sind über die automatisch aktualisierte Startseite erreichbar:
+
+- `netwalk/index.html`: 24 feste Leitungsrätsel in 4×4, 5×5 und 6×6. Drehen per Klick, Fixieren per Rechtsklick oder Umschalt + Klick. Wertung nach Zügen.
+- `skyscrapers/index.html`: 24 eindeutig lösbare Skyline-Rätsel in 4×4, 5×5 und 6×6. Zahlen per Bildschirmtasten oder Tastatur, Regelprüfung ohne Lösungsverrat. Wertung nach Zeit.
+- `sokoban/index.html`: 24 feste, lösbare Lagerhallen mit zwei bis vier Kisten. Steuerung per Pfeiltasten, WASD, Bildschirmtasten oder benachbartem Feld. Wertung nach Schritten; Rückgängig zählt zusätzlich als Zug.
+
+Die gemeinsamen Dateien in `puzzle/` müssen mitkopiert werden. Keine zusätzlichen Laufzeitpakete und kein Build erforderlich. Die Uhr startet bei der ersten Änderung bzw. Bewegung; Rückgängig lässt sie weiterlaufen. Neustart setzt die Runde zurück. Gewonnene Level werden je Spiel lokal im Browser gespeichert. Ein Ergebnis wird pro gewonnener Runde genau einmal an den vorhandenen Highscore-Client übergeben.
+
+Die Netwalk-Level entstehen aus zusammenhängenden Bäumen; es gibt keinen Randüberlauf. Skyscrapers prüft bei der Erzeugung die Eindeutigkeit mit einem Lösungszähler. Sokoban-Level werden durch umgekehrte gültige Schubfolgen erzeugt; eine vollständige Lösungsfolge wird für die automatischen Tests mitgeführt.
+
+### Entwicklung und Prüfungen
+
+Lokal mit PHP ab 8.1 starten: `php -S 127.0.0.1:8000 -t .`. Für lokale Tests der Highscores kann `HIGHSCORE_DATA_DIR` auf ein beschreibbares Verzeichnis außerhalb des Projektordners gesetzt werden. Der PHP-Entwicklungsserver ist nur für lokale Entwicklung gedacht.
+
+Die Regeltests laufen ohne Zusatzpakete mit Node.js ab Version 18:
+
+```sh
+node --test tests/engines.test.cjs
+```
+
+Optionale Browserprüfungen benötigen Playwright und dessen Chromium-Browser. Eine laufende Vorschau über `GAMES_URL` angeben:
+
+```sh
+GAMES_URL=http://127.0.0.1:8000 node --test tests/browser.test.cjs
+```

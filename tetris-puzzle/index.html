@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f6fa">
+<meta name="description" content="Tetris Puzzle: Platziere Blöcke ohne Zeitdruck. Fülle Zeilen und Spalten und sammle Punkte für jedes entfernte Feld.">
+<title>Tetris Puzzle – Spielewelt</title>
+<link rel="stylesheet" href="../puzzle/style.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="shell">
+<header class="top">
+<div class="brand"><span class="brand-icon" aria-hidden="true">▦</span><div><strong>Tetris Puzzle</strong><small>Dein Stein. Dein Platz. Dein Tempo.</small></div></div>
+<nav class="game-header-links" aria-label="Spielnavigation"><a data-game-highscores href="../highscores.html?game=tetris-puzzle">🏆 Highscores</a><a href="../index.php">← Alle Spiele</a></nav>
+</header>
+<div class="layout">
+<section class="card main-card" aria-label="Tetris Puzzle spielen">
+<div class="heading"><div><div class="eyebrow">10 × 10 · Endlosmodus</div><h1>Mach Platz für mehr.</h1></div><span class="mode-badge">Ohne Zeitdruck</span></div>
+<div class="stats"><div><small>Entfernte Felder</small><b id="points">0</b></div><div><small>Dein Rekord</small><b id="best">0</b></div><div><small>Gesetzte Steine</small><b id="placed">0</b></div></div>
+<div class="play-area">
+<div class="board-wrap"><div id="board" class="block-board" role="group" aria-label="Zehn mal zehn Spielfeld. Pfeiltasten zum Bewegen, Enter zum Platzieren."></div></div>
+<div class="piece-tray">
+<div class="piece-info"><div class="eyebrow" id="piece-label">Dein Stein</div><div id="piece" class="piece-preview" role="img" aria-label="Aktueller Stein"></div></div>
+<div class="piece-actions"><button type="button" id="rotate" aria-keyshortcuts="R">↻ Drehen <span class="keycap">R</span></button><p>Tippe ins Spielfeld.<br>Der markierte Platz ist die linke obere Ecke des Steins.</p></div>
+</div>
+</div>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+<div class="round-summary"><span>Entfernte Linien <b id="lines">0</b></span><button type="button" id="restart">↻ Neue Runde</button></div>
+<section id="game-over" class="game-over" aria-labelledby="over-title" hidden><div class="eyebrow">Runde beendet</div><h2 id="over-title">Kein Platz mehr.</h2><p id="result"></p><p>Der nächste Stein passt in keiner Drehung mehr auf das Feld.</p><button type="button" id="again">Noch eine Runde →</button></section>
+<div data-player-profile></div>
+</section>
+<aside class="card side">
+<h2>So funktioniert’s</h2>
+<div class="rule"><strong>01 · Platzieren statt fallen</strong><p>Setze den angezeigten Stein auf freie Felder. Er fällt nicht von selbst. Alle vier Felder müssen frei sein und auf das Spielfeld passen.</p></div>
+<div class="rule"><strong>02 · Drehen ist erlaubt</strong><p>Mit „Drehen“ oder R drehst du den Stein um 90°. Du bekommst immer einen Stein; nach dem Platzieren folgt der nächste.</p></div>
+<div class="rule"><strong>03 · Waagerecht und senkrecht</strong><p>Eine volle Zeile oder Spalte verschwindet sofort. Mehrere volle Linien verschwinden gleichzeitig. Die übrigen Steine bleiben an ihrem Platz.</p></div>
+<div class="rule"><strong>04 · Jedes entfernte Feld zählt</strong><p>Eine Linie bringt 10 Punkte. Kreuzt sich eine volle Zeile mit einer vollen Spalte, sind es 19: Das gemeinsame Feld zählt einmal.</p></div>
+<div class="note">Die Runde endet automatisch, wenn der nächste Stein auch gedreht nirgends mehr passt. Dein Ergebnis landet in den Highscores; deinen persönlichen Rekord merkt sich dieser Browser.</div>
+<div class="keyboard-help"><strong>Mit Tastatur spielen</strong><p>Mit Tab ins Spielfeld, mit ← ↑ ↓ → den Platz wählen. Enter oder Leertaste setzt den Stein. R dreht ihn.</p></div>
+</aside>
+</div>
+<p class="foot">Kein Zeitlimit · Sieben klassische Steinformen · Highscore nach entfernten Feldern</p>
+</main>
+<script src="../highscore/client.js"></script>
+<script src="engine.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

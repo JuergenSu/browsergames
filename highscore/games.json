@@ -84,6 +84,11 @@
     "metric": "time",
     "order": "asc"
   },
+  "tetris-puzzle": {
+    "name": "Tetris Puzzle",
+    "metric": "points",
+    "order": "desc"
+  },
   "zip": {
     "name": "ZIP",
     "metric": "time",

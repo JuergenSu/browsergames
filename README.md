@@ -29,7 +29,7 @@ Alternativ kann `HIGHSCORE_DATA_DIR` als Server-Umgebungsvariable auf ein beschr
 
 Der Spielername (1–30 Zeichen) wird für ein Jahr als Cookie gespeichert und kann auf der Startseite, in den Spielen und in der Highscore-Ansicht geändert werden. Bereits gespeicherte Einträge behalten ihren bisherigen Namen.
 
-Alle 18 Spiele übermitteln nach einem erfolgreichen Abschluss ihre Zeit in Millisekunden und, soweit vorhanden, die Zugzahl. Ohne Namen wartet das Ergebnis auf die Eingabe. Bei Verbindungsproblemen lässt es sich mit „Erneut senden“ erneut übertragen, ohne einen doppelten Eintrag anzulegen. Wartende Ergebnisse bleiben bis zum Verlassen der Seite im Arbeitsspeicher. Nach dem Speichern des Namens erscheint nur „Hallo <Spielername>“ mit einem Stift zum Ändern; der Highscore-Link steht separat daneben.
+Alle 19 Spiele übermitteln nach Abschluss einer Runde ihre Zeit in Millisekunden und, soweit vorhanden, Züge oder Punkte. Ohne Namen wartet das Ergebnis auf die Eingabe. Bei Verbindungsproblemen lässt es sich mit „Erneut senden“ erneut übertragen, ohne einen doppelten Eintrag anzulegen. Wartende Ergebnisse bleiben bis zum Verlassen der Seite im Arbeitsspeicher. Nach dem Speichern des Namens erscheint nur „Hallo <Spielername>“ mit einem Stift zum Ändern; der Highscore-Link steht separat daneben.
 
 `highscores.html` zeigt die besten zehn Runden je Spiel und Level bzw. Schwierigkeitsgrad. Jede Runde zählt; ein Name kann mehrfach vorkommen. Bei gleicher Hauptwertung entscheidet die Zeit, danach der frühere Eintrag. Zufallsrunden sind eine eigene Kategorie und wegen unterschiedlicher Rätsel nur eingeschränkt vergleichbar.
 
@@ -97,4 +97,20 @@ Optionale Browserprüfungen benötigen Playwright und dessen Chromium-Browser. E
 
 ```sh
 GAMES_URL=http://127.0.0.1:8000 node --test tests/browser.test.cjs
+```
+
+## Tetris Puzzle
+
+`tetris-puzzle/index.html` ist ein Blockpuzzle auf einem 10×10-Feld. Die sieben klassischen Tetrominos werden einzeln angeboten, lassen sich kostenlos drehen und werden per Klick oder Touch mit ihrer linken oberen Ecke am gewählten Feld platziert. Es gibt keine Schwerkraft und kein Zeitlimit. Tastatur: mit Tab ins Feld, Pfeiltasten zur Auswahl, Enter oder Leertaste zum Platzieren, R zum Drehen.
+
+Vollständige Zeilen und Spalten werden gleichzeitig entfernt, ohne dass andere Steine nachrücken. Jedes tatsächlich entfernte Feld zählt genau einmal: eine Linie = 10 Punkte, eine sich kreuzende Zeile und Spalte = 19 Punkte. Platzierte Steine allein bringen keine Punkte. Die Runde endet, sobald der nächste Stein in keiner seiner Drehungen mehr platziert werden kann. Es gibt keine Möglichkeit, Steine zu überspringen.
+
+Der persönliche Rekord wird lokal gespeichert; bei gesperrtem Browserspeicher bleibt das Spiel spielbar. Nach Rundenende übergibt das Spiel genau einmal Punkte, Anzahl platzierter Steine und Zeit an den bestehenden Highscore-Client (`game: tetris-puzzle`, `level: random`). Die Highscores zeigen ausschließlich den Endlosmodus; mehr Punkte sind besser. Die sieben Steinformen werden in gemischten Siebenergruppen gezogen.
+
+Das Spiel verwendet `puzzle/style.css` sowie die Dateien im Verzeichnis `tetris-puzzle/`. Die Startseite erkennt den Spielordner und sein SVG-Titelbild automatisch. Kein Build und keine zusätzlichen Laufzeitpakete nötig.
+
+Zusätzliche Regel- und Oberflächentests ohne Zusatzpakete:
+
+```sh
+node --test tests/block-puzzle.test.cjs tests/block-puzzle-ui.test.cjs
 ```

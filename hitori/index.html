@@ -25,14 +25,14 @@
   <header><div class="brand"><div class="brand-icon">◉</div><div><h1>Hitori</h1><p>Das Spiel mit den versteckten Zahlen</p></div></div><nav class="game-header-links" aria-label="Spielnavigation"><a class="game-highscore-link" data-game-highscores href="../highscores.html?game=hitori">🏆 Highscores</a><a class="home" href="../">← Alle Spiele</a></nav></header>
   <div class="layout">
     <main class="card play">
-      <div class="head"><div><span class="eyebrow">Rätselwerkstatt · 24 Level</span><h2 id="levelLabel">Level 1</h2></div><select id="level" aria-label="Level wählen"></select></div>
+      <div class="head"><div><span class="eyebrow">Rätselwerkstatt · 124 Level</span><h2 id="levelLabel">Level 1</h2></div><select id="level" aria-label="Level wählen"></select></div>
       <div class="stats"><div class="stat"><span>Zeit</span><b id="time">00:00</b></div><div class="stat"><span>Züge</span><b id="moves">0</b></div><div class="stat"><span>Fortschritt</span><b id="count">0/0</b></div></div>
       <div class="board-wrap"><div class="board" id="board" role="group" aria-label="Spielbrett"></div></div>
       <div class="numpad" id="numpad"></div><div id="status" class="status" aria-live="polite">Viel Spaß!</div>
       <div class="buttons"><button id="undo" class="btn">↶ Zurück</button><button id="hint" class="btn">✦ Hinweis</button><button id="restart" class="btn">⟳ Neustart</button></div>
       <div class="buttons" style="margin-top:9px"><button id="prev" class="btn">← Vorheriges</button><button id="next" class="btn primary">Nächstes →</button><button id="random" class="btn">∞ Endlos</button></div>
     </main>
-    <aside class="card aside"><span class="tag">So funktioniert's</span><h3 style="margin-top:16px">Hitori</h3><div id="rules"><p>Schwärze überflüssige Zahlen, sodass in jeder Zeile und Spalte jede Zahl nur einmal sichtbar bleibt.</p><ul><li>Schwarze Felder dürfen sich seitlich nicht berühren.</li><li>Alle weißen Felder müssen miteinander verbunden bleiben.</li><li>Ein Tipp schwärzt, der nächste umkreist weiß, der dritte setzt zurück.</li><li>Eine Umrandung hilft, sicher weiße Felder zu markieren.</li></ul></div><h3>Dein Fortschritt</h3><p id="progressText">0 von 24 Level geschafft</p><div class="progress"><span id="progressBar"></span></div><p class="tiny">Alle Spielstände bleiben lokal in diesem Browser. Kein Login und keine Internetverbindung nötig.</p><p class="tiny">Tipp: Auf dem Smartphone kannst du die Felder direkt antippen.</p></aside>
+    <aside class="card aside"><span class="tag">So funktioniert's</span><h3 style="margin-top:16px">Hitori</h3><div id="rules"><p>Schwärze überflüssige Zahlen, sodass in jeder Zeile und Spalte jede Zahl nur einmal sichtbar bleibt.</p><ul><li>Schwarze Felder dürfen sich seitlich nicht berühren.</li><li>Alle weißen Felder müssen miteinander verbunden bleiben.</li><li>Ein Tipp schwärzt, der nächste umkreist weiß, der dritte setzt zurück.</li><li>Eine Umrandung hilft, sicher weiße Felder zu markieren.</li></ul></div><h3>Dein Fortschritt</h3><p id="progressText">0 von 124 Level geschafft</p><div class="progress"><span id="progressBar"></span></div><p class="tiny">Alle Spielstände bleiben lokal in diesem Browser. Kein Login und keine Internetverbindung nötig.</p><p class="tiny">Tipp: Auf dem Smartphone kannst du die Felder direkt antippen.</p></aside>
   </div><div class="footer">Mit Liebe zum Knobeln · Unabhängige Browser-Version</div>
 </div>
 <script src="../highscore/client.js"></script>
@@ -98,7 +98,7 @@ function hitoriCount(N,values,givens,limit=2){
  const initial=Array(N*N).fill(-1);for(const [i,v] of givens)initial[i]=v;rec(initial);return count;
 }
 
-const KEY='raetselwerkstatt-'+GAME.id+'-v2',TOTAL=24;
+const KEY='raetselwerkstatt-'+GAME.id+'-v2',TOTAL=124;
 let store={done:{},best:{},last:1};try{store=Object.assign(store,JSON.parse(localStorage.getItem(KEY)||'{}')||{});}catch{}
 let puzzle=null,state=null,level=1,history=[],moves=0,won=false,startAt=null,spent=0,timer=null,hintIndex=-1,tiles=[],lastMessage='';
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch{}}
@@ -109,13 +109,13 @@ function stopClock(){if(startAt!==null){spent+=Date.now()-startAt;startAt=null}c
 function message(msg,kind=''){$('status').textContent=msg;$('status').className='status '+kind}
 function snapshot(){history.push({state:JSON.parse(JSON.stringify(state)),moves});if(history.length>140)history.shift()}
 function levelName(n){return n==='random'?'Endlos-Modus':n<=8?'Leicht · Level '+n:n<=16?'Mittel · Level '+n:'Schwer · Level '+n}
-function updateProgress(){let count=Object.keys(store.done).filter(k=>store.done[k]&&Number(k)<=24).length;$('progressText').textContent=count+' von 24 Level geschafft';$('progressBar').style.width=(count/24*100)+'%'}
+function updateProgress(){let count=Object.keys(store.done).filter(k=>store.done[k]&&Number(k)>=1&&Number(k)<=TOTAL).length;$('progressText').textContent=count+' von '+TOTAL+' Level geschafft';$('progressBar').style.width=(count/TOTAL*100)+'%'}
 function render(){
  const result=GAME.check(puzzle,state),errors=new Set(result.errors||[]),complete=GAME.progress(puzzle,state);
  for(let i=0;i<tiles.length;i++){let t=tiles[i],d=GAME.cell(puzzle,state,i);t.className='tile '+(d.cls||'')+(errors.has(i)?' error':'')+(hintIndex===i?' hint':'');t.innerHTML=d.html??String(d.text??'');t.title=d.title||'';t.setAttribute('aria-label',d.title||'Feld '+(i+1));t.style.cssText=d.style||'';}
- $('moves').textContent=moves;$('count').textContent=complete[0]+'/'+complete[1];$('undo').disabled=!history.length||won;$('hint').disabled=won;$('prev').disabled=level===1;$('next').disabled=level==='random'||level===24&&!won;
+ $('moves').textContent=moves;$('count').textContent=complete[0]+'/'+complete[1];$('undo').disabled=!history.length||won;$('hint').disabled=won;$('prev').disabled=level===1;$('next').disabled=level==='random'||level===TOTAL&&!won;
  if(GAME.afterRender)GAME.afterRender(puzzle,state);
- if(result.won&&!won){won=true;stopClock();window.Highscore?.submit({game:'hitori',level,time:elapsed(),moves});let sec=Math.max(1,Math.floor(elapsed()/1000));if(level!=='random'){store.done[level]=true;store.best[level]=Math.min(store.best[level]||Infinity,sec);}persist();updateProgress();message('🎉 Gelöst! '+(level==='random'?'Noch eine Runde?':'Weiter zum nächsten Level!'),'ok');$('next').disabled=level==='random'||level===24;$('hint').disabled=true;$('undo').disabled=true;}
+ if(result.won&&!won){won=true;stopClock();window.Highscore?.submit({game:'hitori',level,time:elapsed(),moves});let sec=Math.max(1,Math.floor(elapsed()/1000));if(level!=='random'){store.done[level]=true;store.best[level]=Math.min(store.best[level]||Infinity,sec);}persist();updateProgress();message('🎉 Gelöst! '+(level==='random'?'Noch eine Runde?':'Weiter zum nächsten Level!'),'ok');$('next').disabled=level==='random'||level===TOTAL;$('hint').disabled=true;$('undo').disabled=true;}
 }
 function apply(index,mode='click'){
  if(won)return;if(index<0||index>=puzzle.rows*puzzle.cols)return;
@@ -141,15 +141,16 @@ function load(n,randomSeed){stopClock();spent=0;clock();level=n;let seed=typeof 
  try{puzzle=GAME.generate(n,seed,rng)}catch(e){console.error(e);message('Level konnte nicht erzeugt werden. Bitte neu starten.','warn');return}
  state=GAME.initial(puzzle);history=[];moves=0;won=false;hintIndex=-1;$('level').value=String(n);$('levelLabel').textContent=levelName(n);store.last=n==='random'?store.last:n;persist();boardSetup();GAME.mount?.(puzzle,state);message('Los geht’s – viel Freude beim Knobeln!');render();}
 function hint(){if(won)return;let suggestion=GAME.hint(puzzle,state);if(!suggestion){message('Gerade kein sinnvoller Hinweis verfügbar.','warn');return}hintIndex=suggestion.index??-1;message(suggestion.message||'Dieses Feld ist ein guter nächster Schritt.','ok');render();}
-function init(){for(let i=1;i<=24;i++)$('level').add(new Option((i<=8?'●':i<=16?'◆':'★')+' '+i+(store.done[i]?' ✓':''),i));$('level').add(new Option('∞ Endlos','random'));
+function init(){for(let i=1;i<=TOTAL;i++)$('level').add(new Option((i<=8?'●':i<=16?'◆':'★')+' '+i+(store.done[i]?' ✓':''),i));$('level').add(new Option('∞ Endlos','random'));
  $('level').addEventListener('change',e=>load(e.target.value==='random'?'random':Number(e.target.value)));
  $('restart').addEventListener('click',()=>load(level,level==='random'?Math.floor(Math.random()*4294967295):undefined));
  $('random').addEventListener('click',()=>load('random',Math.floor(Math.random()*4294967295)));
  $('prev').addEventListener('click',()=>{if(level!=='random')load(Math.max(1,level-1))});
- $('next').addEventListener('click',()=>{if(level!=='random'&&level<24)load(level+1)});
+ $('next').addEventListener('click',()=>{if(level!=='random'&&level<TOTAL)load(level+1)});
  $('undo').addEventListener('click',()=>{if(!history.length||won)return;let prev=history.pop();state=prev.state;moves=prev.moves;hintIndex=-1;message('Letzter Zug zurückgenommen.');render()});
  $('hint').addEventListener('click',hint);let n=$('numpad');if(GAME.numpad){n.classList.add('on');for(let v=1;v<=9;v++){let b=document.createElement('button');b.type='button';b.className='num';b.textContent=v;b.addEventListener('click',()=>selectNumber(v));n.appendChild(b)}let b=document.createElement('button');b.type='button';b.className='num';b.style.gridColumn='1 / -1';b.textContent='⌫ Feld löschen';b.addEventListener('click',()=>selectNumber(0));n.appendChild(b);document.addEventListener('keydown',e=>{if(e.target.matches('input,select,textarea'))return;if(/^[1-9]$/.test(e.key))selectNumber(Number(e.key));if(e.key==='Backspace'||e.key==='Delete')selectNumber(0)})}
- updateProgress();load(Math.min(24,Math.max(1,Number(store.last)||1)))}
+ updateProgress();load(Math.min(TOTAL,Math.max(1,Number(store.last)||1)))}
 init();
 </script>
 </body></html>
+

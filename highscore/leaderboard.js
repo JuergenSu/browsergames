@@ -12,7 +12,7 @@
       if (!response.ok) throw new Error();
       const data = await response.json(); if (request !== generation) return;
       if (reset) {
-        const values = [...new Set([...Array.from({length:24},(_,i)=>String(i+1)), 'random', ...data.levels])];
+        const values = [...new Set([...Array.from({length:selected === 'hitori' ? 124 : 24},(_,i)=>String(i+1)), 'random', ...data.levels])];
         if (['patches','queens','zip'].includes(selected)) values.splice(0,values.length,...new Set(['easy','medium','hard',...data.levels]));
         if (selected === 'tetris-puzzle') values.splice(0,values.length,'random');
         level.replaceChildren(...values.map(value => new Option(selected === 'tetris-puzzle' ? 'Endlosmodus' : label(value),value)));
@@ -43,4 +43,5 @@
     } catch { message.textContent = 'Spiele konnten nicht geladen werden. Bitte lade die Seite neu.'; }
   })();
 })();
+
 

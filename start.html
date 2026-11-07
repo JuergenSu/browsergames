@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#10192c">
+    <meta name="description" content="18 kostenlose Browser-Spiele – direkt starten, ohne Installation.">
+    <title>Unsere Spielewelt</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #10192c;
+            --surface: #1b2940;
+            --line: rgba(255,255,255,.11);
+            --text: #f7f9ff;
+            --muted: #a1aec4;
+            --accent: #97b9ff;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(ellipse at 15% 0%, rgba(91,114,205,.23), transparent 34%),
+                radial-gradient(ellipse at 95% 85%, rgba(32,169,156,.12), transparent 34%),
+                var(--bg);
+        }
+        .container { max-width: 1160px; margin: 0 auto; padding: 58px 26px 70px; }
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 13px;
+            border: 1px solid rgba(151,185,255,.24);
+            border-radius: 999px;
+            color: #b7c9ff;
+            background: rgba(151,185,255,.08);
+            font-size: 12px;
+            font-weight: 750;
+            letter-spacing: .04em;
+        }
+        .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #8fe5bc; }
+        h1 { margin: 20px 0 11px; font-size: clamp(35px, 5vw, 58px); line-height: 1.05; letter-spacing: -.055em; }
+        .intro { color: var(--muted); max-width: 650px; font-size: 16px; line-height: 1.7; margin: 0; }
+        .section-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 44px 0 18px; }
+        .section-top h2 { font-size: 19px; letter-spacing: -.02em; margin: 0; }
+        .counter { color: #adbad0; font-size: 13px; font-weight: 700; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(245px, 1fr)); gap: 22px; }
+        .game-card {
+            display: block;
+            overflow: hidden;
+            color: inherit;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 19px;
+            text-decoration: none;
+            box-shadow: 0 14px 36px rgba(0,0,0,.13);
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .game-card:hover, .game-card:focus-visible {
+            transform: translateY(-5px);
+            border-color: rgba(151,185,255,.5);
+            box-shadow: 0 22px 46px rgba(0,0,0,.22);
+        }
+        .game-card:focus-visible { outline: 3px solid #b1c7ff; outline-offset: 4px; }
+        .cover { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: linear-gradient(135deg, #37478b, #246b79 65%, #6b568f); }
+        .cover img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
+        .game-card:hover .cover img { transform: scale(1.045); }
+        .cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(9,14,25,.15), transparent 50%); pointer-events: none; }
+        .body { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 18px 19px 20px; }
+        .game-name { margin: 0; font-size: 21px; letter-spacing: -.03em; line-height: 1.2; }
+        .game-sub { color: var(--muted); font-size: 12px; margin-top: 5px; }
+        .arrow { display: grid; place-items: center; flex: 0 0 37px; height: 37px; border-radius: 11px; background: rgba(151,185,255,.11); color: var(--accent); font-size: 22px; transition: background .2s ease; }
+        .game-card:hover .arrow { background: rgba(151,185,255,.22); }
+        footer { color: #8394af; font-size: 12px; margin-top: 52px; }
+        @media (max-width: 600px) {
+            .container { padding: 35px 17px 45px; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 13px; }
+            .body { padding: 14px 13px 16px; }
+            .game-name { font-size: 18px; }
+            .arrow { flex-basis: 31px; height: 31px; }
+            .intro { font-size: 14px; }
+            .section-top { margin-top: 35px; }
+        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+    </style>
+</head>
+<body>
+<main class="container">
+    <div class="eyebrow">SPIELEWELT</div>
+    <h1>Was spielen wir heute?</h1>
+    <p class="intro">Wähle ein Spiel aus und leg direkt los. Für eine kurze Denkpause, eine knifflige Herausforderung oder einfach eine Runde zwischendurch.</p>
+
+    <div class="section-top">
+        <h2>Unsere Spiele</h2>
+        <span class="counter">18 Spiele</span>
+    </div>
+
+    <!-- Statische Liste für GitHub Pages. Neue Spiele hier ergänzen. -->
+    <div class="grid">
+        <a class="game-card" href="akari/index.html" aria-label="Akari spielen">
+            <div class="cover"><img src="akari/titel.jpg" alt="Titelbild von Akari" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Akari</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="bridges/index.html" aria-label="Bridges spielen">
+            <div class="cover"><img src="bridges/titel.jpg" alt="Titelbild von Bridges" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Bridges</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="futoshiki/index.html" aria-label="Futoshiki spielen">
+            <div class="cover"><img src="futoshiki/titel.jpg" alt="Titelbild von Futoshiki" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Futoshiki</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="hitori/index.html" aria-label="Hitori spielen">
+            <div class="cover"><img src="hitori/titel.jpg" alt="Titelbild von Hitori" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Hitori</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="kakuro/index.html" aria-label="Kakuro spielen">
+            <div class="cover"><img src="kakuro/titel.jpg" alt="Titelbild von Kakuro" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Kakuro</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="lights-out/index.html" aria-label="Lights Out spielen">
+            <div class="cover"><img src="lights-out/titel.jpg" alt="Titelbild von Lights Out" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Lights Out</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="minesweeper/index.html" aria-label="Minesweeper spielen">
+            <div class="cover"><img src="minesweeper/titel.jpg" alt="Titelbild von Minesweeper" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Minesweeper</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="netwalk/index.html" aria-label="Netwalk spielen">
+            <div class="cover"><img src="netwalk/titel.svg" alt="Titelbild von Netwalk" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Netwalk</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="nonogram/index.html" aria-label="Nonogram spielen">
+            <div class="cover"><img src="nonogram/titel.jpg" alt="Titelbild von Nonogram" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Nonogram</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="numberlink/index.html" aria-label="Numberlink spielen">
+            <div class="cover"><img src="numberlink/titel.jpg" alt="Titelbild von Numberlink" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Numberlink</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="queens/index.html" aria-label="Queens spielen">
+            <div class="cover"><img src="queens/titel.jpg" alt="Titelbild von Queens" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Queens</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="skyscrapers/index.html" aria-label="Skyscrapers spielen">
+            <div class="cover"><img src="skyscrapers/titel.svg" alt="Titelbild von Skyscrapers" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Skyscrapers</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="slitherlink/index.html" aria-label="Slitherlink spielen">
+            <div class="cover"><img src="slitherlink/titel.jpg" alt="Titelbild von Slitherlink" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Slitherlink</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="sokoban/index.html" aria-label="Sokoban spielen">
+            <div class="cover"><img src="sokoban/titel.svg" alt="Titelbild von Sokoban" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Sokoban</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="tango/index.html" aria-label="Tango spielen">
+            <div class="cover"><img src="tango/titel.jpg" alt="Titelbild von Tango" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Tango</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="tents/index.html" aria-label="Tents spielen">
+            <div class="cover"><img src="tents/titel.jpg" alt="Titelbild von Tents" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Tents</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="tetris-puzzle/index.html" aria-label="Tetris Puzzle spielen">
+            <div class="cover"><img src="tetris-puzzle/titel.svg" alt="Titelbild von Tetris Puzzle" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">Tetris Puzzle</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+        <a class="game-card" href="zip/index.html" aria-label="ZIP spielen">
+            <div class="cover"><img src="zip/titel.jpg" alt="Titelbild von ZIP" loading="lazy"></div>
+            <div class="body"><div><h3 class="game-name">ZIP</h3><div class="game-sub">Jetzt spielen</div></div><span class="arrow" aria-hidden="true">→</span></div>
+        </a>
+    </div>
+
+    <footer>Statische Spielauswahl für GitHub Pages · Ohne Anmeldung und Highscore-Funktion auf dieser Seite.</footer>
+</main>
+</body>
+</html>

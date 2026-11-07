@@ -1,6 +1,35 @@
 (() => {
   'use strict';
   const base = new URL('../', document.currentScript.src);
+  // GitHub Pages serves static files only: no PHP API or shared highscores.
+  // Keep game progress intact while turning off the shared leaderboard UI.
+  if (location.hostname.endsWith('.github.io')) {
+    const startPage = new URL('start.html', base);
+    const phpStart = new URL('index.php', base);
+    const highscorePage = new URL('highscores.html', base);
+    const adjustLinks = () => {
+      for (const link of document.querySelectorAll('a[href]')) {
+        const target = new URL(link.getAttribute('href'), document.baseURI);
+        if (target.origin !== base.origin) continue;
+        if (target.pathname === highscorePage.pathname) {
+          link.remove();
+        } else if (
+          (target.pathname === phpStart.pathname || target.pathname === base.pathname) &&
+          link.textContent.includes('Alle Spiele')
+        ) {
+          link.href = startPage.href;
+        }
+      }
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', adjustLinks, { once: true });
+    } else {
+      adjustLinks();
+    }
+    // Games may still call submit() when a puzzle is solved.
+    window.Highscore = Object.freeze({ submit() {} });
+    return;
+  }
   const cookiePath = base.pathname;
   function getName() {
     try { return decodeURIComponent(document.cookie.split('; ').find(c => c.startsWith('spielewelt_name='))?.split('=').slice(1).join('=') || ''); }

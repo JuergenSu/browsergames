@@ -30,6 +30,18 @@
     window.Highscore = Object.freeze({ submit() {} });
     return;
   }
+  // Preserve the original dynamic start page on PHP servers.
+  // On GitHub Pages the links in the HTML stay pointed at start.html.
+  const restorePhpBackLinks = () => {
+    for (const link of document.querySelectorAll('a[data-php-home]')) {
+      link.setAttribute('href', link.getAttribute('data-php-home'));
+    }
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', restorePhpBackLinks, { once: true });
+  } else {
+    restorePhpBackLinks();
+  }
   const cookiePath = base.pathname;
   function getName() {
     try { return decodeURIComponent(document.cookie.split('; ').find(c => c.startsWith('spielewelt_name='))?.split('=').slice(1).join('=') || ''); }

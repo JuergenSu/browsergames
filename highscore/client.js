@@ -90,6 +90,7 @@
     resend();
   });
   showProfile();
+  window.addEventListener('spielewelt:player-name', () => showProfile());
   const account = document.createElement('div');
   account.className = 'highscore-account';
   account.append(panel);
@@ -128,3 +129,4 @@
     void send({ ...result, level:String(result.level), time:Math.round(result.time), submissionId });
   } });
 })();
+

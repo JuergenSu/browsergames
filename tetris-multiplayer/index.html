@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10192c">
+<meta name="description" content="Klassisches Tetris mit Touch-Steuerung und gemeinsamem Multiplayer-Raum. Entferne Reihen und schicke deinen Mitspielern zusätzliche Blöcke.">
+<title>Tetris Multiplayer – Spielewelt</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="shell">
+<header><a class="brand" href="../index.php"><span aria-hidden="true">▦</span><div><strong>Tetris Multiplayer</strong><small>Dein Spiel. Ein gemeinsamer Raum.</small></div></a><nav aria-label="Spielnavigation"><a data-game-highscores href="../highscores.html?game=tetris-multiplayer">🏆 Highscores</a><a href="../index.php">← Alle Spiele</a></nav></header>
+<div class="layout">
+<section class="game-card" aria-label="Tetris spielen">
+<div class="stats"><div><small>Punkte</small><b id="score">0</b></div><div><small>Reihen</small><b id="lines">0</b></div><div><small>Level</small><b id="level">1</b></div></div>
+<div class="play-layout"><div class="stage"><canvas id="board" width="300" height="600" tabindex="0" aria-label="Tetris-Spielfeld. Pfeiltasten bewegen und drehen, Leertaste lässt den Stein fallen, P pausiert."></canvas>
+<div id="overlay" class="overlay"><h1 id="overlay-title">Bereit für die nächste Reihe?</h1><p id="overlay-text">Spiele in deinem Tempo los. Mitspieler können jederzeit dazukommen.</p><button id="resume" type="button" hidden>Weiterspielen</button></div></div>
+<div class="next-panel"><h2>Als Nächstes</h2><canvas id="next" width="100" height="240" aria-label="Vorschau der nächsten drei Steine"></canvas><div class="pending"><small>Im Anflug</small><b id="pending">0</b><span>Reihen</span></div><button id="pause" type="button" disabled>Ⅱ Pause</button></div></div>
+<div id="attack" class="attack" role="status" aria-live="polite">Entferne 2 Reihen für einen Angriff, 4 Reihen für zwei.</div>
+<div class="touch-controls" aria-label="Touch-Steuerung"><button type="button" data-action="left" aria-label="Nach links">←</button><button type="button" data-action="rotate" aria-label="Drehen">↻</button><button type="button" data-action="right" aria-label="Nach rechts">→</button><button type="button" data-action="down" aria-label="Schneller fallen">↓</button><button type="button" data-action="drop" class="drop" aria-label="Sofort fallen lassen">⤓ Ablegen</button></div>
+<p class="touch-help">Tasten halten zum Bewegen · ↻ drehen · ⤓ sofort ablegen</p>
+</section>
+<aside>
+<section class="panel"><div class="panel-top"><h2>Deine Runde</h2><span id="mode" class="badge">Singleplayer</span></div><form id="start-form"><label for="player-name">Dein Spielername</label><input id="player-name" name="name" maxlength="30" required autocomplete="nickname" placeholder="Name eingeben"><button id="start" type="submit" class="primary">Runde starten →</button></form><p id="connection" role="status">Starte eine Runde, um mitzuspielen.</p><button id="retry" type="button" hidden>Mitspieler suchen</button><p class="best">Dein Rekord <b id="best">0</b></p></section>
+<section class="panel players-panel"><div class="panel-top"><h2>Aktive Spieler</h2><span id="player-count" class="count">0</span></div><ul id="players" aria-label="Aktuell aktive Spieler"></ul><p id="players-empty">Noch keine Runde gestartet.</p><p class="fine">Alle spielen im selben Raum. Neue Spieler können jederzeit einsteigen.</p></section>
+<section class="panel rules"><h2>So spielt ihr zusammen</h2><p>Fülle waagerechte Reihen. Sie verschwinden und bringen Punkte. Die Steine fallen mit jedem Level schneller.</p><div class="attacks"><span>1 Reihe <b>0</b></span><span>2 / 3 Reihen <b>+1</b></span><span>4 Reihen <b>+2</b></span></div><p>Alle anderen aktiven Spieler bekommen die halbe Reihenanzahl, abgerundet, von unten dazu. Jede neue Reihe hat eine zufällige Lücke.</p><p>Angriffe werden nach dem Ablegen deines aktuellen Steins eingefügt. Eine Nachricht zeigt dir den Absender.</p><p>Bei Pause, verborgenem Tab oder Game-over verlässt du den Raum. Danach kannst du jederzeit neu einsteigen. Ohne Mitspieler oder Server spielst du allein weiter.</p><details><summary>Tastatur</summary><p>← / → bewegen · ↑ oder X drehen · Z zurückdrehen · ↓ schneller fallen · Leertaste sofort ablegen · P / Escape pausieren.</p></details></section>
+<div data-player-profile></div>
+</aside></div>
+<footer>Klassisches Tetris · Für Smartphone und Laptop · Einsteigen jederzeit möglich</footer>
+</main>
+<script src="../highscore/client.js"></script><script src="engine.js"></script><script src="room.js"></script><script src="game.js"></script>
+</body>
+</html>

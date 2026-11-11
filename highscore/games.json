@@ -84,6 +84,11 @@
     "metric": "time",
     "order": "asc"
   },
+  "tetris-multiplayer": {
+    "name": "Tetris Multiplayer",
+    "metric": "points",
+    "order": "desc"
+  },
   "tetris-puzzle": {
     "name": "Tetris Puzzle",
     "metric": "points",

@@ -14,8 +14,8 @@
       if (reset) {
         const values = [...new Set([...Array.from({length:selected === 'hitori' ? 124 : 24},(_,i)=>String(i+1)), 'random', ...data.levels])];
         if (['patches','queens','zip'].includes(selected)) values.splice(0,values.length,...new Set(['easy','medium','hard',...data.levels]));
-        if (selected === 'tetris-puzzle') values.splice(0,values.length,'random');
-        level.replaceChildren(...values.map(value => new Option(selected === 'tetris-puzzle' ? 'Endlosmodus' : label(value),value)));
+        if (['tetris-puzzle','tetris-multiplayer'].includes(selected)) values.splice(0,values.length,'random');
+        level.replaceChildren(...values.map(value => new Option(['tetris-puzzle','tetris-multiplayer'].includes(selected) ? 'Endlosmodus' : label(value),value)));
         document.querySelector('#play').href = encodeURIComponent(selected) + '/index.html';
         return load();
       }
@@ -27,7 +27,7 @@
         }
         document.querySelector('#scores').append(row);
       }
-      message.textContent = data.entries.length ? `Top ${data.entries.length} · ${selected === 'tetris-puzzle' ? 'Endlosmodus' : label(level.value)}` : 'Hier gibt es noch keine Ergebnisse. Spiele die erste Runde!';
+      message.textContent = data.entries.length ? `Top ${data.entries.length} · ${['tetris-puzzle','tetris-multiplayer'].includes(selected) ? 'Endlosmodus' : label(level.value)}` : 'Hier gibt es noch keine Ergebnisse. Spiele die erste Runde!';
     } catch { if (request === generation) message.textContent = 'Highscores sind gerade nicht erreichbar. Bitte erneut aktualisieren.'; }
   }
   game.addEventListener('change', () => load(true)); level.addEventListener('change', () => load()); document.querySelector('#refresh').addEventListener('click', () => load());
@@ -43,5 +43,6 @@
     } catch { message.textContent = 'Spiele konnten nicht geladen werden. Bitte lade die Seite neu.'; }
   })();
 })();
+
 
 

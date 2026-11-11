@@ -29,7 +29,7 @@ Alternativ kann `HIGHSCORE_DATA_DIR` als Server-Umgebungsvariable auf ein beschr
 
 Der Spielername (1–30 Zeichen) wird für ein Jahr als Cookie gespeichert und kann auf der Startseite, in den Spielen und in der Highscore-Ansicht geändert werden. Bereits gespeicherte Einträge behalten ihren bisherigen Namen.
 
-Alle 19 Spiele übermitteln nach Abschluss einer Runde ihre Zeit in Millisekunden und, soweit vorhanden, Züge oder Punkte. Ohne Namen wartet das Ergebnis auf die Eingabe. Bei Verbindungsproblemen lässt es sich mit „Erneut senden“ erneut übertragen, ohne einen doppelten Eintrag anzulegen. Wartende Ergebnisse bleiben bis zum Verlassen der Seite im Arbeitsspeicher. Nach dem Speichern des Namens erscheint nur „Hallo <Spielername>“ mit einem Stift zum Ändern; der Highscore-Link steht separat daneben.
+Alle 20 Spiele übermitteln nach Abschluss einer Runde ihre Zeit in Millisekunden und, soweit vorhanden, Züge oder Punkte. Ohne Namen wartet das Ergebnis auf die Eingabe. Bei Verbindungsproblemen lässt es sich mit „Erneut senden“ erneut übertragen, ohne einen doppelten Eintrag anzulegen. Wartende Ergebnisse bleiben bis zum Verlassen der Seite im Arbeitsspeicher. Nach dem Speichern des Namens erscheint nur „Hallo <Spielername>“ mit einem Stift zum Ändern; der Highscore-Link steht separat daneben.
 
 `highscores.html` zeigt die besten zehn Runden je Spiel und Level bzw. Schwierigkeitsgrad. Jede Runde zählt; ein Name kann mehrfach vorkommen. Bei gleicher Hauptwertung entscheidet die Zeit, danach der frühere Eintrag. Zufallsrunden sind eine eigene Kategorie und wegen unterschiedlicher Rätsel nur eingeschränkt vergleichbar.
 
@@ -114,3 +114,48 @@ Zusätzliche Regel- und Oberflächentests ohne Zusatzpakete:
 ```sh
 node --test tests/block-puzzle.test.cjs tests/block-puzzle-ui.test.cjs
 ```
+
+
+## Tetris Multiplayer
+
+`tetris-multiplayer/index.html` ist klassisches Tetris auf einem 10×20-Spielfeld mit fallenden Steinen, Siebenerbeutel, Vorschau, Landeschatten, Drehung mit Randkorrektur, 500 ms Ablageverzögerung und steigendem Tempo. Touch-Tasten lassen sich für Bewegung und schnelles Fallen gedrückt halten. Tastatur: Pfeile, X / Z zum Drehen, Leertaste zum sofortigen Ablegen und P / Escape zum Pausieren.
+
+Alle aktiven Spieler spielen in einem gemeinsamen Raum; Raumcodes und ein gemeinsamer Rundenstart sind nicht nötig. Nach dem Start zeigt jeder Browser die Namen aller aktiven Spieler, einschließlich des eigenen Namens. Die Liste wird etwa jede Sekunde aktualisiert. Verlassene Sitzungen werden nach spätestens 12 Sekunden ohne Lebenszeichen entfernt. Bei Pause, verborgenem Tab und Game-over wird die Sitzung ausdrücklich beendet. Beim Fortsetzen oder Neustart tritt der Spieler mit einer neuen Sitzung bei und bekommt keine vergangenen Angriffe.
+
+Bei jeder Linienlöschung sendet der Browser die Anzahl entfernter Reihen und seine Sitzung an `tetris-multiplayer/api.php`; der Server ergänzt den beim Beitritt hinterlegten Namen. Alle anderen zu diesem Zeitpunkt aktiven Spieler erhalten `floor(Reihen / 2)` zusätzliche Reihen: bei einer entfernten Reihe keine, bei zwei oder drei eine, bei vier zwei. Jede Zusatzreihe hat eine zufällige Lücke. Eingehende Reihen werden nach dem Ablegen des aktuellen Steins unten eingefügt; die vorhandenen Blöcke rücken nach oben. Der Empfänger sieht eine Nachricht mit dem Namen des Absenders. Überläuft das Spielfeld, endet seine Runde.
+
+### PHP-Webspace
+
+Die PHP-Komponente ist eine einzelne Datei und nutzt kurze Polling-Anfragen statt WebSockets. Sie benötigt PHP ab 8.1, keine Datenbank, kein Composer, keinen dauerhaften Prozess und keine Zusatzpakete. `api.php` erzeugt einen mit `flock` geschützten Raumzustand. Schreiben erfolgt über temporäre Dateien und atomare Umbenennung.
+
+Den kompletten Spielordner sowie die aktualisierten Dateien in `highscore/` auf den bestehenden PHP-Webspace kopieren. Der PHP-Prozess muss das Datenverzeichnis beschreiben dürfen. Standardmäßig liegt der Raumzustand unter `data/tetris-multiplayer/`; die bereits vorhandenen Zugriffssperren in `data/.htaccess` bzw. `data/web.config` müssen aktiv sein. Auf nginx den gesamten `data/`-Pfad sperren. Alternativ `TETRIS_DATA_DIR` serverseitig auf ein beschreibbares Verzeichnis außerhalb des öffentlichen Webverzeichnisses setzen. Raumdateien und Sitzungsschlüssel sind flüchtige Laufzeitdaten und dürfen nicht veröffentlicht werden.
+
+Lokal z. B. starten mit:
+
+```sh
+TETRIS_DATA_DIR=/tmp/spielewelt-tetris php -S 127.0.0.1:8000 -t .
+```
+
+Das Polling läuft etwa einmal pro Sekunde pro aktivem Spieler. Nachrichten haben eindeutige IDs und einen fortlaufenden Empfangsstand; erneute Zustellungen lösen keine doppelten Angriffe aus. Maximal 100 Spieler können gleichzeitig im Raum sein. Der Server begrenzt Angriffe auf einen pro Sekunde und Spieler; legitime weitere Nachrichten werden mit derselben ID erneut versucht. Wie die bestehenden Highscores prüft der Server die Formate, aber nicht die tatsächliche Spielleistung. Namen sind keine authentifizierten Identitäten.
+
+### Singleplayer und Ausfälle
+
+Fehlt PHP, etwa bei GitHub Pages, oder liefert der Dienst keine gültige JSON-Antwort, bleibt Tetris als Singleplayer spielbar. Bei vorübergehenden Verbindungsproblemen läuft das Spiel ohne Mitspieler weiter und versucht nach fünf Sekunden, mit einer neuen Sitzung beizutreten. Alte ausgehende Angriffe werden beim Verbindungswechsel verworfen. Der persönliche Rekord wird lokal gespeichert; nach Game-over übergibt das Spiel die Punkte einmalig an den vorhandenen Highscore-Client, Kategorie `random` / Endlosmodus.
+
+### Tests
+
+Regel- und Verbindungstests benötigen nur Node.js ab Version 18:
+
+```sh
+node --test tests/tetris-multiplayer.test.cjs tests/tetris-ui.test.cjs
+php tests/tetris-room.php
+```
+
+Optional lassen sich der echte PHP-Endpunkt und zwei JavaScript-Spielclients auch ohne lokalen Server mit PHP 8.3 WebAssembly testen. Die optionale WebAssembly-Prüfung benötigt Node.js ab 24.18. Diese Pakete sind ausschließlich Testwerkzeuge und werden für den Webspace nicht benötigt:
+
+```sh
+npm install --no-save @php-wasm/universal @php-wasm/node-8-3
+node tests/tetris-integration.mjs
+```
+
+`PHP_WASM_MODULES` kann auf ein separates `node_modules`-Verzeichnis zeigen. Die Integration prüft HTTP-Methode, JSON, Herkunftsschutz, persistente Raumdateien, Namensanzeige, Linienangriffe, erneute Zustellungen, späten Beitritt und das Verlassen des Raums.

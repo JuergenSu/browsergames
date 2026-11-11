@@ -1,7 +1,7 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.TetrisRoom=api;})(globalThis,()=>{
   'use strict';
   class Room{
-    constructor({url='api.php',fetcher=globalThis.fetch?.bind(globalThis),onRoster=()=>{},onAttack=()=>{},onStatus=()=>{},id=()=>crypto.randomUUID(),schedule=setTimeout,unschedule=clearTimeout}={}){
+    constructor({url='api.php',fetcher=globalThis.fetch?.bind(globalThis),onRoster=()=>{},onAttack=()=>{},onStatus=()=>{},id=()=>crypto.randomUUID(),schedule=globalThis.setTimeout.bind(globalThis),unschedule=globalThis.clearTimeout.bind(globalThis)}={}){
       Object.assign(this,{url,fetcher,onRoster,onAttack,onStatus,id,schedule,unschedule});
       this.version=0;this.session=null;this.queue=[];this.timer=null;this.controller=null;this.wanted=false;this.busy=false;
     }

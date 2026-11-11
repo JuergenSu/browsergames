@@ -69,3 +69,35 @@ test('Rate-limit retry keeps the same event ID; stopping removes the session',as
  assert.deepEqual(h.calls.filter(c=>c.action==='clear').map(c=>c.eventId),['unique-event-123456','unique-event-123456']);
  h.room.stop();await settle();assert.equal(h.calls.at(-1).action,'leave');assert.equal(h.room.session,null);assert.equal(h.scheduled.size,0);
 });
+test('Browser default timers keep their Window receiver during start, polling and stop',async()=>{
+ const vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+ const browser={AbortController};vm.createContext(browser);
+ vm.runInContext(`
+  globalThis.timerCalls=[];globalThis.requests=[];globalThis.timers=new Map();let nextTimer=0;
+  globalThis.setTimeout=function(fn,delay){
+    if(this!==globalThis)throw new TypeError('Illegal invocation: setTimeout');
+    timerCalls.push(['set',delay]);timers.set(++nextTimer,fn);return nextTimer;
+  };
+  globalThis.clearTimeout=function(id){
+    if(this!==globalThis)throw new TypeError('Illegal invocation: clearTimeout');
+    timerCalls.push(['clear',id]);timers.delete(id);
+  };
+  globalThis.fetch=async function(url,options){
+    if(this!==globalThis)throw new TypeError('Illegal invocation: fetch');
+    const body=JSON.parse(options.body);requests.push(body);
+    return {ok:true,headers:{get:()=> 'application/json'},json:async()=>body.action==='join'
+      ?{token:'browser-session',id:'me',cursor:0,players:[{id:'me',name:'Anna'}]}
+      :body.action==='poll'?{cursor:0,players:[{id:'me',name:'Anna'}],events:[]}:{left:true}};
+  };
+ `,browser);
+ vm.runInContext(fs.readFileSync(path.join(__dirname,'../tetris-multiplayer/room.js'),'utf8'),browser);
+ vm.runInContext('globalThis.room=new TetrisRoom.Room();',browser);
+ assert.doesNotThrow(()=>browser.room.stop());
+ browser.room.start('Anna');await settle();assert.equal(browser.room.session?.id,'me');
+ assert.ok(browser.timerCalls.some(([type,delay])=>type==='set'&&delay===4500));
+ assert.ok(browser.timerCalls.some(([type,delay])=>type==='set'&&delay===1000));
+ await browser.room.cycle(browser.room.version);
+ assert.ok(browser.requests.some(r=>r.action==='poll'));
+ browser.room.stop();await settle();assert.equal(browser.room.session,null);assert.equal(browser.timers.size,0);
+ assert.ok(browser.requests.some(r=>r.action==='leave'));
+});
